@@ -1,264 +1,264 @@
-Variable;Used
-Persoonsgebonden nummer;TRUE
-Inschrijvingsjaar;TRUE
-Instellingscode;FALSE
-Actuele instelling;FALSE
-Opleidingscode;FALSE
-Opleidingsvorm;FALSE
-Opleidingsfase;FALSE
-Maand vanaf;FALSE
-Code beëindiging;FALSE
-Maand tot;FALSE
-Code examenresultaat;FALSE
-Maand examenresultaat;FALSE
-Code bekostiging;FALSE
-Eerste jaar aan deze instelling;FALSE
-Inschrijvingsvorm;FALSE
-Soort hoger onderwijs;FALSE
-Opleiding actueel equivalent;FALSE
-Opleiding historisch equivalent;FALSE
-Croho-onderdeel actuele opleiding;FALSE
-Croho-subonderdeel actuele opleiding;FALSE
-Type hoger onderwijs binnen soort hoger onderwijs;FALSE
-Opleidingsfase actueel;FALSE
-Indicatie actief op peildatum;FALSE
-Soort inschrijving hoger onderwijs;FALSE
-Soort inschrijving soort ho;FALSE
-Soort inschrijving type ho binnen soort ho;FALSE
-Soort inschrijving opleiding actueel equivalent;FALSE
-Soort inschrijving actuele instelling;FALSE
-Soort inschrijving actuele opleiding-instelling;FALSE
-Verblijfsjaar hoger onderwijs;FALSE
-Verblijfsjaar soort ho;FALSE
-Verblijfsjaar type ho binnen soort ho;FALSE
-Indicatie eerstejaars opl. actueel equivalent;FALSE
-Indicatie eerstejaars actuele instelling;FALSE
-Indicatie eerstejaars actuele opl.-instelling;FALSE
-Eerste jaar in het hoger onderwijs;FALSE
-Eerste jaar aan deze soort hoger onderwijs;FALSE
-Eerste jaar aan deze opleiding-instelling;FALSE
-Diplomajaar;FALSE
-Opleidingsfase actueel van het diploma;FALSE
-Soort diploma hoger onderwijs internat.statistiek;FALSE
-Soort diploma hoger onderwijs;FALSE
-Soort diploma soort hoger onderwijs;FALSE
-Soort diploma instelling;FALSE
-Hoogste vooropleiding vóór het HO;FALSE
-Hoogste vooropleiding vóór het HO oorspronkelijke code;FALSE
-Diplomajaar van de hoogste vooropl. vóór het HO;FALSE
-Instelling van de hoogste vooropl. vóór het HO;FALSE
-Hoogste vooropleiding binnen het HO;FALSE
-Hoogste vooropleiding binnen het HO oorspronkelijke code;FALSE
-Diplomajaar van de hoogste vooropl. binnen het HO;FALSE
-Instelling van de hoogste vooropl. binnen het HO;FALSE
-Hoogste vooropleiding;FALSE
-Diplomajaar hoogste vooropleiding;FALSE
-Instelling van de hoogste vooropleiding;FALSE
-Geslacht;TRUE
-Leeftijd per peildatum 1 oktober;TRUE
-Leeftijd per 1 januari;FALSE
-Nationaliteit 1;FALSE
-Nationaliteit 2;FALSE
-Nationaliteit 3;FALSE
-Geboorteland;FALSE
-Geboorteland ouder 1;FALSE
-Geboorteland ouder 2;FALSE
-Etniciteit;FALSE
-Generatie;FALSE
-Gecorrigeerd eerste jaar aan deze instelling;FALSE
-Eerste jaar aan deze actuele instelling;FALSE
-Soort inschrijving act. inst - type ho binnen soort ho;FALSE
-Indicatie eerstejrs act. inst - type ho binnen soort ho;FALSE
-Actuele instelling vóór besturenfusies;FALSE
-Soort inschrijving type ho binnen ho;FALSE
-Verblijfsjaar type ho binnen ho;FALSE
-Postcodecijfers student op 1 oktober;FALSE
-Postcodecijfers van de hoogste vooropl. vóór het HO;FALSE
-Gem. eindcijfer VO van de hoogste vooropl. vóór het HO;FALSE
-Soort inschrijving continu hoger onderwijs;FALSE
-Soort inschrijving continu soort ho;FALSE
-Soort inschrijving continu actuele instelling;FALSE
-Soort inschrijving continu type ho binnen ho;FALSE
-Indicatie eerstejaars continu hoger onderwijs;FALSE
-Indicatie eerstejaars continu soort ho;FALSE
-Indicatie eerstejaars continu actuele instelling;FALSE
-Indicatie eerstejaars continu type ho binnen ho;FALSE
-Indicatie soort programma;FALSE
-Datum inschrijving;FALSE
-Datum uitschrijving;FALSE
-Vestigingsnummer;FALSE
-Datum tekening diploma;FALSE
-Vestigingsnummer diploma;FALSE
-Vestigingsnummer actueel;FALSE
-Vestigingsnummer actueel diploma;FALSE
-Vestigingsnummer van de hoogste vooropl. vóór het HO;FALSE
-Vestigingsnummer van de hoogste vooropl. binnen het HO;FALSE
-Vestigingsnummer van de hoogste vooropleiding;FALSE
-Indicatie EER actueel;FALSE
-Indicatie internationale student;FALSE
-Indicatie EER op peildatum 1 oktober;FALSE
-Nationaliteit gebruikt voor bepaling ind. EER actueel;FALSE
-Nationaliteit gebruikt voor bepaling ind. EER peildatum;FALSE
-Verblijfsjaar actuele opleiding;FALSE
-Verblijfsjaar actuele instelling;FALSE
-Verblijfsjaar actuele opleiding-instelling;FALSE
-Verblijfsjaar act. inst - type ho binnen soort ho;FALSE
-Verblijfsjaar continu ho;FALSE
-Verblijfsjaar continu soort ho;FALSE
-Verblijfsjaar continu actuele instelling;FALSE
-Verblijfsjaar continu type ho binnen ho;FALSE
-Indicatie University College;FALSE
-ISCEDF2013-rubriek;FALSE
-Herkomstland volgens CBS-definitie;FALSE
-Herkomst-indikking volgens CBS-definitie;FALSE
-Indicatie geboren;FALSE
-Burgerservicenummer;FALSE
-Onderwijsnummer;FALSE
-Retentie;TRUE
-Gemiddeld cijfer cijferlijst;TRUE
-ak;FALSE
-anw;FALSE
-biol;FALSE
-ckv;FALSE
-dutl;FALSE
-entl;FALSE
-gds;FALSE
-lo;FALSE
-maat;FALSE
-nat;FALSE
-netl;FALSE
-schk;FALSE
-wisB;FALSE
-beco;FALSE
-bi1;FALSE
-ckv1;FALSE
-du1;FALSE
-ec12;FALSE
-en;FALSE
-fa1;FALSE
-gs;FALSE
-gs1;FALSE
-lett;FALSE
-lo1;FALSE
-ma1;FALSE
-ne;FALSE
-wa12;FALSE
-RT3F;FALSE
-econ;FALSE
-ges;FALSE
-maw;FALSE
-fatl;FALSE
-fi;FALSE
-ltc;FALSE
-wisA;FALSE
-m&o;FALSE
-fa12;FALSE
-kcv;FALSE
-la;FALSE
-te;FALSE
-wb1;FALSE
-ee;FALSE
-et;FALSE
-fa;FALSE
-wa;FALSE
-bi;FALSE
-du;FALSE
-gr;FALSE
-na;FALSE
-sk;FALSE
-wb;FALSE
-na12;FALSE
-wb12;FALSE
-du12;FALSE
-in;FALSE
-wa1;FALSE
-lv;FALSE
-nlt;FALSE
-kumu;FALSE
-ec;FALSE
-ma;FALSE
-na1;FALSE
-ec1;FALSE
-s-e;FALSE
-bv23;FALSE
-bi12;FALSE
-dr3;FALSE
-sk1;FALSE
-lakc;FALSE
-bsm;FALSE
-latl;FALSE
-lo2;FALSE
-o&o;FALSE
-sk12;FALSE
-rkt;FALSE
-kudr;FALSE
-kubv;FALSE
-mu;FALSE
-wisD;FALSE
-okvb;FALSE
-sp-e;FALSE
-wisC;FALSE
-mu23;FALSE
-enzl;FALSE
-fazl;FALSE
-lit;FALSE
-nezl;FALSE
-R3ER;FALSE
-gtc;FALSE
-grtl;FALSE
-sp;FALSE
-hndv;FALSE
-bv3;FALSE
-duzl;FALSE
-sptl;FALSE
-txvg;FALSE
-hr;FALSE
-dr23;FALSE
-chtc;FALSE
-glf;FALSE
-spzl;FALSE
-mu3;FALSE
-grkc;FALSE
-ha;FALSE
-chtl;FALSE
-msst;FALSE
-chzl;FALSE
-ittl;FALSE
-tw;FALSE
-ckv2;FALSE
-mhtl;FALSE
-rms;FALSE
-artl;FALSE
-kuda;FALSE
-tu;FALSE
-R3F;FALSE
-mh12;FALSE
-gm;FALSE
-it1;FALSE
-sp12;FALSE
-ru-e;FALSE
-voda;FALSE
-ar-2;FALSE
-mere;FALSE
-kua;FALSE
-ru;FALSE
-khtl;FALSE
-wete;FALSE
-pron;FALSE
-sp1;FALSE
-rutl;FALSE
-a-e;FALSE
-chte;FALSE
-frtc;FALSE
-da23;FALSE
-tutl;FALSE
-ar;FALSE
-acva;FALSE
-kh12;FALSE
-fr;FALSE
-ru12;FALSE
-tu12;FALSE
-kh1;FALSE
-mh1;FALSE
-ar12;FALSE
-tu-e;FALSE
+Variable;Used;Sensitive
+Persoonsgebonden nummer;TRUE;FALSE
+Inschrijvingsjaar;TRUE;FALSE
+Instellingscode;FALSE;FALSE
+Actuele instelling;FALSE;FALSE
+Opleidingscode;FALSE;FALSE
+Opleidingsvorm;FALSE;FALSE
+Opleidingsfase;FALSE;FALSE
+Maand vanaf;FALSE;FALSE
+Code beëindiging;FALSE;FALSE
+Maand tot;FALSE;FALSE
+Code examenresultaat;FALSE;FALSE
+Maand examenresultaat;FALSE;FALSE
+Code bekostiging;FALSE;FALSE
+Eerste jaar aan deze instelling;FALSE;FALSE
+Inschrijvingsvorm;FALSE;FALSE
+Soort hoger onderwijs;FALSE;FALSE
+Opleiding actueel equivalent;FALSE;FALSE
+Opleiding historisch equivalent;FALSE;FALSE
+Croho-onderdeel actuele opleiding;FALSE;FALSE
+Croho-subonderdeel actuele opleiding;FALSE;FALSE
+Type hoger onderwijs binnen soort hoger onderwijs;FALSE;FALSE
+Opleidingsfase actueel;FALSE;FALSE
+Indicatie actief op peildatum;FALSE;FALSE
+Soort inschrijving hoger onderwijs;FALSE;FALSE
+Soort inschrijving soort ho;FALSE;FALSE
+Soort inschrijving type ho binnen soort ho;FALSE;FALSE
+Soort inschrijving opleiding actueel equivalent;FALSE;FALSE
+Soort inschrijving actuele instelling;FALSE;FALSE
+Soort inschrijving actuele opleiding-instelling;FALSE;FALSE
+Verblijfsjaar hoger onderwijs;FALSE;FALSE
+Verblijfsjaar soort ho;FALSE;FALSE
+Verblijfsjaar type ho binnen soort ho;FALSE;FALSE
+Indicatie eerstejaars opl. actueel equivalent;FALSE;FALSE
+Indicatie eerstejaars actuele instelling;FALSE;FALSE
+Indicatie eerstejaars actuele opl.-instelling;FALSE;FALSE
+Eerste jaar in het hoger onderwijs;FALSE;FALSE
+Eerste jaar aan deze soort hoger onderwijs;FALSE;FALSE
+Eerste jaar aan deze opleiding-instelling;FALSE;FALSE
+Diplomajaar;FALSE;FALSE
+Opleidingsfase actueel van het diploma;FALSE;FALSE
+Soort diploma hoger onderwijs internat.statistiek;FALSE;FALSE
+Soort diploma hoger onderwijs;FALSE;FALSE
+Soort diploma soort hoger onderwijs;FALSE;FALSE
+Soort diploma instelling;FALSE;FALSE
+Hoogste vooropleiding vóór het HO;FALSE;FALSE
+Hoogste vooropleiding vóór het HO oorspronkelijke code;FALSE;FALSE
+Diplomajaar van de hoogste vooropl. vóór het HO;FALSE;FALSE
+Instelling van de hoogste vooropl. vóór het HO;FALSE;FALSE
+Hoogste vooropleiding binnen het HO;FALSE;FALSE
+Hoogste vooropleiding binnen het HO oorspronkelijke code;FALSE;FALSE
+Diplomajaar van de hoogste vooropl. binnen het HO;FALSE;FALSE
+Instelling van de hoogste vooropl. binnen het HO;FALSE;FALSE
+Hoogste vooropleiding;FALSE;FALSE
+Diplomajaar hoogste vooropleiding;FALSE;FALSE
+Instelling van de hoogste vooropleiding;FALSE;FALSE
+Geslacht;TRUE;TRUE
+Leeftijd per peildatum 1 oktober;TRUE;FALSE
+Leeftijd per 1 januari;FALSE;FALSE
+Nationaliteit 1;FALSE;FALSE
+Nationaliteit 2;FALSE;FALSE
+Nationaliteit 3;FALSE;FALSE
+Geboorteland;FALSE;FALSE
+Geboorteland ouder 1;FALSE;FALSE
+Geboorteland ouder 2;FALSE;FALSE
+Etniciteit;FALSE;FALSE
+Generatie;FALSE;FALSE
+Gecorrigeerd eerste jaar aan deze instelling;FALSE;FALSE
+Eerste jaar aan deze actuele instelling;FALSE;FALSE
+Soort inschrijving act. inst - type ho binnen soort ho;FALSE;FALSE
+Indicatie eerstejrs act. inst - type ho binnen soort ho;FALSE;FALSE
+Actuele instelling vóór besturenfusies;FALSE;FALSE
+Soort inschrijving type ho binnen ho;FALSE;FALSE
+Verblijfsjaar type ho binnen ho;FALSE;FALSE
+Postcodecijfers student op 1 oktober;FALSE;FALSE
+Postcodecijfers van de hoogste vooropl. vóór het HO;FALSE;FALSE
+Gem. eindcijfer VO van de hoogste vooropl. vóór het HO;FALSE;FALSE
+Soort inschrijving continu hoger onderwijs;FALSE;FALSE
+Soort inschrijving continu soort ho;FALSE;FALSE
+Soort inschrijving continu actuele instelling;FALSE;FALSE
+Soort inschrijving continu type ho binnen ho;FALSE;FALSE
+Indicatie eerstejaars continu hoger onderwijs;FALSE;FALSE
+Indicatie eerstejaars continu soort ho;FALSE;FALSE
+Indicatie eerstejaars continu actuele instelling;FALSE;FALSE
+Indicatie eerstejaars continu type ho binnen ho;FALSE;FALSE
+Indicatie soort programma;FALSE;FALSE
+Datum inschrijving;FALSE;FALSE
+Datum uitschrijving;FALSE;FALSE
+Vestigingsnummer;FALSE;FALSE
+Datum tekening diploma;FALSE;FALSE
+Vestigingsnummer diploma;FALSE;FALSE
+Vestigingsnummer actueel;FALSE;FALSE
+Vestigingsnummer actueel diploma;FALSE;FALSE
+Vestigingsnummer van de hoogste vooropl. vóór het HO;FALSE;FALSE
+Vestigingsnummer van de hoogste vooropl. binnen het HO;FALSE;FALSE
+Vestigingsnummer van de hoogste vooropleiding;FALSE;FALSE
+Indicatie EER actueel;FALSE;FALSE
+Indicatie internationale student;FALSE;FALSE
+Indicatie EER op peildatum 1 oktober;FALSE;FALSE
+Nationaliteit gebruikt voor bepaling ind. EER actueel;FALSE;FALSE
+Nationaliteit gebruikt voor bepaling ind. EER peildatum;FALSE;FALSE
+Verblijfsjaar actuele opleiding;FALSE;FALSE
+Verblijfsjaar actuele instelling;FALSE;FALSE
+Verblijfsjaar actuele opleiding-instelling;FALSE;FALSE
+Verblijfsjaar act. inst - type ho binnen soort ho;FALSE;FALSE
+Verblijfsjaar continu ho;FALSE;FALSE
+Verblijfsjaar continu soort ho;FALSE;FALSE
+Verblijfsjaar continu actuele instelling;FALSE;FALSE
+Verblijfsjaar continu type ho binnen ho;FALSE;FALSE
+Indicatie University College;FALSE;FALSE
+ISCEDF2013-rubriek;FALSE;FALSE
+Herkomstland volgens CBS-definitie;FALSE;FALSE
+Herkomst-indikking volgens CBS-definitie;FALSE;FALSE
+Indicatie geboren;FALSE;FALSE
+Burgerservicenummer;FALSE;FALSE
+Onderwijsnummer;FALSE;FALSE
+Retentie;TRUE;FALSE
+Gemiddeld cijfer cijferlijst;TRUE;FALSE
+ak;FALSE;FALSE
+anw;FALSE;FALSE
+biol;FALSE;FALSE
+ckv;FALSE;FALSE
+dutl;FALSE;FALSE
+entl;FALSE;FALSE
+gds;FALSE;FALSE
+lo;FALSE;FALSE
+maat;FALSE;FALSE
+nat;FALSE;FALSE
+netl;FALSE;FALSE
+schk;FALSE;FALSE
+wisB;FALSE;FALSE
+beco;FALSE;FALSE
+bi1;FALSE;FALSE
+ckv1;FALSE;FALSE
+du1;FALSE;FALSE
+ec12;FALSE;FALSE
+en;FALSE;FALSE
+fa1;FALSE;FALSE
+gs;FALSE;FALSE
+gs1;FALSE;FALSE
+lett;FALSE;FALSE
+lo1;FALSE;FALSE
+ma1;FALSE;FALSE
+ne;FALSE;FALSE
+wa12;FALSE;FALSE
+RT3F;FALSE;FALSE
+econ;FALSE;FALSE
+ges;FALSE;FALSE
+maw;FALSE;FALSE
+fatl;FALSE;FALSE
+fi;FALSE;FALSE
+ltc;FALSE;FALSE
+wisA;FALSE;FALSE
+m&o;FALSE;FALSE
+fa12;FALSE;FALSE
+kcv;FALSE;FALSE
+la;FALSE;FALSE
+te;FALSE;FALSE
+wb1;FALSE;FALSE
+ee;FALSE;FALSE
+et;FALSE;FALSE
+fa;FALSE;FALSE
+wa;FALSE;FALSE
+bi;FALSE;FALSE
+du;FALSE;FALSE
+gr;FALSE;FALSE
+na;FALSE;FALSE
+sk;FALSE;FALSE
+wb;FALSE;FALSE
+na12;FALSE;FALSE
+wb12;FALSE;FALSE
+du12;FALSE;FALSE
+in;FALSE;FALSE
+wa1;FALSE;FALSE
+lv;FALSE;FALSE
+nlt;FALSE;FALSE
+kumu;FALSE;FALSE
+ec;FALSE;FALSE
+ma;FALSE;FALSE
+na1;FALSE;FALSE
+ec1;FALSE;FALSE
+s-e;FALSE;FALSE
+bv23;FALSE;FALSE
+bi12;FALSE;FALSE
+dr3;FALSE;FALSE
+sk1;FALSE;FALSE
+lakc;FALSE;FALSE
+bsm;FALSE;FALSE
+latl;FALSE;FALSE
+lo2;FALSE;FALSE
+o&o;FALSE;FALSE
+sk12;FALSE;FALSE
+rkt;FALSE;FALSE
+kudr;FALSE;FALSE
+kubv;FALSE;FALSE
+mu;FALSE;FALSE
+wisD;FALSE;FALSE
+okvb;FALSE;FALSE
+sp-e;FALSE;FALSE
+wisC;FALSE;FALSE
+mu23;FALSE;FALSE
+enzl;FALSE;FALSE
+fazl;FALSE;FALSE
+lit;FALSE;FALSE
+nezl;FALSE;FALSE
+R3ER;FALSE;FALSE
+gtc;FALSE;FALSE
+grtl;FALSE;FALSE
+sp;FALSE;FALSE
+hndv;FALSE;FALSE
+bv3;FALSE;FALSE
+duzl;FALSE;FALSE
+sptl;FALSE;FALSE
+txvg;FALSE;FALSE
+hr;FALSE;FALSE
+dr23;FALSE;FALSE
+chtc;FALSE;FALSE
+glf;FALSE;FALSE
+spzl;FALSE;FALSE
+mu3;FALSE;FALSE
+grkc;FALSE;FALSE
+ha;FALSE;FALSE
+chtl;FALSE;FALSE
+msst;FALSE;FALSE
+chzl;FALSE;FALSE
+ittl;FALSE;FALSE
+tw;FALSE;FALSE
+ckv2;FALSE;FALSE
+mhtl;FALSE;FALSE
+rms;FALSE;FALSE
+artl;FALSE;FALSE
+kuda;FALSE;FALSE
+tu;FALSE;FALSE
+R3F;FALSE;FALSE
+mh12;FALSE;FALSE
+gm;FALSE;FALSE
+it1;FALSE;FALSE
+sp12;FALSE;FALSE
+ru-e;FALSE;FALSE
+voda;FALSE;FALSE
+ar-2;FALSE;FALSE
+mere;FALSE;FALSE
+kua;FALSE;FALSE
+ru;FALSE;FALSE
+khtl;FALSE;FALSE
+wete;FALSE;FALSE
+pron;FALSE;FALSE
+sp1;FALSE;FALSE
+rutl;FALSE;FALSE
+a-e;FALSE;FALSE
+chte;FALSE;FALSE
+frtc;FALSE;FALSE
+da23;FALSE;FALSE
+tutl;FALSE;FALSE
+ar;FALSE;FALSE
+acva;FALSE;FALSE
+kh12;FALSE;FALSE
+fr;FALSE;FALSE
+ru12;FALSE;FALSE
+tu12;FALSE;FALSE
+kh1;FALSE;FALSE
+mh1;FALSE;FALSE
+ar12;FALSE;FALSE
+tu-e;FALSE;FALSE

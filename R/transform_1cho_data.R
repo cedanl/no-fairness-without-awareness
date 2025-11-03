@@ -21,61 +21,63 @@
 library(dplyr)
 library(tidylog)
 
-transform_vakhavw <- function(df) {
-  df |>
-    
-    ## Select relevant variables
-    select(
-      `Persoonsgebonden nummer`,
-      `Afkorting vak`,
-      `Cijfer cijferlijst`,
-      `Gemiddeld cijfer cijferlijst`
-    ) |>
-    
-    ## Group by student, course and graduation year (pre-education)
-    group_by(`Persoonsgebonden nummer`, `Afkorting vak`) |>
-    
-    ## Select only the highest grades
-    summarize(
-      `Cijfer cijferlijst` = max(`Cijfer cijferlijst`, na.rm = TRUE),
-      `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
-    ) |>
-    
-    ungroup() |>
-    
-    group_by(`Persoonsgebonden nummer`) |>
-    
-    mutate(
-      `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
-    ) |>
-    
-    ungroup() |>
-    
-    ## Pivot wider such that we get courses in columns
-    tidyr::pivot_wider(names_from = `Afkorting vak`,
-                       values_from = c(`Cijfer cijferlijst`)) 
-  
-}
-
-transform_ev_data <- function(df, opleidingscode, eoi) {
-  df |>
-    filter(Opleidingscode == opleidingscode,
-                  `Eerste jaar aan deze instelling` >= eoi) |>
-    
-    group_by(`Persoonsgebonden nummer`) |>
-    
-    mutate(Retentie = any(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling` + 1)) |>
-    
-    ungroup() |>
-    
-    filter(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling`) 
-  
-}
 
 transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
   var <- read.csv("metadata/variabelen.csv", sep = ";") |>
     filter(Used) |>
     pull(Variable)
+  
+  transform_vakhavw <- function(df) {
+    df |>
+      
+      ## Select relevant variables
+      select(
+        `Persoonsgebonden nummer`,
+        `Afkorting vak`,
+        `Cijfer cijferlijst`,
+        `Gemiddeld cijfer cijferlijst`
+      ) |>
+      
+      ## Group by student, course and graduation year (pre-education)
+      group_by(`Persoonsgebonden nummer`, `Afkorting vak`) |>
+      
+      ## Select only the highest grades
+      summarize(
+        `Cijfer cijferlijst` = max(`Cijfer cijferlijst`, na.rm = TRUE),
+        `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
+      ) |>
+      
+      ungroup() |>
+      
+      group_by(`Persoonsgebonden nummer`) |>
+      
+      mutate(
+        `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
+      ) |>
+      
+      ungroup() |>
+      
+      ## Pivot wider such that we get courses in columns
+      tidyr::pivot_wider(names_from = `Afkorting vak`,
+                         values_from = c(`Cijfer cijferlijst`)) 
+    
+  }
+  
+  transform_ev_data <- function(df, opleidingscode, eoi) {
+    df |>
+      filter(Opleidingscode == opleidingscode,
+             `Eerste jaar aan deze instelling` >= eoi) |>
+      
+      group_by(`Persoonsgebonden nummer`) |>
+      
+      mutate(Retentie = any(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling` + 1)) |>
+      
+      ungroup() |>
+      
+      filter(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling`) 
+    
+  }
+  
   
   df_vak <- transform_vakhavw(df_vak)
   

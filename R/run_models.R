@@ -23,8 +23,6 @@ library(glmnet)
 library(knitr)
 
 run_models <- function(df) {
-  
-  
   df_model_results <- data.frame(model = character(), auc = numeric())
   
   # Split the data into 3 parts: 60%, 20% and 20%
@@ -49,7 +47,7 @@ run_models <- function(df) {
     recipe(Retentie ~ ., data = df_train) |>
     update_role(`Persoonsgebonden nummer`, new_role = "ID") |>           # Set the student ID as an ID variable
     step_rm(`Persoonsgebonden nummer`, `Inschrijvingsjaar`) |>                   # Remove ID and college year from the model
-   # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
+    # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
     step_dummy(all_nominal_predictors()) |>       # Create dummy variables from categorical variables
     step_zv(all_predictors()) |>                  # Remove zero values
     step_normalize(all_numeric_predictors())      # Center and scale numeric variables
@@ -115,8 +113,8 @@ run_models <- function(df) {
   # Create the recipe: random forest
   rf_recipe <-
     recipe(Retentie ~ ., data = df_train) |>
-   # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
-    step_rm(`Persoonsgebonden nummer`, `Inschrijvingsjaar`)   
+    # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
+    step_rm(`Persoonsgebonden nummer`, `Inschrijvingsjaar`)
   
   # Create the workflow: random forest
   rf_workflow <-
@@ -211,7 +209,7 @@ run_models <- function(df) {
     logistic_reg(penalty = lr_best$penalty, mixture = 1) |>
     set_engine("glmnet") |>
     set_mode("classification")
-
+  
   # Update the workflows
   last_lr_workflow <-
     lr_workflow |>
@@ -240,5 +238,6 @@ run_models <- function(df) {
   saveRDS(last_fits, file = "output/last-fits.rds")
   saveRDS(df_model_results, file = "output/modelresults.rds")
   
+  list(last_fit = last_fit, best_model = best_model)
+  
 }
-

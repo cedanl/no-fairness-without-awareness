@@ -1,5 +1,5 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## mutate_1cho.R ####
+## transform_1cho_data.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
 ## Copyright 2025 De HHs
@@ -23,9 +23,6 @@ library(tidylog)
 
 
 transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
-  var <- read.csv("metadata/variabelen.csv", sep = ";") |>
-    filter(Used) |>
-    pull(Variable)
   
   transform_vakhavw <- function(df) {
     df |>
@@ -74,7 +71,10 @@ transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
       
       ungroup() |>
       
-      filter(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling`) 
+      filter(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling`) |>
+      
+      ## TODO: TEMP
+      filter(Inschrijvingsjaar < 2023)
     
   }
   
@@ -91,7 +91,6 @@ transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
     )
   
   df <- df |>
-    select(all_of(var)) |>
     
     mutate(across(starts_with("Datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
     
@@ -105,10 +104,11 @@ transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
     mutate(across(where(is.logical), as.integer)) |>
     
     ## Specifically make Retention factor
-    mutate(Retentie = factor(Retentie))
+    mutate(Retentie = factor(Retentie)) |>
+    
+    ## Clean names
+    janitor::clean_names()
   
   df
   
 }
-
-

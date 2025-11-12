@@ -33,8 +33,8 @@ create_explain_lf <- function(last_fit, best_model) {
   # Create an explainer
   DALEX::explain(
     model = workflow,
-    data = df |> select(-Retentie),
-    y = as.numeric(df$Retentie),
+    data = df |> select(-retentie),
+    y = as.numeric(df$retentie),
     colorize = TRUE,
     verbose = TRUE,
     label = best_model

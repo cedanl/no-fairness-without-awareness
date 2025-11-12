@@ -103,7 +103,7 @@ get_largest_group <- function(df, var) {
 get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE) {
   # Define the protected variable
   protected <- df |>
-    select(-Retentie) |>
+    select(-retentie) |>
     select(all_of({{var}})) |>
     pull()
   
@@ -425,6 +425,7 @@ get_df_fairness_wide <- function(df_list, df_data) {
       Text = glue("{Groep_label} ({Groep}: N = {N}, {Perc}%)")
     ) |> 
     select(-VAR_Level_label_NL_description) |> 
+    mutate(Variabele = stringr::str_to_title(Variabele)) |>
     select(Variabele, Groep, Groep_label, everything(), Text)
   
   df_wide_3

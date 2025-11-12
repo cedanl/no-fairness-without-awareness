@@ -18,6 +18,8 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+library(dplyr)
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Inladen ####
@@ -44,6 +46,12 @@ df1cho_vak <- arrow::read_parquet(
   )
 )
 
+dfapcg <- read.table("data/APCG_2019.csv", sep = ";", header = TRUE)
+
+var <- read.table("metadata/variabelen.csv", sep = ";", header = TRUE) |>
+  filter(Used) |>
+  pull(Variable)
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Transform ####
@@ -51,6 +59,15 @@ df1cho_vak <- arrow::read_parquet(
 
 source("R/transform_1cho_data.R")
 df <- transform_1cho_data(df1cho, df1cho_vak, opleidingscode = 50952, eoi = 2019)
+
+dfapcg <- janitor::clean_names(dfapcg)
+
+df <- df |>
+  left_join(dfapcg, by = c("postcodecijfers_student_op_1_oktober" = "cbs_apcg_pc4")) |>
+
+  mutate(cbs_apcg_tf = as.numeric(coalesce(cbs_apcg_tf, FALSE))) |>
+  
+  select(all_of(var))
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -26,7 +26,7 @@ run_models <- function(df) {
   df_model_results <- data.frame(model = character(), auc = numeric())
   
   # Split the data into 3 parts: 60%, 20% and 20%
-  splits      <- initial_validation_split(df, strata = Retentie, prop = c(0.6, 0.2))
+  splits      <- initial_validation_split(df, strata = retentie, prop = c(0.6, 0.2))
   
   # Create three sets: a training set, a test set and a validation set
   df_train      <- training(splits)
@@ -34,7 +34,7 @@ run_models <- function(df) {
   df_validation <- validation_set(splits)
   
   # Create a resample set based on 10 folds (default)
-  df_resamples  <- vfold_cv(df_train, strata = Retentie)
+  df_resamples  <- vfold_cv(df_train, strata = retentie)
   
   # Build the model: logistic regression
   lr_mod <-
@@ -44,9 +44,9 @@ run_models <- function(df) {
   
   # Build the recipe: logistic regression
   lr_recipe <-
-    recipe(Retentie ~ ., data = df_train) |>
-    update_role(`Persoonsgebonden nummer`, new_role = "ID") |>           # Set the student ID as an ID variable
-    step_rm(`Persoonsgebonden nummer`, `Inschrijvingsjaar`) |>                   # Remove ID and college year from the model
+    recipe(retentie ~ ., data = df_train) |>
+    update_role(persoonsgebonden_nummer, new_role = "ID") |>           # Set the student ID as an ID variable
+    step_rm(persoonsgebonden_nummer, inschrijvingsjaar) |>                   # Remove ID and college year from the model
     # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
     step_dummy(all_nominal_predictors()) |>       # Create dummy variables from categorical variables
     step_zv(all_predictors()) |>                  # Remove zero values
@@ -84,14 +84,14 @@ run_models <- function(df) {
   lr_auc <-
     lr_res |>
     collect_predictions(parameters = lr_best) |>
-    roc_curve(Retentie, .pred_0) |>
+    roc_curve(retentie, .pred_0) |>
     mutate(model = "Logistisch Regressie")
   
   # Determine the AUC of the best model
   lr_auc_highest   <-
     lr_res |>
     collect_predictions(parameters = lr_best) |>
-    roc_auc(Retentie, .pred_0)
+    roc_auc(retentie, .pred_0)
   
   # Add model name and AUC df_model_results
   df_model_results <-
@@ -112,9 +112,9 @@ run_models <- function(df) {
   
   # Create the recipe: random forest
   rf_recipe <-
-    recipe(Retentie ~ ., data = df_train) |>
+    recipe(retentie ~ ., data = df_train) |>
     # step_unknown(Studiekeuzeprofiel, new_level = "Onbekend skp") |>   # Add unknown skp
-    step_rm(`Persoonsgebonden nummer`, `Inschrijvingsjaar`)
+    step_rm(persoonsgebonden_nummer, inschrijvingsjaar)
   
   # Create the workflow: random forest
   rf_workflow <-
@@ -164,14 +164,14 @@ run_models <- function(df) {
   rf_auc <-
     rf_res |>
     collect_predictions(parameters = rf_best) |>
-    roc_curve(Retentie, .pred_0) |>
+    roc_curve(retentie, .pred_0) |>
     mutate(model = "Random Forest")
   
   # Determine the AUC of the best model
   rf_auc_highest   <-
     rf_res |>
     collect_predictions(parameters = rf_best) |>
-    roc_auc(Retentie, .pred_0)
+    roc_auc(retentie, .pred_0)
   
   # Add model name and AUC to df_model_results
   df_model_results <-

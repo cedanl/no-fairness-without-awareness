@@ -21,6 +21,15 @@
 library(dplyr)
 
 transform_vakhavw <- function(df) {
+  
+  vars <- c(
+    "netl",
+    "entl",
+    "nat",
+    "wis"
+  )
+  
+  
   df |>
     ## Clean names
     janitor::clean_names() |>
@@ -29,7 +38,7 @@ transform_vakhavw <- function(df) {
     select(
       persoonsgebonden_nummer,
       afkorting_vak,
-      cijfer_cijferlijst,
+      cijfer_eerste_centraal_examen,
       gemiddeld_cijfer_cijferlijst
     ) |>
     
@@ -38,7 +47,7 @@ transform_vakhavw <- function(df) {
     
     ## Select only the highest grades
     summarize(
-      cijfer_cijferlijst = max(cijfer_cijferlijst, na.rm = TRUE),
+      cijfer_eerste_centraal_examen = max(cijfer_eerste_centraal_examen, na.rm = TRUE),
       gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE)
     ) |>
     
@@ -46,14 +55,22 @@ transform_vakhavw <- function(df) {
     
     group_by(persoonsgebonden_nummer) |>
     
-    mutate(
-      gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE)
-    ) |>
+    ## Select only the highest average grade per student
+    mutate(gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE)) |>
     
     ungroup() |>
     
     ## Pivot wider such that we get courses in columns
     tidyr::pivot_wider(names_from = afkorting_vak,
-                       values_from = c(cijfer_cijferlijst)) 
+                       values_from = c(cijfer_eerste_centraal_examen)) |>
+    
+    ## Create wis
+    mutate(wis = rowSums(across(starts_with("wis")), na.rm = TRUE) /
+             rowSums(!is.na(across(
+               starts_with("wis")
+             )))) |>
+    
+    mutate(across(all_of(vars), ~ ifelse(is.na(.x), 1, 0), .names = "{.col}_missing"))
+  
   
 }

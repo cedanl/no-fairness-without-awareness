@@ -18,6 +18,10 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+opleidingscode <- 50952
+eoi <- 2019
+opleidingsvorm <- "VT"
+
 library(dplyr)
 
 ## . ####
@@ -48,26 +52,74 @@ df1cho_vak <- arrow::read_parquet(
 
 dfapcg <- read.table("data/APCG_2019.csv", sep = ";", header = TRUE)
 
-var <- read.table("metadata/variabelen.csv", sep = ";", header = TRUE) |>
+dfses <- read.table("data/SES_PC4_2021-2022.csv", sep = ";", header = TRUE, dec = ",")
+
+df_variables <- readxl::read_xlsx("metadata/variabelen.xlsx")
+
+variables <- df_variables |>
   filter(Used) |>
   pull(Variable)
+
+sensitive_variables <- df_variables |>
+  filter(Sensitive) |>
+  pull(Variable)
+
+mapping_newname <- df_variables |>
+  select(Variable, Newname) |>
+  tidyr::drop_na()
+
+df_levels <- read.csv("metadata/levels.csv", sep = "\t") |>
+  group_by(VAR_Formal_variable) |>
+  arrange(VAR_Level_order, .by_group = TRUE) |>
+  ungroup()
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Transform ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/transform_1cho_data.R")
-df <- transform_1cho_data(df1cho, df1cho_vak, opleidingscode = 50952, eoi = 2019)
+source("R/transform_ev_data.R")
+df1cho <- transform_ev_data(
+  df1cho,
+  opleidingscode = opleidingscode,
+  eoi = eoi,
+  opleidingsvorm = opleidingsvorm
+)
 
-dfapcg <- janitor::clean_names(dfapcg)
+source("R/transform_vakhavw.R")
+df1cho_vak <- transform_vakhavw(df1cho_vak)
+
+source("R/transform_1cho_data.R")
+dfcyfer <- transform_1cho_data(
+  df1cho,
+  df1cho_vak
+)
+
+source("R/add_apcg.R")
+df <- add_apcg(dfapcg, dfcyfer)
+
+source("R/add_ses.R")
+df <- add_ses(df, dfses)
 
 df <- df |>
-  left_join(dfapcg, by = c("postcodecijfers_student_op_1_oktober" = "cbs_apcg_pc4")) |>
+  select(all_of(variables)) |>
+  # Imputate all numeric variables with the mean
+  mutate(across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
 
-  mutate(cbs_apcg_tf = as.numeric(coalesce(cbs_apcg_tf, FALSE))) |>
-  
-  select(all_of(var))
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Table Summary ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+source("R/get_table_summary.R")
+tbl_summary <- get_table_summary(df, mapping_newname) 
+
+flextable::save_as_image(
+  x = tbl_summary,
+  path = "output/descriptive_table.png"
+)
+
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -93,11 +145,15 @@ explainer <- create_explain_lf(last_fit, best_model)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 source("R/analyze_fairness.R")
-table <- analyze_fairness(df, explainer)
+table <- analyze_fairness(df, explainer, sensitive_variables, df_levels)
+
+flextable::save_as_image(
+  x = table,
+  path = "output/result_table.png"
+)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Save names ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#write.csv(names(df), file = "metadata/variabelen.csv", row.names = FALSE)

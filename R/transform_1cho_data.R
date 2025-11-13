@@ -19,83 +19,20 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 library(dplyr)
-library(tidylog)
 
+transform_1cho_data <- function(df, df_vak) {
 
-transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
-  
-  transform_vakhavw <- function(df) {
-    df |>
-      
-      ## Select relevant variables
-      select(
-        `Persoonsgebonden nummer`,
-        `Afkorting vak`,
-        `Cijfer cijferlijst`,
-        `Gemiddeld cijfer cijferlijst`
-      ) |>
-      
-      ## Group by student, course and graduation year (pre-education)
-      group_by(`Persoonsgebonden nummer`, `Afkorting vak`) |>
-      
-      ## Select only the highest grades
-      summarize(
-        `Cijfer cijferlijst` = max(`Cijfer cijferlijst`, na.rm = TRUE),
-        `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
-      ) |>
-      
-      ungroup() |>
-      
-      group_by(`Persoonsgebonden nummer`) |>
-      
-      mutate(
-        `Gemiddeld cijfer cijferlijst` = max(`Gemiddeld cijfer cijferlijst`, na.rm = TRUE)
-      ) |>
-      
-      ungroup() |>
-      
-      ## Pivot wider such that we get courses in columns
-      tidyr::pivot_wider(names_from = `Afkorting vak`,
-                         values_from = c(`Cijfer cijferlijst`)) 
-    
-  }
-  
-  transform_ev_data <- function(df, opleidingscode, eoi) {
-    df |>
-      filter(Opleidingscode == opleidingscode,
-             `Eerste jaar aan deze instelling` >= eoi) |>
-      
-      group_by(`Persoonsgebonden nummer`) |>
-      
-      mutate(Retentie = any(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling` + 1)) |>
-      
-      ungroup() |>
-      
-      filter(Inschrijvingsjaar == `Eerste jaar aan deze opleiding-instelling`) |>
-      
-      ## TODO: TEMP
-      filter(Inschrijvingsjaar < 2023)
-    
-  }
-  
-  
-  df_vak <- transform_vakhavw(df_vak)
-  
-  df <- transform_ev_data(df, opleidingscode, eoi)
   
   df <- df |>
     inner_join(
       df_vak,
-      by = c("Persoonsgebonden nummer" = "Persoonsgebonden nummer"),
+      by = c("persoonsgebonden_nummer" = "persoonsgebonden_nummer"),
       relationship = "many-to-one"
     )
   
   df <- df |>
     
-    mutate(across(starts_with("Datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
-    
-    # Imputate all numeric variables with the mean
-    mutate(across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))) |>
+    mutate(across(starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
     
     # Convert character variables to factor
     mutate(across(where(is.character), as.factor)) |>
@@ -103,11 +40,11 @@ transform_1cho_data <- function(df, df_vak, opleidingscode, eoi) {
     # Convert logical variables to 0 or 1
     mutate(across(where(is.logical), as.integer)) |>
     
-    ## Specifically make Retention factor
-    mutate(Retentie = factor(Retentie)) |>
+    ## Create variable dagen_tussen_inschrijving_1_september
+    mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) |>
     
-    ## Clean names
-    janitor::clean_names()
+    ## Specifically make Retention factor
+    mutate(retentie = factor(retentie))
   
   df
   

@@ -270,9 +270,8 @@ get_ft_fairness <- function(ft) {
 }
 
 # Function to determine the order of a number of levels
-get_levels <- function(formal = FALSE) {
+get_levels <- function(df, formal = FALSE) {
   
-  df <- get_df_levels()
   ## Set levels
   levels <- list()
   
@@ -290,24 +289,10 @@ get_levels <- function(formal = FALSE) {
   
 }
 
-get_df_levels <- function() {
-  
-  df_levels <- read.csv("metadata/levels.csv", sep = "\t") |>
-    group_by(VAR_Formal_variable) |>
-    arrange(VAR_Level_order, .by_group = TRUE) |>
-    ungroup()
-  
-  df_levels
-}
-
 # Function to convert fairness analysis df to a wide df
-get_df_fairness_wide <- function(df_list, df_data) {
+get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variables) {
   
-  sensitive_variables <- read.csv("metadata/variabelen.csv", sep = ";") |>
-    filter(Sensitive) |>
-    pull(Variable)
-  
-  levels <- get_levels()
+  levels <- get_levels(df_levels)
   
   ## Create a dataframe with the variables based on sensitive_variables
   df_vars <- do.call(rbind, lapply(names(levels), function(group) {
@@ -408,8 +393,6 @@ get_df_fairness_wide <- function(df_list, df_data) {
     filter(N > 0) |> 
     select(Variabele, Groep, N, Perc, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
-  df_levels <- get_df_levels()
-  
   # Add labels and text to the groups based on df_levels
   df_wide_3 <- df_wide_2 %>%
     left_join(df_levels |> 
@@ -432,11 +415,7 @@ get_df_fairness_wide <- function(df_list, df_data) {
 }
 
 
-analyze_fairness <- function(df, explain_lf) {
-  
-  sensitive_variables <- read.csv("metadata/variabelen.csv", sep = ";") |>
-    filter(Sensitive) |>
-    pull(Variable)
+analyze_fairness <- function(df, explain_lf, sensitive_variables, df_levels) {
   
   df_fairness_list <- list()
   
@@ -465,7 +444,7 @@ analyze_fairness <- function(df, explain_lf) {
   }
 
   # Create a table from the fairness analysis
-  df_fairness_wide  <- get_df_fairness_wide(df_fairness_list, df)
+  df_fairness_wide  <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
   
   # Create a flextable
   ft_fairness <- get_ft_fairness(flextable(df_fairness_wide |>

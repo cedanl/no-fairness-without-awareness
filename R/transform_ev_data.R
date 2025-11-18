@@ -20,7 +20,7 @@
 
 library(dplyr)
 
-transform_ev_data <- function(df, opleidingscode, eoi, opleidingsvorm) {
+transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
   
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {
@@ -41,6 +41,26 @@ transform_ev_data <- function(df, opleidingscode, eoi, opleidingsvorm) {
     
   }
   
+  recode_variables <- function(df, dec_vopl) {
+    
+    cols_vo <- c("hoogste_vooropleiding_voor_het_ho",
+                  "hoogste_vooropleiding_binnen_het_ho",
+                  "hoogste_vooropleiding")
+    
+    mapping <- setNames(dec_vopl$omschrijving_vooropleiding,
+                        dec_vopl$code_vooropleiding)
+    
+    df <- df |>
+      mutate(across(
+        all_of(cols_vo),
+        ~ recode(as.character(.x), !!!mapping, .default = as.character(.x))
+      ))
+    
+    
+    return(df)
+    
+  }
+  
   df <- janitor::clean_names(df)
   
   df_selection <- df |>
@@ -52,10 +72,10 @@ transform_ev_data <- function(df, opleidingscode, eoi, opleidingsvorm) {
                                              TRUE ~ as.character(.)))) |>
     
     ## Filter
-    filter(opleidingscode == opleidingscode,
-           eerste_jaar_aan_deze_instelling >= eoi,
-           opleidingsvorm == opleidingsvorm)
-  
+    filter(opleidingscode == code,
+           eerste_jaar_aan_deze_opleiding_instelling >= eoi,
+           opleidingsvorm == vorm)
+
   ## Split this proces such that only relevant students are selected and safe time
   df_selection |>
     
@@ -77,6 +97,8 @@ transform_ev_data <- function(df, opleidingscode, eoi, opleidingsvorm) {
     mutate(dubbele_studie = ifelse(aantal_inschrijvingen > 1, TRUE, FALSE)) |>
     
     ## Make postcode integer
-    mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.)))
+    mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.))) |>
+    
+    recode_variables(dec_vopl)
   
 }

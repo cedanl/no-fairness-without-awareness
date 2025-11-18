@@ -21,13 +21,7 @@
 library(dplyr)
 
 transform_vakhavw <- function(df) {
-  
-  vars <- c(
-    "netl",
-    "entl",
-    "nat",
-    "wis"
-  )
+  vars <- c("netl", "entl", "nat", "wis")
   
   
   df |>
@@ -39,7 +33,8 @@ transform_vakhavw <- function(df) {
       persoonsgebonden_nummer,
       afkorting_vak,
       cijfer_eerste_centraal_examen,
-      gemiddeld_cijfer_cijferlijst
+      gemiddeld_cijfer_cijferlijst,
+      cijfer_schoolexamen
     ) |>
     
     ## Group by student, course and graduation year (pre-education)
@@ -48,7 +43,8 @@ transform_vakhavw <- function(df) {
     ## Select only the highest grades
     summarize(
       cijfer_eerste_centraal_examen = max(cijfer_eerste_centraal_examen, na.rm = TRUE),
-      gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE)
+      gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE),
+      cijfer_schoolexamen = mean(cijfer_schoolexamen, na.rm = TRUE)
     ) |>
     
     ungroup() |>
@@ -56,7 +52,8 @@ transform_vakhavw <- function(df) {
     group_by(persoonsgebonden_nummer) |>
     
     ## Select only the highest average grade per student
-    mutate(gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE)) |>
+    mutate(gemiddeld_cijfer_cijferlijst = max(gemiddeld_cijfer_cijferlijst, na.rm = TRUE),
+           cijfer_schoolexamen = mean(cijfer_schoolexamen, na.rm = TRUE)) |>
     
     ungroup() |>
     

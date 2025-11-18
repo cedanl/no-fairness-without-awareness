@@ -22,67 +22,8 @@ library(fairmodels)
 library(glue)
 library(flextable)
 
-colors_default <- c(
-  
-  # Colors of title, subject, subtitle, caption, background
-  title_color                = "black",
-  subject_color              = "#808080",
-  subtitle_color             = "black",
-  subtitle_prefix_color      = "#808080",
-  subtitle_warning_color     = "#C8133B",
-  caption_color              = "darkgray",
-  background_color           = "white",
-  
-  # Color of text
-  text_color                 = "black",
-  text_inside_color          = "white",
-  
-  # Intercept (0) and gridlines
-  baseline_color             = "black",
-  gridline_color             = "#CBCBCB",
-  deadline_color             = "black",
-  baseline_color_ses         = "darkgray",
-  breakdown_intercept_color  = "black",
-  breakdown_segment_color    = "darkgray",
-  
-  # Fill color
-  fill_color                 = "lightgray",
-  
-  # Line color
-  average_line_color         = "#CBCBCB",
-  
-  # Text color
-  average_text_color         = "darkgray",
-  
-  # Color of annotations
-  annotation_text_color      = "black",
-  arrow_color                = "darkgray",
-  
-  # Color of jitter
-  jitter_color               = "darkgray",
-  
-  # Error band color
-  se_color                   = "#CBCBCB",
-  
-  # Band color
-  band_color                 = "grey95",
-  
-  # Positive and negative
-  positive_color             = "#466F9D",
-  negative_color             = "#C8133B",
-  
-  # Metrics
-  metrics_green              = "#287233",
-  metrics_red                = "#C8133B",
-  metrics_yellow             = "#FFD966",
-  metrics_blue               = "#5FA2CE",
-  
-  # Bias colors
-  color_bias_positive        = "#9DBF9E",
-  color_bias_negative        = "#A84268",
-  color_bias_neutral         = "#FCB97D",
-  color_bias_none            = "#E5E5E5"
-)
+source("R/create_density_plot.R")
+source("R/create_fairness_plot.R")
 
 # Function to make the privileged (majority)
 get_largest_group <- function(df, var) {
@@ -202,14 +143,13 @@ get_df_fairness_check_data <- function(df, fairness_object, var) {
   # Combine with numbers
   fairness_object <- fairness_object |>
     left_join(df_counts, by = c("FRN_Group" = "name", "FRN_Subgroup" = "value")) |>
-    replace_na(list(N = 0)) 
-
+    replace_na(list(N = 0))
+  
   fairness_object
 }
 
 # Function to create the flextable for fairness analysis
-get_ft_fairness <- function(ft) {
-  
+get_ft_fairness <- function(ft, colors_default) {
   color_bias_positive <- colors_default[["color_bias_positive"]] # "#9DBF9E"
   color_bias_negative <- colors_default[["color_bias_negative"]] # "#A84268"
   color_bias_neutral  <- colors_default[["color_bias_neutral"]]  # "#FCB97D"
@@ -231,39 +171,56 @@ get_ft_fairness <- function(ft) {
       `Negatieve Bias` = "Negatieve Bias",
       `Positieve Bias` = "Positieve Bias"
     ) |>
-    autofit() |> 
-    italic(j = 1, italic = TRUE, part = "body") |> 
-    color(i = ~ `Negatieve Bias` > 1,
-          j = c("Groep", "Bias", "Negatieve Bias"),
-          color = "white") |>
-    color(i = ~ `Positieve Bias` > 1,
-          j = c("Groep", "Bias", "Positieve Bias"),
-          color = "white") |>
-    bg(i = ~ `Negatieve Bias` > 1, 
-       j = c("Groep", "Bias", "Negatieve Bias"), 
-       bg = color_bias_negative) |>
-    bg(i = ~ `Positieve Bias` > 1, 
-       j = c("Groep", "Bias", "Positieve Bias"), 
-       bg = color_bias_positive) |>
-    bg(i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1, 
-       j = c("Groep", "Bias"), 
-       bg = color_bias_neutral) |>
-    bg(i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1), 
-       j = c("Groep", "Bias"), 
-       bg = color_bias_neutral) |>
-    bg(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
-       j = 2:8,
-       bg = color_bias_none) |>
+    autofit() |>
+    italic(j = 1, italic = TRUE, part = "body") |>
+    color(
+      i = ~ `Negatieve Bias` > 1,
+      j = c("Groep", "Bias", "Negatieve Bias"),
+      color = "white"
+    ) |>
+    color(
+      i = ~ `Positieve Bias` > 1,
+      j = c("Groep", "Bias", "Positieve Bias"),
+      color = "white"
+    ) |>
+    bg(
+      i = ~ `Negatieve Bias` > 1,
+      j = c("Groep", "Bias", "Negatieve Bias"),
+      bg = color_bias_negative
+    ) |>
+    bg(
+      i = ~ `Positieve Bias` > 1,
+      j = c("Groep", "Bias", "Positieve Bias"),
+      bg = color_bias_positive
+    ) |>
+    bg(
+      i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1,
+      j = c("Groep", "Bias"),
+      bg = color_bias_neutral
+    ) |>
+    bg(
+      i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1),
+      j = c("Groep", "Bias"),
+      bg = color_bias_neutral
+    ) |>
+    bg(
+      i = ~ `Geen Bias` == 0 &
+        `Positieve Bias` == 0 & `Negatieve Bias` == 0,
+      j = 2:8,
+      bg = color_bias_none
+    ) |>
     bold(i = ~ `Negatieve Bias` > 1,
          j = c("Groep", "Bias", "Negatieve Bias")) |>
     bold(i = ~ `Positieve Bias` > 1,
-         j = c("Groep", "Bias", "Positieve Bias")) |> 
-    valign(j = 1, valign = "top", part = "all") |> 
-    align_text_col(align = "left") |> 
-    align_nottext_col(align = "center") |> 
+         j = c("Groep", "Bias", "Positieve Bias")) |>
+    valign(j = 1, valign = "top", part = "all") |>
+    align_text_col(align = "left") |>
+    align_nottext_col(align = "center") |>
     
     # Align % and Bias column
-    align(j = 4:5, align = "center", part = "header") |> 
+    align(j = 4:5,
+          align = "center",
+          part = "header") |>
     align(j = 4:5, align = "center")
   
   ft
@@ -271,7 +228,6 @@ get_ft_fairness <- function(ft) {
 
 # Function to determine the order of a number of levels
 get_levels <- function(df, formal = FALSE) {
-  
   ## Set levels
   levels <- list()
   
@@ -290,8 +246,10 @@ get_levels <- function(df, formal = FALSE) {
 }
 
 # Function to convert fairness analysis df to a wide df
-get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variables) {
-  
+get_df_fairness_wide <- function(df_list,
+                                 df_data,
+                                 df_levels,
+                                 sensitive_variables) {
   levels <- get_levels(df_levels)
   
   ## Create a dataframe with the variables based on sensitive_variables
@@ -310,53 +268,62 @@ get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variable
     mutate(FRN_Group = factor(FRN_Group, levels = sensitive_variables)) |>
     arrange(FRN_Group)
   
-  df_bias <- tibble(
-    FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias")
-  )
+  df_bias <- tibble(FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias"))
   
   # Combine df_vars and df_bias
-  df_vars_bias <- df_vars |> 
+  df_vars_bias <- df_vars |>
     crossing(df_bias)
   
   # Total size of the data set
   total_rows <- nrow(bind_rows(df_list))
   
-  df <- bind_rows(df_list) |> 
+  df <- bind_rows(df_list) |>
     group_by(FRN_Group, FRN_Subgroup, FRN_Bias) |>
-    summarise(
-      FRN_Bias_count = n(), 
-      .groups = "drop"
-    ) |> 
-    full_join(df_vars_bias,
-              by = c("FRN_Group" = "FRN_Group", 
-                     "FRN_Subgroup" = "FRN_Subgroup",
-                     "FRN_Bias" = "FRN_Bias")) |>
-    pivot_wider(names_from = FRN_Bias, 
-                values_from = FRN_Bias_count,
-                values_fill = list(FRN_Bias_count = 0)) |> 
-    replace_na(list(`Geen Bias` = 0, `Negatieve Bias` = 0, `Positieve Bias` = 0)) |>
-    rename(Variabele = FRN_Group,
-           Groep = FRN_Subgroup)
+    summarise(FRN_Bias_count = n(), .groups = "drop") |>
+    full_join(
+      df_vars_bias,
+      by = c(
+        "FRN_Group" = "FRN_Group",
+        "FRN_Subgroup" = "FRN_Subgroup",
+        "FRN_Bias" = "FRN_Bias"
+      )
+    ) |>
+    pivot_wider(
+      names_from = FRN_Bias,
+      values_from = FRN_Bias_count,
+      values_fill = list(FRN_Bias_count = 0)
+    ) |>
+    replace_na(list(
+      `Geen Bias` = 0,
+      `Negatieve Bias` = 0,
+      `Positieve Bias` = 0
+    )) |>
+    rename(Variabele = FRN_Group, Groep = FRN_Subgroup)
   
   add_missing_cols <- function(data, cols, fill = 0) {
     missing <- setdiff(cols, names(data))
-    if (length(missing) == 0) return(data)
+    if (length(missing) == 0)
+      return(data)
     # create new columns programmatically and fill with `fill`
     data %>%
       mutate(!!!setNames(rep(list(fill), length(missing)), missing))
   }
   
   df <- add_missing_cols(df, c("Geen Bias", "Negatieve Bias", "Positieve Bias")) |>
-    select(c("Variabele", "Groep", "Geen Bias", "Negatieve Bias", "Positieve Bias"))
+    select(c(
+      "Variabele",
+      "Groep",
+      "Geen Bias",
+      "Negatieve Bias",
+      "Positieve Bias"
+    ))
   
   df_counts <- df_data |>
     select(all_of(sensitive_variables)) |>
     pivot_longer(cols = all_of(sensitive_variables)) |>
-    count(name, value, name = "N") |> 
+    count(name, value, name = "N") |>
     group_by(name) |>
-    mutate(
-      Perc = round(N / sum(N) * 100, 1) 
-    ) |> 
+    mutate(Perc = round(N / sum(N) * 100, 1)) |>
     ungroup()
   
   # Make the df wide
@@ -370,35 +337,47 @@ get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variable
           `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ "NTB",
         .default = "Nee"
       )
-    ) |> 
+    ) |>
     
     # Sort the Variable and Group
     # Make levels unique based on the first occurence (to avoid conflicts for repeating levels)
     mutate(
       Variabele = factor(Variabele, levels = sensitive_variables),
       Groep = factor(Groep, levels = unique(df_vars$FRN_Subgroup, fromLast = FALSE))
-    ) |> 
-    select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
+    ) |>
+    select(Variabele,
+           Groep,
+           Bias,
+           `Geen Bias`,
+           `Negatieve Bias`,
+           `Positieve Bias`) |>
     arrange(Variabele, Groep)
   
   # Add numbers and percentages
-  df_wide_2 <- df_wide |> 
+  df_wide_2 <- df_wide |>
     left_join(df_counts, by = c("Variabele" = "name", "Groep" = "value")) |>
-    select(Variabele, Groep, N, everything()) |> 
-    mutate(
-      N = replace_na(N, 0), 
-      Perc = replace_na(Perc, 0) 
-    ) |> 
-    mutate(Perc = format(Perc, decimal.mark = ",", nsmall = 1)) |> 
-    filter(N > 0) |> 
-    select(Variabele, Groep, N, Perc, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
+    select(Variabele, Groep, N, everything()) |>
+    mutate(N = replace_na(N, 0), Perc = replace_na(Perc, 0)) |>
+    mutate(Perc = format(Perc, decimal.mark = ",", nsmall = 1)) |>
+    filter(N > 0) |>
+    select(Variabele,
+           Groep,
+           N,
+           Perc,
+           Bias,
+           `Geen Bias`,
+           `Negatieve Bias`,
+           `Positieve Bias`)
   
   # Add labels and text to the groups based on df_levels
   df_wide_3 <- df_wide_2 %>%
-    left_join(df_levels |> 
-                filter(!is.na(VAR_Level_label_NL_description)) |> 
-                select(VAR_Level_NL, VAR_Level_label_NL_description) |> 
-                distinct(), by = c("Groep" = "VAR_Level_NL")) |> 
+    left_join(
+      df_levels |>
+        filter(!is.na(VAR_Level_label_NL_description)) |>
+        select(VAR_Level_NL, VAR_Level_label_NL_description) |>
+        distinct(),
+      by = c("Groep" = "VAR_Level_NL")
+    ) |>
     mutate(
       Groep_label = if_else(
         !is.na(VAR_Level_label_NL_description),
@@ -406,8 +385,8 @@ get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variable
         Groep
       ),
       Text = glue("{Groep_label} ({Groep}: N = {N}, {Perc}%)")
-    ) |> 
-    select(-VAR_Level_label_NL_description) |> 
+    ) |>
+    select(-VAR_Level_label_NL_description) |>
     mutate(Variabele = stringr::str_to_title(Variabele)) |>
     select(Variabele, Groep, Groep_label, everything(), Text)
   
@@ -415,8 +394,13 @@ get_df_fairness_wide <- function(df_list, df_data, df_levels, sensitive_variable
 }
 
 
-analyze_fairness <- function(df, explain_lf, sensitive_variables, df_levels) {
-  
+analyze_fairness <- function(df,
+                             explain_lf,
+                             sensitive_variables,
+                             df_levels,
+                             caption,
+                             colors_list,
+                             colors_default) {
   df_fairness_list <- list()
   
   # Make a fairness analysis
@@ -431,8 +415,55 @@ analyze_fairness <- function(df, explain_lf, sensitive_variables, df_levels) {
     # Create a table from the fairness analysis
     df_fairness_total <- get_df_fairness_total(fairness_object)
     
+    finalize_plot <- function(
+                              width_pixels = 800,
+                              height_pixels = 600,
+                              save_filepath, colors_default) {
+      
+
+    }
+    
+    
+    density_plot <- create_density_plot(
+      fairness_object,
+      group = var,
+      caption = caption,
+      colors_default = colors_default,
+      colors_list = colors_list
+    )
+    
+    ggplot2::ggsave(
+      filename = glue("output/fairness_density_{var}.png"),
+      height = (250 + (50 * length(unique(df_fairness_total$Categorie))))/72,
+      width = 640/72,
+      bg = colors_default[["background_color"]],
+      device = ragg::agg_png,
+      res = 300,
+      create.dir = TRUE
+    )
+    
+    # Create a plot of the fairness analysis
+    fairness_plot <- suppressWarnings(
+      create_fairness_plot(fairness_object, group = var, privileged = privileged, colors_default = colors_default) +
+        theme(panel.border = element_rect(
+          colour = "darkgrey",
+          fill = NA,
+          size = 0.4
+        ))
+    )
+    
+    ggplot2::ggsave(
+      filename = glue("output/fairness_plot_{var}.png"),
+      height = (250 + (50 * length(unique(df_fairness_total$Categorie))))/72,
+      width = 640/72,
+      bg = colors_default[["background_color"]],
+      device = ragg::agg_png,
+      res = 300,
+      create.dir = TRUE
+    )
+    
     df_fairness_check_data <- get_df_fairness_check_data(df, fairness_object[["fairness_check_data"]], var)
-  
+    
     df_fairness_list[[i]]      <- df_fairness_check_data |>
       mutate(
         FRN_Bias = case_when(
@@ -442,17 +473,15 @@ analyze_fairness <- function(df, explain_lf, sensitive_variables, df_levels) {
         )
       )
   }
-
+  
   # Create a table from the fairness analysis
   df_fairness_wide  <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
   
   # Create a flextable
   ft_fairness <- get_ft_fairness(flextable(df_fairness_wide |>
-                                             select(-c(Groep_label, Text))))
+                                             select(-c(Groep_label, Text))), colors_default = colors_default)
   
   # Print the flextable
   ft_fairness
   
 }
-
-

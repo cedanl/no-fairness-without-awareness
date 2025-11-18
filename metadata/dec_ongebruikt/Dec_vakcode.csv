@@ -1,0 +1,654 @@
+Vakcode|Omschrijving vak|Roepnaam vak|Afkorting vak
+0010|Nederlandse taal (oud)|Nederlands|
+0011|Nederlandse taal|Nederlands|
+0020|Friese taal|Fries|
+0021|Friese taal|Fries|
+0022|Friese taal 1|Fries 1|
+0023|Friese taal 1,2|Fries 1,2|
+0030|Latijnse taal en letterkunde|Latijn|
+0031|Latijnse taal en letterkunde|Latijn|
+0040|Griekse taal en letterkunde (oud)|Grieks|
+0041|Griekse taal en letterkunde|Grieks|
+0050|Franse taal|Frans|
+0051|Franse taal 1|Frans 1|
+0052|Franse taal 1,2|Frans 1,2|
+0053|Franse taal|Frans|
+0060|Duitse taal|Duits|
+0061|Duitse taal 1|Duits 1|
+0062|Duitse taal 1,2|Duits 1,2|
+0063|Duitse taal|Duits|
+0070|Engelse taal (oud)|Engels|
+0071|Engelse taal|Engels|
+0080|Spaanse taal (oud)|Spaans|
+0081|Spaanse taal|Spaans|
+0082|Spaanse taal 1|Spaans 1|
+0083|Spaanse taal 1,2|Spaans 1,2|
+0084|Spaanse taal (elementair)|Spaans-e|
+0090|Russische taal en letterkunde|Russisch|
+0091|Russische taal (oud)|Russisch|
+0092|Russische taal 1|Russisch 1|
+0093|Russische taal 1,2|Russisch 1,2|
+0094|Russische taal (elementair)|Russisch-e|
+0100|Turkse taal (oud)|Turks|
+0101|Turkse taal|Turks|
+0102|Turkse taal 1|Turks 1|
+0103|Turkse taal 1,2|Turks 1,2|
+0104|Turkse taal (elementair)|Turks-e|
+0110|Arabische taal (oud)|Arabisch|
+0111|Arabische taal|Arabisch|
+0112|Arabische taal 1|Arabisch 1|
+0113|Arabische taal 1,2|Arabisch 1,2|
+0114|Arabische taal (elementair)|Arabisch-e|
+0120|geschiedenis en staatsinrichting|gesch/staatsinr|
+0121|geschiedenis (oud)|geschiedenis|
+0122|geschiedenis 1 (gemeenschappelijk deel)|geschiedenis1|
+0123|geschiedenis (profieldeel of vrije deel)|geschiedenis|
+0124|geschiedenis en maatschappijleer|gesch/mijleer|
+0125|geschiedenis en staatsinrichting|gesch/staatsinr|
+0130|aardrijkskunde|aardrijkskunde|
+0131|aardrijkskunde|aardrijkskunde|
+0140|wiskunde A|wiskunde A|
+0141|wiskunde A1|wiskunde A1|
+0142|wiskunde A1,2|wiskunde A1,2|
+0150|wiskunde B|wiskunde B|
+0151|wiskunde B1|wiskunde B1|
+0152|wiskunde B1,2|wiskunde B1,2|
+0153|wiskunde|wiskunde|
+0160|wiskunde|wiskunde|
+0161|informatica|Informatica|
+0170|natuurkunde|natuurkunde|
+0171|natuurkunde 1|natuurkunde 1|
+0172|natuurkunde 1,2|natuurkunde 1,2|
+0173|natuur- en scheikunde I|nask I|
+0174|natuur- en scheikunde II|nask II|
+0180|scheikunde (oud)|scheikunde|
+0181|scheikunde|scheikunde|
+0182|scheikunde 1|scheikunde 1|
+0183|scheikunde 1,2|scheikunde 1,2|
+0190|biologie (oud)|biologie|
+0191|biologie|biologie|
+0192|biologie 1|biologie 1|
+0193|biologie 1,2|biologie 1,2|
+0200|kennis der natuur|kennisnatuur|
+0201|Italiaanse taal (oud)|Italiaans|
+0202|Italiaanse taal 1|Italiaans 1|
+0203|Italiaanse taal 1,2|Italiaans 1,2|
+0204|Italiaanse taal (elementair)|Italiaans-e|
+0205|Portugees|Portugees|
+0210|economische wetenschappen I en recht|economie I|
+0220|economische wetenschappen II en recht|economie II|
+0230|economie|economie|
+0231|economie 1|economie 1|
+0232|economie 1,2|economie 1,2|
+0233|economie|economie|
+0240|handelswetenschappen en recht|handelswet|
+0251|management en organisatie|m&o|
+0260|muziek|muziek|
+0270|tekenen|tekenen|
+0280|handvaardigheid I (handenarbeid)|handv. I|
+0290|handvaardigheid II (textiele werkvormen)|handv. II|
+0301|algemene natuurwetenschappen|anw|
+0302|onderzoek en ontwerpen (beschikking 2005)|o&o|
+0305|onderzoek- en kenniscentrum Villa Bredero|Villa Bredero|
+0310|filosofie|filosofie|
+0311|filosofie|filosofie|
+0320|maatschappijleer|mijleer|
+0321|maatschappijleer 1 (gemeenschappelijk deel)|mijleer 1|
+0322|maatschappijleer|mijleer|
+0323|maatschappijleer II|mijleer II|
+0330|dans|dans|
+0340|ballet|ballet|
+0351|lichamelijke opvoeding 1|lo1|
+0352|lichamelijke opvoeding 2|lo2|
+0353|lichamelijke opvoeding|lo|
+0361|letterkunde|letterkunde|
+0371|klassieke culturele vorming|kcv|
+0380|Hebreeuws Klassiek|Klassiek Hebreeuws|
+0381|Hebreeuws Klassiek 1|Klassiek Hebreeuws 1|
+0382|Hebreeuws Klassiek 1,2|Klassiek Hebreeuws 1,2|
+0383|Hebreeuws klassiek|Klassiek Hebreeuws|
+0390|Hebreeuws Modern|Modern Hebreeuws|
+0391|Hebreeuws Modern 1|Modern Hebreeuws 1|
+0392|Hebreeuws Modern 1,2|Modern Hebreeuws 1,2|
+0393|Hebreeuws modern|Modern Hebreeuws|
+0400|bedrijfseconomie|bedrijfseconomie|
+0401|culturele en kunstzinnige vorming 1|ckv1|
+0402|culturele en kunstzinnige vorming 2|ckv2|
+0403|culturele en kunstzinnige vorming 3 (beeldende vormgeving)|beeldend 3|
+0404|culturele en kunstzinnige vorming 3 (muziek)|muziek 3|
+0405|culturele en kunstzinnige vorming 3 (drama)|drama 3|
+0406|culturele en kunstzinnige vorming 3 (dans)|dans 3|
+0407|culturele en kunstzinnige vorming 2 in combinatie met culturele en kunstzinnige vorming 3 (beeldende vormgeving)|beeldend 2,3|
+0408|culturele en kunstzinnige vorming 2 in combinatie met culturele en kunstzinnige vorming 3 (muziek)|muziek 2,3|
+0409|culturele en kunstzinnige vorming 2 in combinatie met culturele en kunstzinnige vorming 3 (drama)|drama 2,3|
+0410|bedrijfsadministratie|bedrijfsadmin|
+0411|culturele en kunstzinnige vorming 2 in combinatie met culturele en kunstzinnige vorming 3 (dans)|dans 2,3|
+0412|Kunstvak II beeldende vakken|beeldend|
+0413|kunstvakken II muziek|muziek|
+0414|kunstvakken II dans|dans|
+0415|kunstvakken II drama|drama|
+0416|kunstvakken I|kunstv I|
+0417|kunstvakken II beeldende vakken - handvaardigheid/handenarbeid|beeldend-ha|
+0418|kunstvakken II beeldende vakken - tekenen|beeldend-te|
+0419|kunstvakken II beeldende vakken - handvaardigheid/textiele werkvormen|beeldend-tw|
+0420|kunstvakken II beeldende vakken - audiovisuele vormgeving|beeldend-av|
+0421|kunstvakken II beeldende vakken - film|beeldend-fi|
+0422|kunstvakken II beeldende vakken - fotografie|beeldend-fo|
+0430|kantoorpraktijk|kantoorpraktijk|
+0431|vooropleiding muziekvakonderwijs|vo muziek|
+0432|vooropleiding dansvakonderwijs|vo dans|
+0440|machineschrijven/tekstverwerken|machineschrijven|
+0450|maatschappelijke en beroepsvorming|maatschbervorm|
+0460|praktijk technische vakken|techniek-p|
+0470|theorie technische vakken|techniek-t|
+0480|vaktekenen technische vakken|vaktekenen|
+0490|huishoudkunde|huishkunde|
+0500|gezondheidskunde|gezondhkunde|
+0510|textiele werkvormen|textwerk|
+0520|praktijk textiel|textiel-p|
+0530|theorie textiel|textiel-t|
+0540|uiterlijke verzorging|uitverz|
+0550|verkoopbevordering|verkoopbev|
+0560|warenkennis|warenkennis|
+0570|etaleren|etaleren|
+0580|reclametekenen|recltek|
+0601|bouwtechniek - timmeren|tim|
+0606|bouwtechniek - fijnhoutbewerking|fijnhout|
+0611|bouwtechniek - metselen|mets|
+0621|bouwtechniek - schilderen/afwerkingstechnieken|schild|
+0626|bouw-breed|bouwbreed|
+0631|elektrotechniek|elek|
+0641|grafische techniek|gratech|
+0642|grafimedia|gramed|
+0651|installatietechniek|instaltech|
+0661|metaaltechniek|metatech|
+0671|transport en logistiek|translog|
+0680|levensmiddelentechnologie|levtech|
+0681|voertuigentechniek|voertech|
+0686|metalektro|metalektro|
+0691|rijn, binnen- en kustvaart|rbkvaart|
+0692|haven en vervoer|havenvervoer|
+0693|technologie in de gemengde leerweg|techgl|
+0694|intersectoraal|intersec|
+0696|instalektro|instalektro|
+0697|techniek breed|techbreed|
+0698|ict-route|ictroute|
+0699|mode en techniek|modetech|
+0701|uiterlijke verzorging|uitverz|
+0711|verzorging|verz|
+0726|zorg en welzijn breed|zorgwelbreed|
+0727|sport,dienstverlening en veiligheid|sportdv|
+0728|technologie in de gemengde leerweg T|techglt|
+0729|technologie in de gemengde leerweg E|techgle|
+0730|technologie in de gemengde leerweg Z&W|techglzw|
+0731|intersectoraal technologie & commercie|intersectc|
+0732|intersectoraal technologie & dienstverlening|intersectd|
+0733|intersectoraal dienstverlening & commercie|intersecdc|
+0740|AVMB-basisvaardigheden|avmb-basis|
+0750|AVMB-praktische vaardigheden|avmb-vaard|
+0760|AVMB-praktijk|avmb-prakt|
+0800|agrarische techniek|agrtech|
+0801|administratie|admin|
+0810|agrarische bedrijfseconomie|agrbedrecon|
+0811|consumptief - horeca|horeca|
+0820|dierenhouderij (praktijk en theorie)|dierhoud-pt|
+0821|consumptief - bakken|bakken|
+0830|dierenhouderij (praktijk)|dierhoud-p|
+0831|handel en verkoop|handelverk|
+0840|dierenhouderij (theorie)|dierhoud-t|
+0841|mode en commercie|modecom|
+0850|plantenteelt (praktijk en theorie)|pteelt-pt|
+0856|handel en administratie|handadm|
+0860|plantenteelt (praktijk)|pteelt-p|
+0866|consumptief - breed|consbreed|
+0870|plantenteelt (theorie)|pteelt-t|
+0876|toerisme & recreatie|toerisme & recreatie|
+0880|bloemschikken (praktijk en theorie)|bloemsch-pt|
+0890|bloemschikken (praktijk)|bloemsch-p|
+0900|bloemschikken (theorie)|bloemsch-t|
+0901|LNO plantenteelt/variant: open teelt|pteeltopen|
+0904|LNO plantenteelt en groene ruimte|pteelt-gr|
+0905|LNO plantenteelt en bloembinden en -schikken|pteelt-b|
+0906|LNO plantenteelt en dierhouderij en -verzorging|pteelt-d|
+0907|LNO plantenteelt en verwerking agrarische producten|pteelt-vap|
+0908|LNO plantenteelt en agrarische bedrijfseconomie|pteelt-ab|
+0909|LNO plantenteelt en agrarische techniek|pteelt-at|
+0910|verwerking agrarische producten (praktijk en theorie)|vap-pt|
+0911|LNO plantenteelt/variant: gesloten teelt|pteeltgesl|
+0920|verwerking agrarische producten (praktijk)|vap-p|
+0921|LNO groene ruimte|groenruim|
+0924|LNO groene ruimte en bloembinden en -schikken|groenruim-b|
+0925|LNO groene ruimte en dierhouderij en -verzorging|groenruim-d|
+0926|LNO groene ruimte en verwerking agrarische producten/levensmiddelen technologie|groenruim-vap|
+0927|LNO groene ruimte en agrarische bedrijfseconomie|groenruim-ab|
+0928|LNO groene ruimte en agrarische techniek|groenruim-at|
+0930|verwerking agrarische producten (theorie)|vap-t|
+0931|LNO bloembinden en -schikken|bloembin|
+0934|LNO bloembinden en -schikken en dierhouderij en -verzorging|bloembin-d|
+0935|LNO bloembinden en -schikken en verwerking agrarische producten/levensmiddelen technologie|bloembin-vap|
+0936|LNO bloembinden en -schikken en agrarische bedrijfseconomie|bloembin-ab|
+0937|LNO bloembinden en -schikken en agrarische techniek|bloembin-at|
+0940|groenvoorzieningen (praktijk en theorie)|groenv-pt|
+0941|LNO dierhouderij en -verzorging/variant: productiedieren|dierzorgp|
+0945|LNO dierhouderij en -verzorging en verwerking agrarische producten|dierzorg-vap|
+0946|LNO dierhouderij en -verzorging en agrarische bedrijfseconomie|dierzorg-ab|
+0947|LNO dierhouderij en -verzorging en agrarische techniek|dierzorg-at|
+0950|groenvoorzieningen (praktijk)|groenv-p|
+0951|LNO dierhouderij en -verzorging/variant: gezelschapsdieren|dierzorgg|
+0960|groenvoorzieningen (theorie)|groenv-t|
+0961|LNO verwerking agrarische producten/levensmiddelen technologie|verwagprod|
+0965|LNO verwerking agrarische producten/levensmiddelen technologie en agrarische bedrijfseconomie|verwagprod-ab|
+0966|LNO verwerking agrarische producten/levensmiddelentechnologie en agrarische techniek|verwagprod-at|
+0978|LNO agrarische bedrijfseconomie|agrabed|
+0979|LNO agrarische techniek|agratech|
+0986|landbouw-breed|landbouw|
+0990|NT2|nt2|
+0991|andere taal|andere taal|
+0992|maatschappij-orientatie|maatschorientatie|
+0993|kennis van de wereld|kenniswereld|
+0994|beroepen- en loopbaanorientatie|beroeploopbaan|
+0995|handvaardigheid|handvaar|
+0996|digitale vaardigheden|digvaar|
+0998|sleutelvaardigheden|sleutvaar|
+0999|overig|overig|
+1001|Nederlandse taal en literatuur|Nederlands|
+1002|Engelse taal en literatuur|Engels|
+1003|Franse taal en literatuur|Frans|
+1004|Duitse taal en literatuur|Duits|
+1005|Spaanse taal en literatuur|Spaans|
+1006|Italiaanse taal en literatuur|Italiaans|
+1007|Russische taal en literatuur|Russisch|
+1008|Turkse taal en literatuur|Turks|
+1009|Arabische taal en literatuur|Arabisch|
+1010|Latijnse taal en literatuur|Latijn|
+1011|Griekse taal en literatuur|Grieks|
+1012|Spaanse taal en literatuur (elementair)|Spaans-e|
+1013|Italiaanse taal en literatuur (elementair)|Italiaans-e|
+1014|Russische taal en literatuur (elementair)|Russisch-e|
+1015|Turkse taal en literatuur (elementair)|Turks-e|
+1016|Arabische taal en literatuur (elementair)|Arabisch-e|
+1017|Friese taal en cultuur|Fries|
+1018|biologie|biologie|
+1019|maatschappijleer|mijleer|
+1020|culturele en kunstzinnige vorming|ckv|
+1021|geschiedenis|geschiedenis|
+1022|economie|economie|
+1023|natuurkunde|natuurkunde|
+1024|wiskunde A|wiskunde A|
+1025|wiskunde B|wiskunde B|
+1026|wiskunde C|wiskunde C|
+1027|wiskunde D|wiskunde D|
+1028|scheikunde|scheikunde|
+1029|kunst (algemeen)|kunst algemeen|
+1030|kunst (beeldende vormgeving)|kunst beeldend|
+1031|kunst (muziek)|kunst muziek|
+1032|kunst (drama)|kunst drama|
+1033|kunst (dans)|kunst dans|
+1034|maatschappijwetenschappen|maatschwet|
+1035|natuur, leven en technologie|nlt|
+1036|handvaardigheid|handvaardigheid|
+1037|textiele vormgeving|textiele vorm|
+1038|bewegen, sport en maatschappij|bsm|
+1039|literatuur|literatuur|
+1040|godsdienst of levensbeschouwelijk vormingsonderwijs|gods levens vorm|
+1041|Nederlandse taal zonder literatuur|Nederlands zoli|
+1042|Engelse taal zonder literatuur|Engels zoli|
+1043|Franse taal zonder literatuur|Frans zoli|
+1044|Duitse taal zonder literatuur|Duits zoli|
+1045|Spaanse taal zonder literatuur|Spaans zoli|
+1046|Italiaanse taal zonder literatuur|Italiaans zoli|
+1047|Russische taal zonder literatuur|Russisch zoli|
+1048|Turkse taal zonder literatuur|Turks zoli|
+1049|Arabische taal zonder literatuur|Arabisch zoli|
+1050|Latijnse taal en literatuur met kcv|Latijn met kcv|
+1051|Griekse taal en literatuur met kcv|Grieks met kcv|
+1052|Chinese taal en cultuur|Chinees|
+1053|Chinese taal zonder literatuur|Chinees zoli|
+1054|onderzoek en ontwerpen (beschikking 2007)|o&o|
+1055|product ontwerpen|prod ontwerp|
+1056|godsdienst (groot examenvak)|gods groot|
+1057|NT2, gericht op alfabetisering|nt2a|
+1058|mens en religie|mens en reli|
+1059|geloof, leven en filosofie|glf|
+1060|godsdienst|godsdienst|
+1061|levensbeschouwelijk vormingsonderwijs|levens vorm|
+1062|Nederlandse taal|Nederlands|
+1063|Engelse taal|Engels|
+1064|Franse taal|Frans|
+1065|Duitse taal|Duits|
+1066|Spaanse taal|Spaans|
+1067|Italiaanse taal|Italiaans|
+1068|Russische taal|Russisch|
+1069|Turkse taal|Turks|
+1070|Arabische taal|Arabisch|
+1071|Chinese taal en cultuur (elementair)|Chinees-e|
+1072|religie, mens en samenleving|rms|
+1073|LNO plantenteelt|pteelt|
+1074|LNO dierhouderij en -verzorging|dierzorg|
+1075|LNO plantenteelt/variant: open teelt en groene ruimte|pto-gr|
+1076|LNO plantenteelt/variant: gesloten teelt en groene ruimte|ptg-gr|
+1077|LNO plantenteelt/variant: open teelt en bloembinden en -schikken|pto-bs|
+1078|LNO plantenteelt/variant: gesloten teelt en bloembinden en -schikken|ptg-bs|
+1079|LNO plantenteelt/variant: open teelt en dierhouderij en -verzorging|pto-dv|
+1080|LNO plantenteelt/variant: gesloten teelt en dierhouderij en -verzorging|ptg-dv|
+1081|LNO plantenteelt/variant: open teelt en verwerking agrarische producten|pto-va|
+1082|LNO plantenteelt/variant: gesloten teelt en verwerking agrarische producten|ptg-va|
+1083|LNO plantenteelt/variant: open teelt en agrarische bedrijfseconomie|pto-ab|
+1084|LNO plantenteelt/variant: gesloten teelt en agrarische bedrijfseconomie|ptg-ab|
+1085|LNO plantenteelt/variant: open teelt en agrarische techniek|pto-at|
+1086|LNO plantenteelt/variant: gesloten teelt en agrarische techniek|ptg-at|
+1087|LNO dierhouderij en -verzorging/variant: productiedieren en verwerking agrarische producten|dvp-vap|
+1088|LNO dierhouderij en -verzorging/variant: gezelschapsdieren en verwerking agrarische producten|dvg-vap|
+1089|LNO dierhouderij en -verzorging/variant: productiedieren en agrarische bedrijfseconomie|dvp-ab|
+1090|LNO dierhouderij en -verzorging/variant: gezelschapsdieren en agrarische bedrijfseconomie|dvg-ab|
+1091|LNO dierhouderij en -verzorging/variant: productiedieren en agrarische techniek|dvp-at|
+1092|LNO dierhouderij en -verzorging/variant: gezelschapsdieren en agrarische techniek|dvg-at|
+1093|klassiek Hebreeuwse taal en literatuur|klassiek hebreeuwse tali|
+1094|modern Hebreeuwse taal en literatuur|modern hebreeuwse tali|
+1095|bouwtechniek - infra|infra|
+1096|IT/informatica|IT/Informatica|
+1097|LNO plantenteelt/variant: open teelt en dierhouderij en -verzorging/ variant: productiedieren|pto-dvp|
+1098|LNO plantenteelt/variant: open teelt en dierhouderij en -verzorging/ variant: gezelschapsdieren|pto-dvg|
+1099|LNO plantenteelt/variant: gesloten teelt en dierhouderij en -verzorging/ variant: productiedieren|ptg-dvp|
+1100|LNO plantenteelt/variant: gesloten teelt en dierhouderij en -verzorging/ variant: gezelschapsdieren|ptg-dvg|
+1101|LNO bloembinden en -schikken en dierhouderij en -verzorging/variant: productiedieren|bs-dvp|
+1102|LNO bloembinden en -schikken en dierhouderij en -verzorging/variant: gezelschapsdieren|bs-dvg|
+1103|LNO plantenteelt en dierhouderij en -verzorging/variant: productiedieren|pteelt-dvp|
+1104|LNO plantenteelt en dierhouderij en -verzorging/variant: gezelschapsdieren|pteelt-dvg|
+1105|LNO dierhouderij en -verzorging/variant: productiedieren en groene ruimte|dvp-gr|
+1106|LNO dierhouderij en -verzorging/variant: gezelschapsdieren en groene ruimte|dvg-gr|
+1107|Rekentoets|Rekentoets|
+1108|Papiaments|Papiaments|
+1109|Papiaments (elementair)|Papiaments (elementair)|
+1110|Latijnse taal en cultuur|Latijnse tc|
+1111|Griekse taal en cultuur|Griekse tc|
+1112|maatschappelijke stage|maatsch stage|
+1120|rekentoets 2F|rekentoets 2F|
+1121|rekentoets 3F|rekentoets 3F|
+1122|rekentoets 2ER|rekentoets 2ER|
+1123|rekentoets 3ER|rekentoets 3ER|
+1124|rekentoets 2A|rekentoets 2A|
+1126|technologie & toepassing|technologietoepassing|
+1127|maatschappijkunde|maatschappijkunde|
+1128|informatietechnologie|informatietechnologie|
+1130|kunstvakken inclusief ckv|kunstvakken incl ckv|
+1131|academische vaardigheden|academische vaardigheden|
+1132|Rekenen 3F|rekenen 3F|
+1133|wetenschapsoriëntatie|wetenschapsoriëntatie|
+1134|wetenschap|wetenschap|
+1135|Rekenen 2F|rekenen 2F|
+1136|praktijkgericht programma informatietechnologie|pp informatietechnologie|
+1137|praktijkgericht programma dienstverlening en producten|pp dienstverlening&produ|cten
+1138|praktijkgericht programma zorg en welzijn|pp zorg&welzijn|
+1139|praktijkgericht programma economie en ondernemen|pp economie&ondernemen|
+1140|praktijkgericht programma maritiem en techniek|pp maritiem&techniek|
+1141|praktijkgericht programma Techniek en innovatief vakmanschap|pp techniek&innovatief v|akman
+1142|praktijkgericht programma Groen|pp groen|
+1143|praktijkgericht programma Media, vormgeving en ict|pp media, vormgeving&ict|
+1144|praktijkgericht programma Horeca, bakkerij en recreatie|pp horeca, bakkerij&recr|eatie
+1145|praktijkgericht programma Bouwen, wonen en interieur|pp bouwen, wonen&interie|ur
+1146|praktijkgericht programma Produceren, installeren en energie|pp produceren, installer|en&en
+1147|praktijkgericht programma Mobiliteit en transport|pp mobiliteit&transport|
+1148|praktijkgericht programma technologie|pgp technologie|
+1149|praktijkgericht programma maatschappij|pgp maatschappij|
+1150|levensbeschouwing en religie|levensbeschouwing&religi|e
+1151|modelleren en programmeren|modelleren&programmeren|
+1152|oriëntatiejaar praktijkgericht programma gemengde en theoretische leerwegen|oj pp gl&tl|
+1153|praktijkgericht programma technologie (groot)|pp technologie groot|
+1154|praktijkgericht programma maatschappij (groot)|pp maatschappij groot|
+1155|praktijkroute havo-educatie|praktijkroute educatie|
+1199|beroepsgericht examenprogramma|beroepsger. examenprogr.|
+1200|bouwen, wonen, interieur|bouwwonenint|
+1201|bouwproces en bouwvoorbereiding|bouwprocvoorb|
+1202|bouwen vanaf de fundering|bouwenfundering|
+1203|hout- en meubelverbindingen|houtmeubelverb|
+1204|design en decoratie|designdec|
+1205|constructieve aansluitingen en afwerking|constraansluitafw|
+1206|schoonmetselwerk|schoonmetselw|
+1207|schilderen van hout- en steenachtige ondergronden|schilhoutsteen|
+1208|interieurbouw, stands en betimmeringen|intstandbetim|
+1209|bouwkundig onderhoud en renovatie|bouwkonderhren|
+1210|gevelopeningen|gevelopeningen|
+1211|daken en kapconstructies|dakkapconstructies|
+1212|vloeren|vloeren|
+1213|bouwmethoden en bouwstijlen|bouwmethoden|
+1214|bijzonder metselwerk|bijzmetselwerk|
+1215|scheidingswanden|scheidingswand|
+1216|wandafwerking|wandafwerking|
+1217|schilderen en spuiten van metalen en kunststof ondergronden|schilderen|
+1218|onderhoud schilderwerk|onderhschilderw|
+1219|glas|glas|
+1220|meubelmaken|meubelmaken|
+1221|bouw- en woonrijp maken|bouwrwoonrmaken|
+1222|terreinafwerking|terreinafw|
+1223|interieurontwerp en -design|interieurontwdesign|
+1224|bouwkundig onderhoud, renovatie en transformatie|bouwkonderhrenoventransf|
+1225|daken en kapconstructies van hout|dakenkapconstructieshout|
+1226|schilderen en spuiten op kunststof en metalen|schilderenspuitenkunstst|ofmet
+1227|glaszetten|glaszetten|
+1228|ontwerp duurzame comfortwoning|ontwduurzcomfortwoning|
+1229|aardbevingsbestendig bouwen|aardbevingsbestendigbouw|en
+1230|tegelzetten voor het vmbo|tegelzetten voor het vmb|o
+1231|meubelstofferen voor het vmbo|meubelstofferen vh vmbo|
+1232|duurzaam en circulair bouwen|duurzaam circulair bouw|
+1300|produceren, installeren en energie|prodinstallenergie|
+1301|ontwerpen en maken|ontwerpenmaken|
+1302|bewerken en verbinden van materialen|bewerkverbmat|
+1303|besturen en automatiseren|bestautom|
+1304|installeren en monteren|installmont|
+1305|plaat- en constructiewerk|plaatconstrwerk|
+1306|booglassen|booglassen|
+1307|klimaattechnologie|klimaattechn|
+1308|procestechniek|procestechn|
+1309|zonne- en windenergie|zonnewindenerg|
+1310|werktuigkundig en elektrotechnisch onderhoud|wtkelektrotonderh|
+1311|utiliteitsinstallaties|utiliteitsinstal|
+1312|booglassen 2|booglassen2|
+1313|CNC-technieken|CNCtechn|
+1314|drinkwater en sanitair|drinkwatersanitair|
+1315|licht, geluid en beeld|lichtgeluidbeeld|
+1316|dakbedekking|dakbedekk|
+1317|verspaningstechnieken|verspaningstechn|
+1318|woon- en kantoortechnologie|woonkantoortechn|
+1319|procestechniek 2|procestechn2|
+1320|besturing en automatisering 2 (domotica)|bestautom2|
+1321|(mobiele) communicatietechnologie|mobcommtechn|
+1322|nutsvoorzieningen|nutsvoorz|
+1323|koudetechnologie|koudetechn|
+1324|verspaningstechnieken 2|verspaningstechn2|
+1325|woonhuisbeveiliging|woonhuisbeveil|
+1326|booglasprocessen|booglasprocessen|
+1327|duurzame energie|duurzameenergie|
+1328|praktisch booglassen|praktisch booglassen|
+1329|domotica en automatisering|domoticaautomatisering|
+1330|koudetechniek|koudetechniek|
+1331|machinebouw - verspanen|machinebouwverspanen|
+1332|lasrobot|lasrobot|
+1333|cloud en cybersecurity|cloud & cybersecurity|
+1334|slimme technologie|slimme technologie|
+1335|dronetechniek I|dronetechniek I|
+1336|dronetechniek II|dronetechniek II|
+1337|edelmetaal bewerken|edelmetaal bewerken|
+1338|water, techniek en duurzaamheid|water techniek en duurza|amhei
+1400|mobiliteit en transport|mobiliteittransport|
+1401|motorconditie testen|motorconditietest|
+1402|wielophanging en carrosserie|wielophcarrosserie|
+1403|verlichtings- en comfortsystemen|verlichtcomfortsyst|
+1404|transport|transport|
+1405|motorsystemen|motorsyst|
+1406|aandrijf- en remsysteem|aandrijfremsyst|
+1407|elektronica|elektronica|
+1408|bedrijfswagens|bedrijfswag|
+1409|fietstechniek|fietstechn|
+1410|gemotoriseerde tweewieler|gemottweewiel|
+1411|carrosseriebouw|carrosseriebouw|
+1412|autoschade en spuiten|autoschadespuiten|
+1413|verbrandingsmotoren|verbrandingsmot|
+1414|ritvoorbereiding en ritafhandeling|ritvoorb/afhand|
+1415|mobiele werktuigen|mobwerktuigen|
+1416|operationele magazijnwerkzaamheden|operatmagzwerkz|
+1417|fietstechniek 2|fietstechn2|
+1418|gemotoriseerde tweewielers 2|gemottweewiel2|
+1419|elektrische voertuigen|elektrischevoert|
+1500|media, vormgeving en ICT|mediavorgICT|
+1501|audiovisuele vormgeving en productie|audiovisvormgprod|
+1502|2D- en 3D-vormgeving en -productie|2D/3Dvormgprod|
+1503|ICT|ict|
+1504|interactieve vormgeving en productie|interactvormgprod|
+1505|3D-vormgeving en -realisatie|3Dvormreal|
+1506|idee-ontwikkeling|ideeontw|
+1507|netwerkbeheer|netwerkbeh|
+1508|printmediaproductie|printmediaprod|
+1509|tekenen, schilderen en illustreren|tekschildillustr|
+1510|game-design|game-design|
+1511|fotografie|fotograf|
+1512|licht, geluid en decor|licht,geluid,dec|
+1513|applicatieontwikkeling|appl-ontwikkeling|
+1514|digitale beveiliging|digibeveiliging|
+1515|sign|sign|
+1516|vormgeven & typografie|vormgtypogr|
+1517|innovatie en prototyping|innovatie en prototyping|
+1600|zorg en welzijn|zorgwelzijn|
+1601|mens en gezondheid|mensgezondh|
+1602|mens en omgeving|mensomgev|
+1603|mens en activiteit|mensactivit|
+1604|mens en zorg|menszorg|
+1605|uiterlijke verzorging breed|uiterlverzbreed|
+1606|haarverzorging|haarverzorg|
+1607|huidverzorging|huidverzorg|
+1608|hand- en voetverzorging|hand/voetverz|
+1609|wonen, welzijn en zorg|wonenwelzzorg|
+1610|wonen en huishouden|wonenhuish|
+1611|verzorging|verzorging|
+1612|dagbesteding|dagbesteding|
+1613|facilitaire dienstverlening zorg en welzijn|facdienstzw|
+1614|beveiliging en veiligheid|beveilig/veiligh|
+1615|gebouwenbeheer|gebouwbeheer|
+1616|sport en bewegen|sportbewegen|
+1617|voorkomen van ongevallen en EHBO|ongevallenehbo|
+1618|communicatie|communicatie|
+1619|schoonheidsbehandeling hand, haar en gezicht|schoonheidsbehhandhaarge|zicht
+1620|welzijn kind en jongere|welzijnkindenjongere|
+1621|facilitaire dienstverlening: inrichting en verzorging|facdverlinrichtingverzor|ging
+1622|conciërgewerkzaamheden|conciërgewerkzaamheden|
+1623|kennismaking met uiterlijke verzorging|kennism uiterlijke verzo|rging
+1624|assisteren in de gezondheidszorg|assisteren id gezondheid|szorg
+1625|welzijn volwassenen en ouderen|welzijn volwassenen en o|udere
+1626|facilitaire dienstverlening: catering en inrichting|facd: catering en inrich|ting
+1627|facilitaire dienstverlening: onderhoud en receptie|facd: onderhoud en recep|tie
+1628|ondersteuning bij sport- en bewegingsactiviteiten|onderst sport- en bewegi|ngsac
+1629|technologie binnen zorg en welzijn|techn zorg en welzijn|
+1630|acteren en zingen|acteren en zingen|
+1631|danstechniek|danstechniek|
+1632|informatie, creatie en presentatie|info creatie presentatie|
+1700|economie en ondernemen|eco&ondern|
+1701|commercieel|commercieel|
+1702|secretarieel|secretarieel|
+1703|logistiek|logistiek|
+1704|administratie|administratie|
+1705|commercieel 2|commercieel2|
+1706|secretarieel 2|secretarieel2|
+1707|logistiek 2|logistiek2|
+1708|administratie 2|administratie2|
+1709|ondernemen|ondernemen|
+1710|webshop|webshop|
+1711|vormgeving|vormgeving|
+1712|mode en design|modedesign|
+1713|ICT op kantoor|ICTkantoor|
+1714|marketing|marketing|
+1715|officemanagement|officemanagement|
+1716|distributie|distributie|
+1717|financieel en administratief beheer|financieeladministratief|behee
+1718|presentatie en styling|presentatieenstyling|
+1719|modetechniek|modetechniek|
+1720|internationale handel|internationale handel|
+1721|wonen en design|wonen en design|
+1722|economie en ondernemen (nieuwe stijl)|eco&ondern nw stijl|
+1800|horeca, bakkerij en recreatie|horeca,bakk,recr|
+1801|gastheerschap|gastheerschap|
+1802|de bakkerij|bakkerij|
+1803|de keuken|keuken|
+1804|recreatie|recreatie|
+1805|gastheerschap 2|gastheerschap2|
+1806|brood en banketspecialiteiten|broodbanketspec|
+1807|keuken 2|keuken2|
+1808|recreatie 2|recreatie2|
+1809|patisserie|patisserie|
+1810|de bijzondere keuken|bijzkeuken|
+1811|traiteur|traiteur|
+1812|facilitaire dienstverlening horeca, bakkerij en recreatie|facdiensthbr|
+1813|productie en verkoop|productverk|
+1814|broodbakken 2|broodbak2|
+1815|banketbakken 2|banketbak2|
+1816|buitenschools leren in de regio|buitenschlerenregio|
+1817|gastheerspecialisatie|gastheerspecialisatie|
+1818|brood- en banketspecialisatie|broodenbanketspecialisat|ie
+1819|keukenspecialisatie|keukenspecialisatie|
+1820|evenementen|evenementen|
+1821|facilitaire dienstverlening, beheer en onderhoud|facdienstverlbeheeronder|houd
+1822|siervakken|siervakken|
+1900|dienstverlening en producten|dienstverlproduct|
+1901|organiseren van een activiteit|orgactiviteit|
+1902|presenteren, promoten en verkopen|pres,prom,verk|
+1903|een product maken en verbeteren|productmakverb|
+1904|multimediale producten maken|multimedprod|
+1905|game maker|gamemaker|
+1906|robotica|robotica|
+1907|natuurtalent|natuurtalent|
+1908|gezonde leefstijl|gezondeleefst|
+1909|podium|podium|
+1910|geüniformeerde dienstverlening en veiligheid|unidienstverlveiligh|
+1911|digispel|digispel|
+1912|werken aan natuur en milieu|werkenaannatuurenmilieu|
+1913|voeding en beweging|voedingenbeweging|
+1914|milieu, hergebruik en duurzaamheid|milieuhergebruikenduurza|amhei
+1915|organiseren van een activiteit voor een opdrachtgever|organiserenactiviteitopd|racht
+1916|geüniformeerde beroepen|geüniformeerdeberoepen|
+1917|talentvak acteren zang en dans|tazd|
+1918|dans-, acteer- en zangactiviteiten|daza|
+2000|groen|groen|
+2001|groene productie|groeneproductie|
+2002|tussen productie en verkoop|productverkoop|
+2003|vergroening verstedelijkte omgeving|vergrverstedelomg|
+2004|groene vormgeving en verkoop|grvormgverk|
+2005|het groene machinepark|groenmachinepark|
+2006|tuinontwerp en -aanleg|tuinontwaanl|
+2007|werk in tuin en landschap|werktuinland|
+2008|bloemwerk|bloemwerk|
+2009|groene vormgeving en styling|grvormstyling|
+2010|groene groei|groenegroei|
+2011|groei en oogst|groeioogst|
+2012|het houden van dieren|houdendier|
+2013|gezonde dieren|gezonddier|
+2014|water|water|
+2015|smakelijk eten|smakelijketen|
+2016|groene zorg|groenezorg|
+2017|natuurlijk groen|natgroen|
+2018|vergroening stedelijke omgeving|vergroeningstedelijkeomg|eving
+2019|groei voorbereiden|groeivoorbereiden|
+2020|voeding: hoe maak je het?|voedinghoemaakjehet|
+2021|actief in de natuur|actiefindenatuur|
+2022|visstandbeheer en sportvisserij|visstandbeheer & sportvi|sseri
+2023|duurzame melkveehouderij bedrijven en biodiversiteit vergroten|duurz melkv biod vergrot|en
+2100|maritiem en techniek|maritiemtechn|
+2101|maritieme logistiek en communicatie|marlogcom|
+2102|maritieme veiligheid|marveiligh|
+2103|maritieme installaties|marinstall|
+2104|reparatie en onderhoud|reponderh|
+2105|werken en leven aan boord|werklevenab|
+2106|ladingbehandeling aan boord|ladingbehandelingboord|
+2107|navigatie|navigatie|
+2108|scheepskennis|scheepskennis|
+2109|zeevaartkunde|zeevaartkunde|
+2110|dienstverlening in de haven|dienstverleninghaven|
+2111|opslag en overslag in de haven|opslagoverslaghaven|
+2112|stuwadoor en vorkheftruckbestuurder|stuwadvorkheftruckbest|
+2113|ladingadministratie in de haven|ladingadministrhaven|
+2114|expediteur, luchtvaart en douane|expediteurluchtvdouane|
+2115|cargadoor|cargadoor|
+2116|nautische materialen en gereedschappen|nautischematgereedsch|
+2117|scheepsconstructie en -ontwerp|scheepsconstrontwerp|
+2118|maritieme mechanische installaties|maritiememechinstall|
+2119|conserveren van maritieme systemen|conserverenmaritiemesyst|emen
+2120|stuwadoor en vorkheftruck|stuwadoorenvorkheftruck|
+2121|commerciële visserij|commerciële visserij|

@@ -18,12 +18,12 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingscode <- 50952
+opleidingscode <- 66588
 eoi <- 2019
 opleidingsvorm <- "VT"
 
 library(dplyr)
-
+source("config/colors.R")
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Inladen ####
@@ -52,7 +52,12 @@ df1cho_vak <- arrow::read_parquet(
 
 dfapcg <- read.table("data/APCG_2019.csv", sep = ";", header = TRUE)
 
-dfses <- read.table("data/SES_PC4_2021-2022.csv", sep = ";", header = TRUE, dec = ",")
+dfses <- read.table(
+  "data/SES_PC4_2021-2022.csv",
+  sep = ";",
+  header = TRUE,
+  dec = ","
+)
 
 df_variables <- readxl::read_xlsx("metadata/variabelen.xlsx")
 
@@ -73,27 +78,28 @@ df_levels <- read.csv("metadata/levels.csv", sep = "\t") |>
   arrange(VAR_Level_order, .by_group = TRUE) |>
   ungroup()
 
+dec_vopl <- read.csv("metadata/dec/Dec_vopl.csv", sep = "|") |>
+  janitor::clean_names()
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Transform ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 source("R/transform_ev_data.R")
-df1cho <- transform_ev_data(
+df1cho2 <- transform_ev_data(
   df1cho,
-  opleidingscode = opleidingscode,
+  code = opleidingscode,
   eoi = eoi,
-  opleidingsvorm = opleidingsvorm
+  vorm = opleidingsvorm,
+  dec_vopl = dec_vopl
 )
 
 source("R/transform_vakhavw.R")
-df1cho_vak <- transform_vakhavw(df1cho_vak)
+df1cho_vak2 <- transform_vakhavw(df1cho_vak)
 
 source("R/transform_1cho_data.R")
-dfcyfer <- transform_1cho_data(
-  df1cho,
-  df1cho_vak
-)
+dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
 
 source("R/add_apcg.R")
 df <- add_apcg(dfapcg, dfcyfer)
@@ -113,12 +119,13 @@ df <- df |>
 
 
 source("R/get_table_summary.R")
-tbl_summary <- get_table_summary(df, mapping_newname) 
+tbl_summary <- get_table_summary(df, mapping_newname)
 
-flextable::save_as_image(
-  x = tbl_summary,
-  path = "output/descriptive_table.png"
-)
+flextable::save_as_image(x = tbl_summary, path = "output/descriptive_table.png")
+
+tbl_summary <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
+
+flextable::save_as_image(x = tbl_summary, path = "output/sensitive_variables_descriptive_table.png")
 
 
 ## . ####
@@ -145,15 +152,19 @@ explainer <- create_explain_lf(last_fit, best_model)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 source("R/analyze_fairness.R")
-table <- analyze_fairness(df, explainer, sensitive_variables, df_levels)
-
-flextable::save_as_image(
-  x = table,
-  path = "output/result_table.png"
+table <- analyze_fairness(
+  df,
+  explainer,
+  sensitive_variables,
+  df_levels,
+  caption = NULL,
+  colors_default = colors_default,
+  colors_list = colors_list
 )
+
+flextable::save_as_image(x = table, path = "output/result_table.png")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Save names ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-

@@ -20,7 +20,7 @@
 
 library(dplyr)
 
-transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
+transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {
@@ -41,7 +41,7 @@ transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
     
   }
   
-  recode_variables <- function(df, dec_vopl) {
+  recode_vooropleiding <- function(df, dec_vopl) {
     
     cols_vo <- c("hoogste_vooropleiding_voor_het_ho",
                   "hoogste_vooropleiding_binnen_het_ho",
@@ -65,6 +65,8 @@ transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
   
   df_selection <- df |>
     
+    left_join(dec_isat) |>
+    
     ## Recode opleidingsvorm
     mutate(across(opleidingsvorm, ~case_when(. == 1 ~ "VT",
                                              . == 2 ~ "DT",
@@ -72,7 +74,7 @@ transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
                                              TRUE ~ as.character(.)))) |>
     
     ## Filter
-    filter(opleidingscode == code,
+    filter(#naam_opleiding == naam,
            eerste_jaar_aan_deze_opleiding_instelling >= eoi,
            opleidingsvorm == vorm)
 
@@ -99,6 +101,15 @@ transform_ev_data <- function(df, code, eoi, vorm, dec_vopl) {
     ## Make postcode integer
     mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.))) |>
     
-    recode_variables(dec_vopl)
+    recode_vooropleiding(dec_vopl) |>
+    
+    mutate(vooropleiding = case_when(grepl("^vwo", hoogste_vooropleiding) ~ "VWO",
+                                     grepl("^wo|^hbo", hoogste_vooropleiding) ~ "HO",
+                                     grepl("^mbo", hoogste_vooropleiding) ~ "MBO",
+                                     grepl("^havo", hoogste_vooropleiding) ~ "HAVO",
+                                     grepl("buitenlands diploma", hoogste_vooropleiding) ~ "BD",
+                                     grepl("coll.doc.", hoogste_vooropleiding) ~ "CD",
+                                     grepl("^overig", hoogste_vooropleiding) ~ "Overig",
+                                     TRUE ~ "Onbekend"))
   
 }

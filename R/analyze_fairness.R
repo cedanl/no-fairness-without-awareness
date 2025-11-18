@@ -41,7 +41,7 @@ get_largest_group <- function(df, var) {
 }
 
 # Function to create a fairness object
-get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE) {
+get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE, cutoff = 0.2) {
   # Define the protected variable
   protected <- df |>
     select(-retentie) |>
@@ -53,7 +53,7 @@ get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE) {
     explainer,
     protected = protected,
     privileged = privileged,
-    cutoff = 0.2,
+    cutoff = cutoff,
     verbose = verbose,
     colorize = TRUE
   )
@@ -400,7 +400,8 @@ analyze_fairness <- function(df,
                              df_levels,
                              caption,
                              colors_list,
-                             colors_default) {
+                             colors_default,
+                             cutoff = 0.2) {
   df_fairness_list <- list()
   
   # Make a fairness analysis
@@ -410,7 +411,7 @@ analyze_fairness <- function(df,
     privileged <- get_largest_group(df, var)
     
     # Create a fairness object
-    fairness_object <- get_obj_fairness(df, explain_lf, var, privileged)
+    fairness_object <- get_obj_fairness(df, explain_lf, var, privileged, cutoff = cutoff)
     
     # Create a table from the fairness analysis
     df_fairness_total <- get_df_fairness_total(fairness_object)

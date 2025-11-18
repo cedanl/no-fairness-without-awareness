@@ -34,7 +34,7 @@ create_fairness_plot <- function(fairness_object, group, privileged, caption = N
     labs(
       title = "Fairness check",
       subtitle = glue(
-        "Fairness van het model voor **{group}** ",
+        "Fairness van het model voor **{stringr::str_to_title(group)}** ",
         "ten opzichte van **{privileged}**"
       ),
       caption = caption,

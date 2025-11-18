@@ -18,8 +18,8 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingscode <- 66588
-eoi <- 2019
+opleidingsnaam <- "B Economie en Bedrijfseconomie"
+eoi <- 2010
 opleidingsvorm <- "VT"
 
 library(dplyr)
@@ -73,12 +73,15 @@ mapping_newname <- df_variables |>
   select(Variable, Newname) |>
   tidyr::drop_na()
 
-df_levels <- read.csv("metadata/levels.csv", sep = "\t") |>
+df_levels <- readxl::read_xlsx("metadata/levels.xlsx") |>
   group_by(VAR_Formal_variable) |>
   arrange(VAR_Level_order, .by_group = TRUE) |>
   ungroup()
 
 dec_vopl <- read.csv("metadata/dec/Dec_vopl.csv", sep = "|") |>
+  janitor::clean_names()
+
+dec_isat <- read.csv("metadata/dec/Dec_isat.csv", sep = "|") |>
   janitor::clean_names()
 
 ## . ####
@@ -89,10 +92,11 @@ dec_vopl <- read.csv("metadata/dec/Dec_vopl.csv", sep = "|") |>
 source("R/transform_ev_data.R")
 df1cho2 <- transform_ev_data(
   df1cho,
-  code = opleidingscode,
+  naam = opleidingsnaam,
   eoi = eoi,
   vorm = opleidingsvorm,
-  dec_vopl = dec_vopl
+  dec_vopl = dec_vopl,
+  dec_isat = dec_isat
 )
 
 source("R/transform_vakhavw.R")
@@ -159,7 +163,8 @@ table <- analyze_fairness(
   df_levels,
   caption = NULL,
   colors_default = colors_default,
-  colors_list = colors_list
+  colors_list = colors_list,
+  cutoff = 0.15
 )
 
 flextable::save_as_image(x = table, path = "output/result_table.png")

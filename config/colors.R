@@ -96,7 +96,7 @@ color_list <- list()
 color_list[["geslacht"]] <- c("M" = "#1170AA",
                               "V" = "#FC7D0B")
 
-color_list[["Vooropleiding"]] <- c(
+color_list[["vooropleiding"]] <- c(
   "MBO"                     = "#1170AA",
   "HAVO"                    = "#FC7D0B",
   "VWO"                     = "#F1CE63",
@@ -107,7 +107,7 @@ color_list[["Vooropleiding"]] <- c(
   "Onbekend"                = "#C8D0D9"
 )
 
-color_list[["Aansluiting"]] <- c(
+color_list[["aansluiting"]] <- c(
   "Direct"                  = "#FC7D0B",
   "Tussenjaar"              = "#1170AA",
   "Switch intern"           = "#5FA2CE",

@@ -19,6 +19,7 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 library(ggplot2)
+library(glue)
 
 source("R/set_theme.R")
 source("R/add_theme_elements.R")

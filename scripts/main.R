@@ -18,11 +18,7 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingsnaam <- "B Economie en Bedrijfseconomie"
-eoi <- 2010
-opleidingsvorm <- "VT"
-cutoff <- 0.2
-caption <- NULL
+cfg <- config::get()
 
 library(dplyr)
 source("config/colors.R")
@@ -94,9 +90,9 @@ dec_isat <- read.csv("metadata/dec/Dec_isat.csv", sep = "|") |>
 source("R/transform_ev_data.R")
 df1cho2 <- transform_ev_data(
   df1cho,
-  naam = opleidingsnaam,
-  eoi = eoi,
-  vorm = opleidingsvorm,
+  naam = cfg$opleidingsnaam,
+  eoi = cfg$eoi,
+  vorm = cfg$opleidingsvorm,
   dec_vopl = dec_vopl,
   dec_isat = dec_isat
 )
@@ -192,7 +188,7 @@ for (i in 1:length(sensitive_variables)) {
   
   # Create a fairness object
   source("R/get_obj_fairness.R")
-  fairness_object <- get_obj_fairness(df, explainer, var, privileged, cutoff = cutoff)
+  fairness_object <- get_obj_fairness(df, explainer, var, privileged, cutoff = cfg$cutoff)
   
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -204,7 +200,7 @@ for (i in 1:length(sensitive_variables)) {
   density_plot <- create_density_plot(
     fairness_object,
     group = var,
-    caption = caption,
+    caption = cfg$caption,
     colors_default = colors_default,
     colors_list = colors_list
   )

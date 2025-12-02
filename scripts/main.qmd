@@ -1,17 +1,18 @@
 ---
-title: "De uitkomsten van de kansengelijkheidanalysis"
+title: "`r params$title`"
+
+params:
+  title: "De uitkomsten van de kansengelijkheidanalysis"
+  
 format:
   pdf:
     documentclass: article
     geometry: margin=1in
     fontsize: 11pt
     papersize: A4
+    toc: false
 
 ---
-
-![](../output/result_table.png){fig-align="center"}
-
-**Toelichting:**
 
 ```{r}
 #| label: setup
@@ -21,6 +22,10 @@ format:
 source("../config/colors.R")
 source("../R/get_colored_square.R")
 ```
+
+![](../output/result_table.png){fig-align="center"}
+
+**Toelichting:**
 
 
 -   `r get_colored_square(color = colors_default[["color_bias_negative"]])`  Negatieve bias.

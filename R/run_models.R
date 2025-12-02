@@ -201,8 +201,8 @@ run_models <- function(df) {
     arrange(number)
   
   # Determine the best model
-  best_model     <- df_model_results$model[df_model_results$best == TRUE]
-  best_model_auc <- round(df_model_results$auc[df_model_results$best == TRUE], 4)
+  best_model     <- df_model_results$model[df_model_results$best == TRUE][1]
+  best_model_auc <- round(df_model_results$auc[df_model_results$best == TRUE], 4)[1]
   
   # Build the final models
   last_lr_mod <-

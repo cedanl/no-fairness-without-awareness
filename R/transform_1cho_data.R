@@ -41,10 +41,7 @@ transform_1cho_data <- function(df, df_vak) {
     mutate(across(where(is.logical), as.integer)) |>
     
     ## Create variable dagen_tussen_inschrijving_1_september
-    mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) |>
-    
-    ## Specifically make Retention factor
-    mutate(retentie = factor(retentie))
+    mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 
   
   df
   

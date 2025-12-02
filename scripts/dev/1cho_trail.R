@@ -21,6 +21,8 @@
 opleidingsnaam <- "B Economie en Bedrijfseconomie"
 eoi <- 2010
 opleidingsvorm <- "VT"
+cutoff <- 0.2
+caption <- NULL
 
 library(dplyr)
 source("config/colors.R")
@@ -105,16 +107,35 @@ df1cho_vak2 <- transform_vakhavw(df1cho_vak)
 source("R/transform_1cho_data.R")
 dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
 
+## Add APCG and SES data
 source("R/add_apcg.R")
-df <- add_apcg(dfapcg, dfcyfer)
-
 source("R/add_ses.R")
-df <- add_ses(df, dfses)
-
-df <- df |>
+df <- dfcyfer |>
+  
+  add_apcg(dfapcg) |>
+  
+  
+  add_ses(dfses) |>
+  
+  ## Select variables used in the model
   select(all_of(variables)) |>
+  
   # Imputate all numeric variables with the mean
   mutate(across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
+
+## TODO: TEMP
+# df <- df |>
+#   select(persoonsgebonden_nummer, inschrijvingsjaar, retentie, geslacht, vooropleiding)
+
+# df_0 <- df |>
+#   filter(retentie == 0) |>
+#   sample_n(1000)
+#
+# df_1 <- df |>
+#   filter(retentie == 1) |>
+#   sample_n(1000)
+
+#df <- bind_rows(df_0, df_1)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -137,6 +158,10 @@ flextable::save_as_image(x = tbl_summary, path = "output/sensitive_variables_des
 ## Model train ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## Make retentie numeric
+df <- df |>
+  mutate(across(retentie, ~ if_else(. == 0, "0", "1")))
+
 source("R/run_models.R")
 output <- run_models(df)
 last_fit <- output$last_fit
@@ -155,21 +180,100 @@ explainer <- create_explain_lf(last_fit, best_model)
 ## Analyze Fairness ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/analyze_fairness.R")
-table <- analyze_fairness(
-  df,
-  explainer,
-  sensitive_variables,
-  df_levels,
-  caption = NULL,
-  colors_default = colors_default,
-  colors_list = colors_list,
-  cutoff = 0.15
-)
+df_fairness_list <- list()
 
-flextable::save_as_image(x = table, path = "output/result_table.png")
+# Make a fairness analysis
+for (i in 1:length(sensitive_variables)) {
+  var <- sensitive_variables[i]
+  
+  # Determine the most common subgroup = Privileged
+  source("R/get_largest_group.R")
+  privileged <- get_largest_group(df, var)
+  
+  # Create a fairness object
+  source("R/get_obj_fairness.R")
+  fairness_object <- get_obj_fairness(df, explainer, var, privileged, cutoff = cutoff)
+  
+  ## . ####
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## Create Fairness plots ####
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  
+  source("R/create_density_plot.R")
+  density_plot <- create_density_plot(
+    fairness_object,
+    group = var,
+    caption = caption,
+    colors_default = colors_default,
+    colors_list = colors_list
+  )
+  
+  n_categories <- length(unique(df[[var]])) - 1
+  
+  ggplot2::ggsave(
+    filename = glue("output/fairness_density_{var}.png"),
+    height = (250 + (50 * n_categories)) / 72,
+    width = 640 / 72,
+    bg = colors_default[["background_color"]],
+    device = ragg::agg_png,
+    res = 300,
+    create.dir = TRUE
+  )
+  
+  source("R/create_fairness_plot.R")
+  # Create a plot of the fairness analysis
+  fairness_plot <- suppressWarnings(
+    create_fairness_plot(
+      fairness_object,
+      group = var,
+      privileged = privileged,
+      colors_default = colors_default
+    ) +
+      theme(panel.border = element_rect(
+        colour = "darkgrey",
+        fill = NA,
+        size = 0.4
+      ))
+  )
+  
+  ggplot2::ggsave(
+    filename = glue("output/fairness_plot_{var}.png"),
+    height = (250 + (50 * n_categories)) / 72,
+    width = 640 / 72,
+    bg = colors_default[["background_color"]],
+    device = ragg::agg_png,
+    res = 300,
+    create.dir = TRUE
+  )
+  
+  source("R/get_df_fairness_check_data.R")
+  df_fairness_check_data <- get_df_fairness_check_data(df, fairness_object[["fairness_check_data"]], var)
+  
+  df_fairness_list[[i]] <- df_fairness_check_data |>
+    mutate(
+      FRN_Bias = case_when(
+        FRN_Score < 0.8 ~ "Negatieve Bias",
+        FRN_Score > 1.25 ~ "Positieve Bias",
+        .default = "Geen Bias"
+      )
+    )
+}
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Save names ####
+## Create Flextable  ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+# Create a table from the fairness analysis
+source("R/get_df_fairness_wide.R")
+df_fairness_wide  <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
+
+# Create a flextable
+source("R/get_ft_fairness.R")
+ft_fairness <- get_ft_fairness(flextable(df_fairness_wide |>
+                                           select(-c(Groep_label, Text))), colors_default = colors_default)
+
+
+flextable::save_as_image(x = ft_fairness, path = "output/result_table.png")

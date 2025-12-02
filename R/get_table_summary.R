@@ -23,13 +23,13 @@ library(flextable)
 
 # Function to create a summary table
 get_table_summary <- function(df, mapping) {
-  df <- df |>
+  df2 <- df |>
     
     # Remove columns not relevant to the analysis
     select(-c(persoonsgebonden_nummer, inschrijvingsjaar)) |>
     
     # Adjust the labels of Retention from True to Ja, and from False to Nee
-    mutate(retentie = forcats::fct_recode(retentie, "Nee" = "0", "Ja" = "1")) |>
+    mutate(retentie = forcats::fct_recode(factor(retentie), "Nee" = "0", "Ja" = "1")) |>
     
     # Adjust the order of the labels of Retentie
     mutate(retentie = forcats::fct_relevel(retentie, "Ja", "Nee")) |>
@@ -43,7 +43,7 @@ get_table_summary <- function(df, mapping) {
                    stringr::str_replace_all("_", " ") |>
                    stringr::str_to_title())
   
-  df_summary <- df |>
+  df_summary <- df2 |>
     
     tbl_summary(
       by = Retentie,

@@ -234,10 +234,6 @@ run_models <- function(df) {
     last_fit <- last_fit_rf
   }
   
-  # Keep results, model results and associated data
-  saveRDS(last_fits, file = "output/last-fits.rds")
-  saveRDS(df_model_results, file = "output/modelresults.rds")
-  
   list(last_fit = last_fit, best_model = best_model)
   
 }

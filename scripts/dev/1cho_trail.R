@@ -18,7 +18,10 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-cfg <- config::get()
+opleidingsnaam <- "B Economie en Bedrijfseconomie"
+eoi <- 2010
+opleidingsvorm <- "VT"
+cutoff <- 0.2
 
 library(dplyr)
 source("config/colors.R")
@@ -90,9 +93,9 @@ dec_isat <- read.csv("metadata/dec/Dec_isat.csv", sep = "|") |>
 source("R/transform_ev_data.R")
 df1cho2 <- transform_ev_data(
   df1cho,
-  naam = cfg$opleidingsnaam,
-  eoi = cfg$eoi,
-  vorm = cfg$opleidingsvorm,
+  naam = opleidingsnaam,
+  eoi = eoi,
+  vorm = opleidingsvorm,
   dec_vopl = dec_vopl,
   dec_isat = dec_isat
 )
@@ -118,20 +121,6 @@ df <- dfcyfer |>
   
   # Imputate all numeric variables with the mean
   mutate(across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
-
-## TODO: TEMP
-# df <- df |>
-#   select(persoonsgebonden_nummer, inschrijvingsjaar, retentie, geslacht, vooropleiding)
-
-# df_0 <- df |>
-#   filter(retentie == 0) |>
-#   sample_n(1000)
-#
-# df_1 <- df |>
-#   filter(retentie == 1) |>
-#   sample_n(1000)
-
-#df <- bind_rows(df_0, df_1)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -200,7 +189,7 @@ for (i in 1:length(sensitive_variables)) {
   density_plot <- create_density_plot(
     fairness_object,
     group = var,
-    caption = cfg$caption,
+    caption = caption,
     colors_default = colors_default,
     colors_list = colors_list
   )

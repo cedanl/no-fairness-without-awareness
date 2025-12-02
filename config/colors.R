@@ -1,31 +1,3 @@
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# colors.R ####
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# R code of the Learning Technology & Analytics Research Group of THUAS
-# Copyright 2025 THUAS
-# Web Page: http://www.thuas.com
-# Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: Yes
-#
-# Purpose: Inclusion of the color settings
-#
-# Dependencies: None
-#
-# Datasets: DNA
-#
-# Remarks:
-# 1) None.
-# 2) ___
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# . ####
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 1. COLOR LISTS ####
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 1.1 Standard colors ####
-
 colors_default <- c(
   
   # Colors of title, subject, subtitle, caption, background

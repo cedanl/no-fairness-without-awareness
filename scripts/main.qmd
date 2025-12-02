@@ -1,0 +1,36 @@
+---
+title: "De uitkomsten van de kansengelijkheidanalysis"
+format:
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    fontsize: 11pt
+    papersize: A4
+
+---
+
+![](../output/result_table.png){fig-align="center"}
+
+**Toelichting:**
+
+```{r}
+#| label: setup
+#| echo: false
+#| include: false
+
+source("../config/colors.R")
+source("../R/get_colored_square.R")
+```
+
+
+-   `r get_colored_square(color = colors_default[["color_bias_negative"]])`  Negatieve bias.
+-   `r get_colored_square(color = colors_default[["color_bias_positive"]])`  Positieve bias.
+-   `r get_colored_square(color = colors_default[["color_bias_neutral"]])`  Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
+-   `r get_colored_square(color = colors_default[["color_bias_none"]])`  De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+-   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
+-   We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.
+
+
+\newpage
+
+![](../output/sensitive_variables_descriptive_table.png)

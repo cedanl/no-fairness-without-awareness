@@ -20,7 +20,7 @@
 
 renv::restore()
 set.seed(100)
-
+rio::install_formats()
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -31,7 +31,7 @@ opleidingsnaam <- "B Economie en Bedrijfseconomie"
 eoi <- 2010
 opleidingsvorm <- "VT"
 
-df1cho <- arrow::read_parquet(
+df1cho <- rio::import(
   fs::path(
     Sys.getenv("LTA_ROOT"),
     "00 LTA Data",
@@ -42,7 +42,7 @@ df1cho <- arrow::read_parquet(
 )
 
 
-df1cho_vak <- arrow::read_parquet(
+df1cho_vak <- rio::import(
   fs::path(
     Sys.getenv("LTA_ROOT"),
     "00 LTA Data",

@@ -21,10 +21,8 @@
 library(dplyr)
 
 transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
-  
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {
-    
     students <- unique(pull(df, persoonsgebonden_nummer))
     
     df_full |>
@@ -42,10 +40,11 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   }
   
   recode_vooropleiding <- function(df, dec_vopl) {
-    
-    cols_vo <- c("hoogste_vooropleiding_voor_het_ho",
-                  "hoogste_vooropleiding_binnen_het_ho",
-                  "hoogste_vooropleiding")
+    cols_vo <- c(
+      "hoogste_vooropleiding_voor_het_ho",
+      "hoogste_vooropleiding_binnen_het_ho",
+      "hoogste_vooropleiding"
+    )
     
     mapping <- setNames(dec_vopl$omschrijving_vooropleiding,
                         dec_vopl$code_vooropleiding)
@@ -68,22 +67,26 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
     left_join(dec_isat) |>
     
     ## Recode opleidingsvorm
-    mutate(across(opleidingsvorm, ~case_when(. == 1 ~ "VT",
-                                             . == 2 ~ "DT",
-                                             . == 3 ~ "DU",
-                                             TRUE ~ as.character(.)))) |>
+    mutate(across(
+      opleidingsvorm,
+      ~ case_when(. == 1 ~ "VT", . == 2 ~ "DT", . == 3 ~ "DU", TRUE ~ as.character(.))
+    )) |>
     
     ## Filter
-    filter(#naam_opleiding == naam,
-           eerste_jaar_aan_deze_opleiding_instelling >= eoi,
-           opleidingsvorm == vorm)
-
+    filter(
+      #naam_opleiding == naam,
+      eerste_jaar_aan_deze_opleiding_instelling >= eoi,
+      opleidingsvorm == vorm
+    )
+  
   ## Split this proces such that only relevant students are selected and safe time
   df_selection |>
     
     group_by(persoonsgebonden_nummer) |>
     
-    mutate(retentie = any(inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling + 1)) |>
+    mutate(retentie = any(
+      inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling + 1
+    )) |>
     
     ungroup() |>
     
@@ -99,37 +102,101 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
     mutate(dubbele_studie = ifelse(aantal_inschrijvingen > 1, TRUE, FALSE)) |>
     
     ## Make postcode integer
-    mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.))) |>
+    mutate(across(postcodecijfers_student_op_1_oktober, ~ as.integer(.))) |>
     
     recode_vooropleiding(dec_vopl) |>
     
-    mutate(vooropleiding = case_when(grepl("^vwo", hoogste_vooropleiding) ~ "VWO",
-                                     grepl("^wo|^hbo", hoogste_vooropleiding) ~ "HO",
-                                     grepl("^mbo", hoogste_vooropleiding) ~ "MBO",
-                                     grepl("^havo", hoogste_vooropleiding) ~ "HAVO",
-                                     grepl("buitenlands diploma", hoogste_vooropleiding) ~ "BD",
-                                     grepl("coll.doc.", hoogste_vooropleiding) ~ "CD",
-                                     grepl("^overig", hoogste_vooropleiding) ~ "Overig",
-                                     TRUE ~ "Onbekend")) |>
-    
-    ## First year for a student in the higher education type (ba, ma, ad) and soort (hbo, wo) 
-    mutate(indicatie_eerstejaars_type = indicatie_eerstejaars_continu_type_ho_binnen_ho %in% c(1, 3),
-           indicatie_eerstejaar_instelling = indicatie_eerstejaars_continu_actuele_instelling %in% c(1,3)) |>
-    
-    
-    mutate(aansluiting = case_when(
-      ## Degree of pre-education was earned 1 year before first year
-      indicatie_eerstejaars_type == TRUE & diplomajaar_hoogste_vooropleiding == eerste_jaar_aan_deze_opleiding_instelling - 1  ~ "Direct",
-      ## Degree of pre-education was earned more than 1 year before
-      indicatie_eerstejaars_type == TRUE & diplomajaar_hoogste_vooropleiding < eerste_jaar_aan_deze_opleiding_instelling - 1 ~ "Tussenjaar",
-      ## Student has switched from another education program
-      indicatie_eerstejaars_type == FALSE & indicatie_eerstejaar_instelling == TRUE ~ "Externe switch",
+    mutate(
+      vooropleiding = case_when(
+        grepl("^vwo", hoogste_vooropleiding) ~ "VWO",
+        grepl("^wo|^hbo", hoogste_vooropleiding) ~ "HO",
+        grepl("^mbo", hoogste_vooropleiding) ~ "MBO",
+        grepl("^havo", hoogste_vooropleiding) ~ "HAVO",
+        grepl("buitenlands diploma", hoogste_vooropleiding) ~ "BD",
+        grepl("coll.doc.", hoogste_vooropleiding) ~ "CD",
+        grepl("^overig", hoogste_vooropleiding) ~ "Overig",
+        TRUE ~ "Onbekend"
+      )
+    ) |>
+    mutate(
+      # Zorg dat jaarvelden numeriek zijn
+      inschrijvingsjaar                  = as.integer(inschrijvingsjaar),
+      diplomajaar_hoogste_vooropleiding  = as.integer(diplomajaar_hoogste_vooropleiding),
+      eerste_jaar_in_het_hoger_onderwijs = as.integer(eerste_jaar_in_het_hoger_onderwijs),
+      eerste_jaar_aan_deze_instelling    = as.integer(eerste_jaar_aan_deze_instelling)
       
-      ## Student has switched from another education program
-      indicatie_eerstejaars_type == FALSE & indicatie_eerstejaar_instelling == FALSE ~ "Interne switch",
+    ) |>
+    mutate(
+      # 2e studie: neveninschrijving in continu-domein HO
+      # (code 2 = echte neveninschrijving)
+      is_2e_studie =
+        as.character(soort_inschrijving_continu_hoger_onderwijs) == "2",
       
-      TRUE ~ "Onbekend"
+      # Na CD / 21+ op basis van hoogste vooropleiding vóór HO
+      is_na_cd = vooropleiding == "CD",
       
-      ))
+      # Heeft eerder HO-jaar dan de huidige inschrijving?
+      indicatie_eerstejaars_type = indicatie_eerstejaars_continu_type_ho_binnen_ho %in% c(1, 3),
+      
+      # Externe switch:
+      # eerder HO, maar eerste jaar aan deze instelling is gelijk aan huidig inschrijvingsjaar
+      # => eerder elders gezeten, nu nieuwe instelling
+      is_externe_switch =
+        !indicatie_eerstejaars_type &
+        !is.na(eerste_jaar_aan_deze_instelling) &
+        eerste_jaar_aan_deze_instelling == inschrijvingsjaar,
+      
+      # Interne switch:
+      # eerder HO én eerder jaar aan deze instelling dan huidig inschrijvingsjaar
+      # => eerder andere opleiding binnen dezelfde instelling
+      is_interne_switch =
+        !indicatie_eerstejaars_type &
+        !is.na(eerste_jaar_aan_deze_instelling) &
+        eerste_jaar_aan_deze_instelling < inschrijvingsjaar
+    ) |>
+    mutate(
+      aansluiting = case_when(
+        # 1) 2e studie (simultane inschrijving)
+        is_2e_studie ~ "2e Studie",
+        
+        # 2) Na CD / 21+
+        is_na_cd ~ "Na CD",
+        
+        # 3) Directe instroom:
+        # diplomajaar = inschrijvingsjaar - 1 (diploma-jaar (T) → instroomjaar T+1)!is.na(diplomajaar_hoogste_vooropleiding) &
+        indicatie_eerstejaars_type & diplomajaar_hoogste_vooropleiding == (inschrijvingsjaar - 1L) ~ "Direct",
+        
+        # 4) Tussenjaar:
+        # diplomajaar < inschrijvingsjaar - 1!is.na(diplomajaar_hoogste_vooropleiding) &
+        indicatie_eerstejaars_type & diplomajaar_hoogste_vooropleiding < (inschrijvingsjaar - 1L) ~ "Tussenjaar",
+        
+        # 5) Externe switch
+        is_externe_switch ~ "Switch extern",
+        
+        # 6) Interne switch
+        is_interne_switch ~ "Switch intern",
+        
+        # 7) Onbekend: echt geen bruikbare info over vooropleiding
+        vooropleiding == "Onbekend" ~ "Onbekend",
+        
+        # 8) Rest valt in 'Overig'
+        TRUE ~ "Overig"
+      ),
+      aansluiting = factor(
+        aansluiting,
+        levels = c(
+          "Direct",
+          "Tussenjaar",
+          "Switch intern",
+          "Switch extern",
+          "2e Studie",
+          "Na CD",
+          "Overig",
+          "Onbekend"
+        )
+      )
+    )
+  
+  
   
 }

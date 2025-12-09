@@ -146,9 +146,9 @@ get_df_fairness_wide <- function(df_list,
     left_join(
       df_levels |>
         filter(!is.na(VAR_Level_label_NL_description)) |>
-        select(VAR_Level_NL, VAR_Level_label_NL_description) |>
+        select(VAR_Level_NL, VAR_Level_label_NL_description, VAR_Formal_variable) |>
         distinct(),
-      by = c("Groep" = "VAR_Level_NL")
+      by = c("Groep" = "VAR_Level_NL", "Variabele" = "VAR_Formal_variable")
     ) |>
     mutate(
       Groep_label = if_else(

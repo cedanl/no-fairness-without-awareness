@@ -136,11 +136,22 @@ run_nfwa <- function(df,
   source("R/get_df_fairness_wide.R")
   df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
   
+  source("R/get_fairness_conclusions.R")
+  # Now create a text per variable from the table
+  conclusions_list <- list()
+  for (i in sensitive_variables) {
+    conclusions_list[[i]] <- get_fairness_conclusions(df_fairness_wide, i)
+  }
+  
+  saveRDS(conclusions_list, file = "output/conclusions_list.rds")
+  
+  
   source("R/get_ft_fairness.R")
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>
                                                         dplyr::select(-c(Groep_label, Text))),
                                  colors_default = colors_default)
   
-  flextable::save_as_image(x    = ft_fairness, path = "output/result_table.png")
+  flextable::save_as_image(x= ft_fairness, path = "output/result_table.png")
+  
   
 }

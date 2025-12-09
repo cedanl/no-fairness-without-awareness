@@ -18,8 +18,9 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-set.seed(10)
 renv::restore()
+set.seed(100)
+
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -73,6 +74,16 @@ df <- transform_data(metadata,
                      eoi,
                      df1cho,
                      df1cho_vak)
+##temp
+df_1 <- df |>
+  filter(retentie == 1) |>
+  sample_n(1000)
+
+df_0 <- df |>
+  filter(retentie == 0) |>
+  sample_n(1000)
+
+df <- bind_rows(df_1, df_0)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,7 +108,7 @@ flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_var
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 source("scripts/03_run_nfwa.R")
-run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = 0.2)
+run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = 0.5)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -114,12 +125,5 @@ quarto::quarto_render(
     opleidingsvorm,
     ".pdf"
   ),
-  execute_params = list(
-    title = paste0(
-      "De uitkomsten van de kansengelijkheidanalysis voor \t\t",
-      opleidingsnaam,
-      " ",
-      opleidingsvorm
-    )
-  )
+  execute_params = list(subtitle = paste0(opleidingsnaam, " ", opleidingsvorm))
 )

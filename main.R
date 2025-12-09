@@ -19,6 +19,7 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 set.seed(10)
+renv::restore()
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -115,7 +116,7 @@ quarto::quarto_render(
   ),
   execute_params = list(
     title = paste0(
-      "De uitkomsten van de kansengelijkheidanalysis voor \n",
+      "De uitkomsten van de kansengelijkheidanalysis voor \t\t",
       opleidingsnaam,
       " ",
       opleidingsvorm

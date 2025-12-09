@@ -110,6 +110,26 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
                                      grepl("buitenlands diploma", hoogste_vooropleiding) ~ "BD",
                                      grepl("coll.doc.", hoogste_vooropleiding) ~ "CD",
                                      grepl("^overig", hoogste_vooropleiding) ~ "Overig",
-                                     TRUE ~ "Onbekend"))
+                                     TRUE ~ "Onbekend")) |>
+    
+    ## First year for a student in the higher education type (ba, ma, ad) and soort (hbo, wo) 
+    mutate(indicatie_eerstejaars_type = indicatie_eerstejaars_continu_type_ho_binnen_ho %in% c(1, 3),
+           indicatie_eerstejaar_instelling = indicatie_eerstejaars_continu_actuele_instelling %in% c(1,3)) |>
+    
+    
+    mutate(aansluiting = case_when(
+      ## Degree of pre-education was earned 1 year before first year
+      indicatie_eerstejaars_type == TRUE & diplomajaar_hoogste_vooropleiding == eerste_jaar_aan_deze_opleiding_instelling - 1  ~ "Direct",
+      ## Degree of pre-education was earned more than 1 year before
+      indicatie_eerstejaars_type == TRUE & diplomajaar_hoogste_vooropleiding < eerste_jaar_aan_deze_opleiding_instelling - 1 ~ "Tussenjaar",
+      ## Student has switched from another education program
+      indicatie_eerstejaars_type == FALSE & indicatie_eerstejaar_instelling == TRUE ~ "Externe switch",
+      
+      ## Student has switched from another education program
+      indicatie_eerstejaars_type == FALSE & indicatie_eerstejaar_instelling == FALSE ~ "Interne switch",
+      
+      TRUE ~ "Onbekend"
+      
+      ))
   
 }

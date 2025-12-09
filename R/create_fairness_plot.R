@@ -19,8 +19,12 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to create a fairness plot
-create_fairness_plot <- function(fairness_object, group, privileged, caption = NULL, colors_default) {
-  
+create_fairness_plot <- function(fairness_object,
+                                 group,
+                                 privileged,
+                                 colors_default,
+                                 n_categories,
+                                 caption = NULL) {
   # Determine the y axis
   y_breaks <- seq(-100, 100, by = 0.2)
   
@@ -62,9 +66,23 @@ create_fairness_plot <- function(fairness_object, group, privileged, caption = N
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
-      strip.text = element_text(hjust = 0)
+      strip.text = element_text(hjust = 0),
+      panel.border = ggplot2::element_rect(
+        colour = "darkgrey",
+        fill   = NA,
+        size   = 0.4
+      )
     )
   
-  fairness_plot
+  ggplot2::ggsave(
+    filename  = glue::glue("output/fairness_plot_{group}.png"),
+    plot      = fairness_plot,
+    height    = (250 + (50 * n_categories)) / 72,
+    width     = 640 / 72,
+    bg        = colors_default[["background_color"]],
+    device    = ragg::agg_png,
+    res       = 300,
+    create.dir = TRUE
+  )
   
 }

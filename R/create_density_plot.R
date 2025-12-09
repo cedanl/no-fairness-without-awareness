@@ -25,10 +25,14 @@ source("R/set_theme.R")
 source("R/add_theme_elements.R")
 
 # Function to create a density plot
-create_density_plot <- function(fairness_object, group, caption, colors_default, colors_list) {
-  
+create_density_plot <- function(fairness_object,
+                                group,
+                                caption,
+                                colors_default,
+                                colors_list,
+                                n_categories,
+                                var) {
   set_xy_axis <- function(axis, breaks = 4) {
-    
     if (axis == "x") {
       x_axis_list <- list()
       x_axis_list[["x_breaks"]] <- seq(0, 1, by = (1 / breaks))
@@ -58,15 +62,13 @@ create_density_plot <- function(fairness_object, group, caption, colors_default,
   }
   
   # Create a density plot
-  density_plot <- fairness_object |> 
+  density_plot <- fairness_object |>
     
     fairmodels::plot_density() +
     
     # Add title and subtitle
     labs(
-      title = glue(
-        "Verdeling en dichtheid van retentie"
-      ),
+      title = glue("Verdeling en dichtheid van retentie"),
       subtitle = glue("Naar **{stringr::str_to_title(group)}**"),
       caption = caption,
       x = NULL,
@@ -81,10 +83,7 @@ create_density_plot <- function(fairness_object, group, caption, colors_default,
   density_plot <- density_plot +
     
     # Add a single scale for the fill
-    scale_fill_manual(
-      name = NULL,
-      values = .values
-    ) +
+    scale_fill_manual(name = NULL, values = .values) +
     
     # Adjust the x-axis scale
     scale_x_continuous(breaks = x_axis_list[["x_breaks"]],
@@ -117,13 +116,19 @@ create_density_plot <- function(fairness_object, group, caption, colors_default,
     )
   
   # Add elements.
-  density_plot <- add_theme_elements(density_plot,
-                                     title_subtitle = TRUE) +
-    theme(legend.position = "bottom",
-          legend.title = element_blank()) +
+  density_plot <- add_theme_elements(density_plot, title_subtitle = TRUE) +
+    theme(legend.position = "bottom", legend.title = element_blank()) +
     guides(fill = guide_legend(nrow = 1))
   
-  
-  density_plot
+  ggplot2::ggsave(
+    filename  = glue::glue("output/fairness_density_{group}.png"),
+    plot      = density_plot,
+    height    = (250 + (50 * n_categories)) / 72,
+    width     = 640 / 72,
+    bg        = colors_default[["background_color"]],
+    device    = ragg::agg_png,
+    res       = 300,
+    create.dir = TRUE
+  )
   
 }

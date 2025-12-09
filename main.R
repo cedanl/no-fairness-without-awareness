@@ -18,15 +18,16 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+set.seed(10)
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Variabelen ####
+## INPUT ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 opleidingsnaam <- "B Economie en Bedrijfseconomie"
 eoi <- 2010
 opleidingsvorm <- "VT"
-cutoff <- 0.2
 
 df1cho <- arrow::read_parquet(
   fs::path(
@@ -57,21 +58,45 @@ df1cho_vak <- arrow::read_parquet(
 source("scripts/01_read_metadata.R")
 metadata <- read_metadata()
 
+
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Transform Data ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+source("scripts/02_transform_data.R")
+df <- transform_data(metadata,
+                     opleidingsnaam,
+                     opleidingsvorm,
+                     eoi,
+                     df1cho,
+                     df1cho_vak)
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Create Data Summary ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+sensitive_variables <- metadata$sensitive_variables
+mapping_newname <- metadata$mapping_newname
+df_levels <- metadata$df_levels
+
+source("R/get_table_summary.R")
+tbl_summary <- get_table_summary(df, mapping_newname)
+flextable::save_as_image(x = tbl_summary, path = "output/descriptive_table.png")
+
+tbl_summary_sensitive <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
+flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_variables_descriptive_table.png")
+
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## NFWA runnen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("scripts/02_run_nfwa.R")
-run_nfwa(
-  opleidingsnaam = opleidingsnaam,
-  opleidingsvorm = opleidingsvorm,
-  eoi = eoi,
-  df1cho = df1cho,
-  df1cho_vak = df1cho_vak,
-  metadata = metadata,
-  cutoff = cutoff
-)
+source("scripts/03_run_nfwa.R")
+run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = 0.2)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -80,7 +105,7 @@ run_nfwa(
 
 
 quarto::quarto_render(
-  input = "scripts/03_render_pdf.qmd",
+  input = "scripts/04_render_pdf.qmd",
   output_file = paste0(
     "kansengelijkheidanalysis_",
     gsub(" ", "_", tolower(opleidingsnaam)),
@@ -88,7 +113,6 @@ quarto::quarto_render(
     opleidingsvorm,
     ".pdf"
   ),
-  output_dir = "output/",
   execute_params = list(
     title = paste0(
       "De uitkomsten van de kansengelijkheidanalysis voor \n",

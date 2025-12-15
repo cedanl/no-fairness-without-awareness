@@ -1,4 +1,4 @@
-<h1>Fairness Awareness (NFWA) Analysis ✨</h1>
+<h1>No Fairness Without Awareness (NFWA) Analysis ✨</h1>
 
 <p>🚀 Analyze the fairness of your studyprogramme</p>
 

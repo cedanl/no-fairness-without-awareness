@@ -21,8 +21,6 @@
 library(dplyr)
 
 transform_vakhavw <- function(df) {
-  vars <- c("netl", "entl", "nat", "wis")
-  
   
   df |>
     ## Clean names
@@ -65,9 +63,7 @@ transform_vakhavw <- function(df) {
     mutate(wis = rowSums(across(starts_with("wis")), na.rm = TRUE) /
              rowSums(!is.na(across(
                starts_with("wis")
-             )))) |>
-    
-    mutate(across(all_of(vars), ~ ifelse(is.na(.x), 1, 0), .names = "{.col}_missing"))
+             )))) 
   
   
 }

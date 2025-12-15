@@ -24,7 +24,7 @@ transform_1cho_data <- function(df, df_vak) {
 
   
   df <- df |>
-    inner_join(
+    left_join(
       df_vak,
       by = c("persoonsgebonden_nummer" = "persoonsgebonden_nummer"),
       relationship = "many-to-one"

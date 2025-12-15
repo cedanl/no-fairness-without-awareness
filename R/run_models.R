@@ -26,6 +26,7 @@ run_models <- function(df) {
   df_model_results <- data.frame(model = character(), auc = numeric())
   
   # Split the data into 3 parts: 60%, 20% and 20%
+  set.seed(100)
   splits      <- initial_validation_split(df, strata = retentie, prop = c(0.6, 0.2))
   
   # Create three sets: a training set, a test set and a validation set

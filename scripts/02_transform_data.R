@@ -57,13 +57,21 @@ transform_data <- function(metadata,
   source("R/add_apcg.R")
   source("R/add_ses.R")
   
+  vars <- c("netl", "entl", "nat", "wis")
   df <- dfcyfer |>
+    
     add_apcg(dfapcg) |>
+    
     add_ses(dfses) |>
+    
+    dplyr::mutate(dplyr::across(all_of(vars), ~ ifelse(is.na(.x), 1, 0), .names = "{.col}_missing")) |>
     # Select variables used in the model
     dplyr::select(dplyr::all_of(variables)) |>
     # Impute all numeric variables with the mean
-    dplyr::mutate(dplyr::across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
+    dplyr::mutate(dplyr::across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))) 
+    
+
+  
   
   return(df)
 }

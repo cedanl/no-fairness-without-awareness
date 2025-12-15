@@ -74,7 +74,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
     
     ## Filter
     filter(
-      #naam_opleiding == naam,
+      naam_opleiding == naam,
       eerste_jaar_aan_deze_opleiding_instelling >= eoi,
       opleidingsvorm == vorm
     )
@@ -91,9 +91,6 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
     ungroup() |>
     
     filter(inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling) |>
-    
-    ## TODO: TEMP
-    filter(inschrijvingsjaar < 2023) |>
     
     ## Create variable aantal_inschrijvingen
     mutate_aantal_inschrijvingen(df) |>

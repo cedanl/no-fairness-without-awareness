@@ -26,7 +26,7 @@ rio::install_formats()
 ## INPUT ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingsnaam <- "B Economie en Bedrijfseconomie"
+opleidingsnaam <- "B International Business Administration"
 eoi <- 2010
 opleidingsvorm <- "VT"
 
@@ -107,7 +107,6 @@ run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 
 quarto::quarto_render(
   input = "scripts/04_render_pdf.qmd",
-  output_dir = "../output",
   output_file = paste0(
     "kansengelijkheidanalysis_",
     gsub(" ", "_", tolower(opleidingsnaam)),

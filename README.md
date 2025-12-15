@@ -1,10 +1,9 @@
-::: {align="center"}
 <h1>Fairness Awareness (NFWA) Analysis ✨</h1>
 
 <p>🚀 Analyze the fairness of your studyprogramme</p>
 
 <p><a href="#"><img src="https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&amp;logoColor=white" alt="Windows"/></a> <a href="#"><img src="https://img.shields.io/badge/macOS-000000?logo=apple&amp;logoColor=F0F0F0" alt="macOS"/></a> <a href="#"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&amp;logoColor=black" alt="Linux"/></a> <img src="https://badgen.net/github/last-commit/cedanl/fairnessawareness" alt="GitHub Last Commit"/> <img src="https://badgen.net/github/contributors/cedanl/fairnessawareness" alt="Contributors"/> <img src="https://img.shields.io/github/license/cedanl/fairnessawareness" alt="GitHub License"/></p>
-:::
+
 
 Explore admission/retention data, train predictive models, and report potential fairness issues. The workflow starts in `main.R` and orchestrates metadata loading, data cleaning, model training, fairness checks, and Quarto reporting.
 

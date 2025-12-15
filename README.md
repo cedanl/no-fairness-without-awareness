@@ -45,8 +45,7 @@ Explore admission/retention data, train predictive models, and report potential 
                     +-----------+------------+
                                 |
                                 v
-    output/result_table.png, output/conclusions_list.rds,
-    output/descriptive_table.png, scripts/kansengelijkheid...pdf
+                scripts/kansengelijkheid...pdf
 ```
 
 ```
@@ -95,7 +94,7 @@ main.R
     -   Parquet or CSV for EV (1CHO) — enrollment/retention base; output from project: [1cijferho](https://github.com/cedanl/1cijferho)
     -   Parquet or CSV for VAKHAVW (1CHO) — course-level detail
     -   Metadata CSV/XLSX files already in `metadata/`
--   Update `main.R` to point to your data files (replace the sample filenames). If you use CSV, load with `read.csv`/`readr::read_csv` before passing to the transform step.
+-   Update `main.R` to point to your data files (replace the sample filenames)
 -   Adjust `metadata/variabelen.xlsx` to add/remove modeling variables or mark new sensitive fields; the pipeline reads this automatically.
 -   Factor orderings come from `metadata/levels.xlsx`. Update that to control display and fairness summaries.
 
@@ -124,12 +123,6 @@ main.R
     -   🖥️ Shiny interface: load `df1cho`/`df1cho_vak` from CSV uploads, then present dropdowns for `opleidingsnaam` and `opleidingsvorm` and run the pipeline on demand.
     -   🎛️ Parameter UI: expose the fairness cutoff, model choices, and color themes as configurable inputs.
     -   💾 Caching/intermediate saves: persist transformed data to speed up iterative runs.
-
-## Running Pieces Independently
-
--   Descriptives only: run up to the “Create Data Summary” block in `main.R`.
--   Fairness only: prepare `df`, `df_levels`, and `sensitive_variables`, then call `run_nfwa()` directly.
--   Reporting only: re-run `quarto::quarto_render()` if the intermediate outputs already exist.
 
 ## Reproducibility & Conventions
 

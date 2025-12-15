@@ -123,6 +123,7 @@ main.R
     -   🖥️ Shiny interface: load `df1cho`/`df1cho_vak` from CSV uploads, then present dropdowns for `opleidingsnaam` and `opleidingsvorm` and run the pipeline on demand.
     -   🎛️ Parameter UI: expose the fairness cutoff, model choices, and color themes as configurable inputs.
     -   💾 Caching/intermediate saves: persist transformed data to speed up iterative runs.
+    -   🎯 Multi-seed bootstrapping: run the fairness pipeline over multiple seeds and aggregate conclusions to spot unstable metrics before acting on them.
 
 ## Reproducibility & Conventions
 

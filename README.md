@@ -7,6 +7,56 @@
 
 Explore admission/retention data, train predictive models, and report potential fairness issues. The workflow starts in `main.R` and orchestrates metadata loading, data cleaning, model training, fairness checks, and Quarto reporting.
 
+## Pipeline at a Glance
+
+```
+ Parquet/CSV (df1cho, df1cho_vak)   metadata/ dictionaries
+                │                            │
+                └──────────────┬─────────────┘
+                               v
+                    +------------------------+
+                    | scripts/01_read_       |
+                    | metadata.R             |
+                    |  - read lookups        |
+                    |  - mark sensitive vars |
+                    +-----------+------------+
+                                |
+                                v
+                    +------------------------+
+                    | scripts/02_transform_  |
+                    | data.R                 |
+                    |  - enrich APCG/SES     |
+                    |  - select variables    |
+                    |  - prep factor levels  |
+                    +-----------+------------+
+                                |
+                                v
+            +-------------------+-------------------+
+            | scripts/03_run_nfwa.R                 |
+            |  - split/train/validate (glmnet,      |
+            |    ranger)                            |
+            |  - fairness metrics/tables/plots      |
+            +-------------------+-------------------+
+                                |
+                                v
+                    +------------------------+
+                    | scripts/04_render_pdf. |
+                    | qmd (Quarto)           |
+                    +-----------+------------+
+                                |
+                                v
+    output/result_table.png, output/conclusions_list.rds,
+    output/descriptive_table.png, scripts/kansengelijkheid...pdf
+```
+
+```
+main.R
+  ├─ sets knobs (opleiding, eoi, opleidingsvorm, cutoff)
+  ├─ calls renv::restore() once
+  ├─ sources stage scripts
+  └─ writes results to output/
+```
+
 ## Quick Start
 
 -   📦 Install: R (≥4.3); Quarto CLI; a LaTeX distribution for PDF output (e.g., TinyTeX or TeX Live); system build tools for compiling R packages (e.g., Xcode Command Line Tools on macOS, Rtools on Windows).

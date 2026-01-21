@@ -4,12 +4,11 @@
 
 <p><a href="#"><img src="https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&amp;logoColor=white" alt="Windows"/></a> <a href="#"><img src="https://img.shields.io/badge/macOS-000000?logo=apple&amp;logoColor=F0F0F0" alt="macOS"/></a> <a href="#"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&amp;logoColor=black" alt="Linux"/></a> <img src="https://badgen.net/github/last-commit/cedanl/no-fairness-without-awareness" alt="GitHub Last Commit"/> <img src="https://badgen.net/github/contributors/cedanl/no-fairness-without-awareness" alt="Contributors"/> <img src="https://img.shields.io/github/license/cedanl/no-fairness-without-awareness" alt="GitHub License"/></p>
 
-
 Explore admission/retention data, train predictive models, and report potential fairness issues. The workflow starts in `main.R` and orchestrates metadata loading, data cleaning, model training, fairness checks, and Quarto reporting.
 
 ## Pipeline at a Glance
 
-```
+```         
  Parquet/CSV (df1cho, df1cho_vak)   metadata/ dictionaries
                 │                            │
                 └──────────────┬─────────────┘
@@ -48,7 +47,7 @@ Explore admission/retention data, train predictive models, and report potential 
                 scripts/kansengelijkheid...pdf
 ```
 
-```
+```         
 main.R
   ├─ sets knobs (opleiding, eoi, opleidingsvorm, cutoff)
   ├─ calls renv::restore() once
@@ -140,4 +139,6 @@ main.R
 
 ## Reference
 
--   The approach and report text reference the LTA lector’s inaugural lecture: “[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](<https://zenodo.org/records/14204674>)"
+The approach and report text reference is based on the research of Dr. Theo Bakker, Professor of Learning Technology & Analytics at The Hague University of Applied Sciences.
+
+See: “[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)"

@@ -1,144 +1,211 @@
-<h1>No Fairness Without Awareness (NFWA) Analysis ✨</h1>
+<h1>No Fairness Without Awareness (NFWA) Analyse</h1>
 
-<p>🚀 Analyze the fairness of your studyprogramme</p>
+<p>Analyseer de kansengelijkheid van je opleiding</p>
 
 <p><a href="#"><img src="https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&amp;logoColor=white" alt="Windows"/></a> <a href="#"><img src="https://img.shields.io/badge/macOS-000000?logo=apple&amp;logoColor=F0F0F0" alt="macOS"/></a> <a href="#"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&amp;logoColor=black" alt="Linux"/></a> <img src="https://badgen.net/github/last-commit/cedanl/no-fairness-without-awareness" alt="GitHub Last Commit"/> <img src="https://badgen.net/github/contributors/cedanl/no-fairness-without-awareness" alt="Contributors"/> <img src="https://img.shields.io/github/license/cedanl/no-fairness-without-awareness" alt="GitHub License"/></p>
 
-Explore admission/retention data, train predictive models, and report potential fairness issues. The workflow starts in `main.R` and orchestrates metadata loading, data cleaning, model training, fairness checks, and Quarto reporting.
+Verken instroom-/retentiegegevens, train voorspellende modellen en rapporteer mogelijke kansengelijkheidsproblemen. De workflow start in `main.R` en coördineert het laden van metadata, data-opschoning, model-training, fairness-controles en Quarto-rapportage.
 
-## Pipeline at a Glance
+---
 
-```         
+## Snel aan de slag
+
+Voor gebruikers die het project gewoon willen uitvoeren, volg deze eenvoudige stappen:
+
+### Stap 1: Installeer de benodigde software
+
+| Software | Beschrijving | Download |
+|----------|--------------|----------|
+| **R** | Versie 4.3 of hoger | [Download R](https://cran.r-project.org/) |
+| **RStudio** | Aanbevolen IDE (optioneel maar handig) | [Download RStudio](https://posit.co/download/rstudio-desktop/) |
+| **Quarto** | Voor het genereren van PDF-rapporten | [Download Quarto](https://quarto.org/docs/get-started/) |
+| **LaTeX** | Voor PDF-uitvoer (TinyTeX of TeX Live) | Zie instructies hieronder |
+| **Rtools** | Alleen voor Windows - nodig voor package compilatie | [Download Rtools](https://cran.r-project.org/bin/windows/Rtools/) |
+
+#### LaTeX installeren
+
+**Optie 1: TinyTeX (aanbevolen - eenvoudigst)**
+```r
+# Voer dit uit in R/RStudio
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+**Optie 2: TeX Live**
+- Windows: Download van [tug.org/texlive](https://tug.org/texlive/)
+- macOS: `brew install --cask mactex` of download [MacTeX](https://www.tug.org/mactex/)
+- Linux: `sudo apt install texlive-full` (Ubuntu/Debian)
+
+### Stap 2: Download het project
+
+```bash
+git clone https://github.com/cedanl/no-fairness-without-awareness.git
+cd no-fairness-without-awareness
+```
+
+Of download als ZIP via GitHub en pak uit.
+
+### Stap 3: Installeer R-packages
+
+Open het project in RStudio of navigeer naar de projectmap in R en voer uit:
+
+```r
+# Installeer renv als je het nog niet hebt
+install.packages("renv")
+
+# Herstel alle project-packages
+renv::restore()
+```
+
+Dit installeert automatisch alle benodigde packages in de juiste versies.
+
+### Stap 4: Voeg je data toe
+
+Plaats je databestanden (Parquet of CSV):
+- `df1cho` - studentniveau data (instroom/retentie basis)
+- `df1cho_vak` - vakniveau data
+
+Pas de paden aan in `main.R` naar de locatie van je bestanden.
+
+### Stap 5: Voer de analyse uit
+
+```r
+source("main.R")
+```
+
+Resultaten verschijnen in de `output/` map, inclusief een PDF-rapport.
+
+---
+
+## Pipeline in een oogopslag
+
+```
  Parquet/CSV (df1cho, df1cho_vak)   metadata/ dictionaries
-                │                            │
-                └──────────────┬─────────────┘
+               │                            │
+               └──────────────┬─────────────┘
+                              v
+                   +------------------------+
+                   | scripts/01_read_       |
+                   | metadata.R             |
+                   |  - lees lookups        |
+                   |  - markeer gevoelige   |
+                   |    variabelen          |
+                   +-----------+------------+
+                               |
                                v
-                    +------------------------+
-                    | scripts/01_read_       |
-                    | metadata.R             |
-                    |  - read lookups        |
-                    |  - mark sensitive vars |
-                    +-----------+------------+
-                                |
-                                v
-                    +------------------------+
-                    | scripts/02_transform_  |
-                    | data.R                 |
-                    |  - enrich APCG/SES     |
-                    |  - select variables    |
-                    |  - prep factor levels  |
-                    +-----------+------------+
-                                |
-                                v
-            +-------------------+-------------------+
-            | scripts/03_run_nfwa.R                 |
-            |  - split/train/validate (glmnet,      |
-            |    ranger)                            |
-            |  - fairness metrics/tables/plots      |
-            +-------------------+-------------------+
-                                |
-                                v
-                    +------------------------+
-                    | scripts/04_render_pdf. |
-                    | qmd (Quarto)           |
-                    +-----------+------------+
-                                |
-                                v
-                scripts/kansengelijkheid...pdf
+                   +------------------------+
+                   | scripts/02_transform_  |
+                   | data.R                 |
+                   |  - verrijk APCG/SES    |
+                   |  - selecteer variab.   |
+                   |  - prep factor levels  |
+                   +-----------+------------+
+                               |
+                               v
+           +-------------------+-------------------+
+           | scripts/03_run_nfwa.R                 |
+           |  - split/train/valideer (glmnet,      |
+           |    ranger)                            |
+           |  - fairness-metrieken/tabellen/    |
+           |    plots                              |
+           +-------------------+-------------------+
+                               |
+                               v
+                   +------------------------+
+                   | scripts/04_render_pdf. |
+                   | qmd (Quarto)           |
+                   +-----------+------------+
+                               |
+                               v
+               scripts/kansengelijkheid...pdf
 ```
 
-```         
+```
 main.R
-  ├─ sets knobs (opleiding, eoi, opleidingsvorm, cutoff)
-  ├─ calls renv::restore() once
-  ├─ sources stage scripts
-  └─ writes results to output/
+  ├─ stelt instellingen in (opleiding, eoi, opleidingsvorm, cutoff)
+  ├─ roept renv::restore() aan
+  ├─ voert fase-scripts uit
+  └─ schrijft resultaten naar output/
 ```
 
-## Quick Start
+## Pipeline doorloop (main.R)
 
--   📦 Install: R (≥4.3); Quarto CLI; a LaTeX distribution for PDF output (e.g., TinyTeX or TeX Live); system build tools for compiling R packages (e.g., Xcode Command Line Tools on macOS, Rtools on Windows).
--   🔁 Restore packages: run `renv::restore()` from the project root (already called in `main.R`, but running it once interactively avoids first-run surprises).
--   📂 Provide your parquet inputs for `df1cho` (student-level) and `df1cho_vak` (course-level). Update the paths in `main.R` to where you store them. CSV is fine too—see “Data & Configuration”.
--   ▶️ Run: execute `main.R` (e.g., `source("main.R")`). Outputs land in `output/`.
+- **Invoer**: stel `opleidingsnaam`, `eoi` (inschrijvingsjaar), en `opleidingsvorm` in bovenaan `main.R`.
+- **Data laden**: leest de studentniveau en vakniveau parquet-bestanden waar je naar verwijst in `main.R`.
+- **Metadata**: `scripts/01_read_metadata.R` leest meta tabellen in (`metadata/`) en heeft output:
+    - APCG (Armoede Probleem Cumulatie Gebied) & SES (Sociaal-Economische Status) verrijkingsdata
+    - Variabelenlijst (`variables`) en gevoelige variabelen (`sensitive_variables`) gedefinieerd in `variabelen.xlsx`
+    - Label-mappings (`mapping_newname`) en geordende factor-niveaus (`df_levels`)
+    - Decodering opzoektabellen voor hercodering van opleidingsvelden
+- **Transformeren**: `scripts/02_transform_data.R` past transformatioes toe (`R/transform_*`), verrijkt met APCG/SES, selecteert de modelvariabelen, en past gemiddelde-imputatie toe op numerieke NA's.
+- **Steekproef**: `main.R` maakt momenteel een 50/50 behouden/niet-behouden subset voor snellere experimenten.
+- **Beschrijvende statistieken**: `R/get_table_summary.R` bouwt gtsummary/flextable tabellen (`output/descriptive_table.png` en `output/sensitive_variables_descriptive_table.png`).
+- **Fairness-analyse**: `scripts/03_run_nfwa.R` traint modellen, berekent fairness-diagnostiek per gevoelige variabele, slaat tabellen op (`output/result_table.png`), en geserialiseerde conclusies (`output/conclusions_list.rds`). Kleuren zijn gedefinieerd in `config/colors.R`.
+- **Rapport**: Quarto rendert `scripts/04_render_pdf.qmd` naar `scripts/kansengelijkheidanalysis_<opleiding>_<vorm>.pdf`.
 
-## Pipeline Walkthrough (main.R)
+## Repository structuur
 
--   🧭 Inputs: set `opleidingsnaam`, `eoi` (enrollment year), and `opleidingsvorm` at the top of `main.R`.
--   📥 Data load: reads the provided student- and course-level parquet files you point to in `main.R`.
--   📑 Metadata: `scripts/01_read_metadata.R` reads lookup tables (`metadata/`) and returns:
-    -   APCG (Armoede Probleem Cumulatie Gebied) & SES (Sociaal-Economische Status) enrichment data
-    -   Variable list (`variables`) and sensitive variables (`sensitive_variables`) defined in `variabelen.xlsx`
-    -   Label mappings (`mapping_newname`) and ordered factor levels (`df_levels`)
-    -   Decodering lookup tables for recoding education fields
--   🔧 Transform: `scripts/02_transform_data.R` applies domain transforms (`R/transform_*`), enriches with APCG/SES, selects the modeling variables, and mean-imputes numeric NAs.
--   ⚖️ Sampling: `main.R` currently down-samples to a 50/50 retained/non-retained subset for faster experimentation.
--   📊 Descriptives: `R/get_table_summary.R` builds gtsummary/flextable tables (`output/descriptive_table.png` and `output/sensitive_variables_descriptive_table.png`).
--   🛡️ Fairness run: `scripts/03_run_nfwa.R` trains models, computes fairness diagnostics per sensitive variable, saves tables (`output/result_table.png`), and serialized conclusions (`output/conclusions_list.rds`). Colors are defined in `config/colors.R`.
--   📝 Report: Quarto renders `scripts/04_render_pdf.qmd` into `scripts/kansengelijkheidanalysis_<opleiding>_<vorm>.pdf`.
+- `main.R` — startpunt dat de volledige pipeline coördineert.
+- `scripts/` — fase-scripts (metadata, transformatie, NFWA-run, Quarto-rapport) plus gegenereerde PDF.
+- `R/` — herbruikbare functies voor transformaties, modellering (`run_models.R`), fairness-plots/-tabellen, en styling-helpers.
+- `config/colors.R` — kleurenpaletten voor plots/tabellen.
+- `metadata/` — invoer-woordenboeken (APCG, SES, DEC, variabele-definities, factor-niveaus).
+- `output/` — gegenereerde tabellen, plots, RDS-conclusies en uiteindelijke PDF (aangemaakt tijdens uitvoering).
+- `renv*` — package lockfile en library-beheer.
 
-## Repository Map
+## Data & Configuratie
 
--   `main.R` — entrypoint orchestrating the full pipeline.
--   `scripts/` — stage scripts (metadata, transform, NFWA run, Quarto report) plus output generated PDF.
--   `R/` — reusable functions for transforms, modeling (`run_models.R`), fairness plots/tables, and styling helpers.
--   `config/colors.R` — color palettes for plots/tables.
--   `metadata/` — input dictionaries (APCG, SES, DEC, variable definitions, factor levels).
--   `output/` — generated tables, plots, RDS conclusions, and final PDF (created at run time).
--   `renv*` — package lockfile and library management.
+- Vereiste invoer (door jou aan te leveren):
+    - Parquet of CSV voor EV (1CHO) — instroom/retentie basis; output van project: [1cijferho](https://github.com/cedanl/1cijferho)
+    - Parquet of CSV voor VAKHAVW (1CHO) — vakniveau detail
+    - Metadata CSV/XLSX bestanden zitten al in `metadata/`
+- Pas `main.R` aan om naar je databestanden te verwijzen (vervang de voorbeeldbestandsnamen)
+- Pas `metadata/variabelen.xlsx` aan om modelvariabelen toe te voegen/verwijderen of nieuwe gevoelige velden te markeren; de pipeline leest dit automatisch.
+- Factor-ordeningen komen uit `metadata/levels.xlsx`. Pas deze aan om weergave en fairness-samenvattingen te controleren.
 
-## Data & Configuration
+## Hoe de modellering/fairness-stap werkt
 
--   Required inputs (you provide):
-    -   Parquet or CSV for EV (1CHO) — enrollment/retention base; output from project: [1cijferho](https://github.com/cedanl/1cijferho)
-    -   Parquet or CSV for VAKHAVW (1CHO) — course-level detail
-    -   Metadata CSV/XLSX files already in `metadata/`
--   Update `main.R` to point to your data files (replace the sample filenames)
--   Adjust `metadata/variabelen.xlsx` to add/remove modeling variables or mark new sensitive fields; the pipeline reads this automatically.
--   Factor orderings come from `metadata/levels.xlsx`. Update that to control display and fairness summaries.
+- Splitst de data in train/test/validatie (`initial_validation_split` met stratificatie op `retentie`).
+- Traint twee modellen via tidymodels: logistische regressie met elastic net (`glmnet`) en random forest (`ranger`), beide getuned op de validatieset.
+- Kiest het beste model op basis van hoogste ROC AUC, past het vervolgens toe op de volledige trainingsdata (`last_fit`).
+- Bouwt een verklaarbaar modelobject (`R/create_explain_lf.R`), vervolgens voor elke gevoelige variabele:
+    - Selecteert de grootste subgroep als geprivilegieerde groep.
+    - Berekent fairness-metrieken en bias-labels (`FRN_Bias`).
+    - Rendert dichtheids- en fairness-plots plus een brede overzichtstabel.
+- Conclusies per gevoelige variabele worden opgeslagen in `output/conclusions_list.rds` voor hergebruik in het rapport.
 
-## How the Modeling/Fairness Step Works
+## Uitbreiden of verder ontwikkelen
 
--   Splits the data into train/test/validation (`initial_validation_split` with stratification on `retentie`).
--   Trains two models via tidymodels: logistic regression with elastic net (`glmnet`) and random forest (`ranger`), both tuned on the validation set.
--   Chooses the best model by highest ROC AUC, then fits it on the full training data (`last_fit`).
--   Builds an explainable model object (`R/create_explain_lf.R`), then for each sensitive variable:
-    -   Picks the largest subgroup as the privileged group.
-    -   Computes fairness metrics and bias labels (`FRN_Bias`).
-    -   Renders density and fairness plots plus a wide summary table.
--   Conclusions per sensitive variable are saved to `output/conclusions_list.rds` for reuse in the report.
+- Nieuwe data-jaargangen: plaats nieuwe parquet/CSV-bestanden en werk de paden/bestandsnamen bij in `main.R`.
+- Nieuwe gevoelige variabelen: markeer ze in `metadata/variabelen.xlsx` (`Sensitive = TRUE`); `main.R` pakt ze automatisch op.
+- Model-aanpassingen:
+    - Bewerk `R/run_models.R` om modellen toe te voegen of tuning-grids/recepten te wijzigen.
+    - Pas de `cutoff` voor fairness-controles aan in de `run_nfwa()` aanroep binnen `main.R`.
+- Styling:
+    - Werk `config/colors.R` bij voor paletwijzigingen.
+    - Pas `scripts/04_render_pdf.qmd` aan voor rapportlay-out.
+- Mogelijke volgende features:
+    - Shiny-interface: laad `df1cho`/`df1cho_vak` vanuit CSV-uploads, presenteer dropdowns voor `opleidingsnaam` en `opleidingsvorm` en voer de pipeline on demand uit.
+    - Parameter UI: stel de fairness-cutoff, modelkeuzes en kleurenthema's beschikbaar als configureerbare invoer.
+    - Caching/tussenopslagen: bewaar getransformeerde data om iteratieve runs te versnellen.
+    - Multi-seed bootstrapping: voer de fairness-pipeline over meerdere seeds uit en aggregeer conclusies om onstabiele metrieken te spotten voordat je erop acteert.
 
-## Extending or Continuing Development
+## Reproduceerbaarheid & Conventies
 
--   New data vintages: drop in new parquet/CSV files and update the paths/filenames in `main.R`.
--   New sensitive variables: mark them in `metadata/variabelen.xlsx` (`Sensitive = TRUE`); `main.R` will pick them up automatically.
--   Model tweaks:
-    -   Edit `R/run_models.R` to add models or change tuning grids/recipes.
-    -   Adjust the `cutoff` for fairness checks in `run_nfwa()` call within `main.R`.
--   Styling:
-    -   Update `config/colors.R` for palette changes.
-    -   Tweak `scripts/04_render_pdf.qmd` for report layout.
--   Possible next features:
-    -   🖥️ Shiny interface: load `df1cho`/`df1cho_vak` from CSV uploads, then present dropdowns for `opleidingsnaam` and `opleidingsvorm` and run the pipeline on demand.
-    -   🎛️ Parameter UI: expose the fairness cutoff, model choices, and color themes as configurable inputs.
-    -   💾 Caching/intermediate saves: persist transformed data to speed up iterative runs.
-    -   🎯 Multi-seed bootstrapping: run the fairness pipeline over multiple seeds and aggregate conclusions to spot unstable metrics before acting on them.
+- Package-versies zijn vergrendeld via `renv.lock`; houd `renv::snapshot()` up-to-date na dependency-wijzigingen.
+- Functies leven onder `R/` en worden gesourced door de fase-scripts; voeg bij voorkeur nieuwe helpers daar toe.
+- Outputs worden geschreven naar `output/`; houd gegenereerde artifacts uit versiebeheer tenzij bewust ingecheckt.
+- Geef de voorkeur aan `dplyr`-pipelines en tidymodels-idiomen voor consistentie met bestaande code.
 
-## Reproducibility & Conventions
+## Problemen oplossen
 
--   Package versions are locked via `renv.lock`; keep `renv::snapshot()` up to date after dependency changes.
--   Functions live under `R/` and are sourced by the stage scripts; prefer adding new helpers there.
--   Outputs are written to `output/`; keep generated artifacts out of version control unless intentionally checked in.
--   Prefer `dplyr` pipelines and tidymodels idioms for consistency with existing code.
+- **Ontbrekende data-paden**: controleer de parquet-locaties waarnaar verwezen wordt in `main.R`.
+- **Quarto/TeX fouten**: zorg dat Quarto en een LaTeX-distributie geïnstalleerd zijn voor PDF-rendering.
+- **Package-compilatieproblemen**: voer `renv::restore()` uit in een schone sessie en zorg dat systeembouwtools beschikbaar zijn voor packages zoals `arrow` of `glmnet`.
+- **Rtools niet gevonden (Windows)**: installeer Rtools van de officiële CRAN-website en herstart RStudio.
 
-## Troubleshooting
+## Referentie
 
--   Missing data paths: verify the parquet locations referenced in `main.R`.
--   Quarto/TeX errors: ensure Quarto and a LaTeX distribution are installed for PDF rendering.
--   Package compile issues: run `renv::restore()` in a clean session and ensure system build tools are available for packages like `arrow` or `glmnet`.
+De aanpak en rapporttekst zijn gebaseerd op het onderzoek van Dr. Theo Bakker, Lector Learning Technology & Analytics aan De Haagse Hogeschool.
 
-## Reference
-
-The approach and report text reference is based on the research of Dr. Theo Bakker, Professor of Learning Technology & Analytics at The Hague University of Applied Sciences.
-
-See: “[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)"
+Zie: "[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)"

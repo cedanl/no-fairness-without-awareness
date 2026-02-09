@@ -103,7 +103,7 @@ quarto::quarto_render(
   input = "scripts/04_render_pdf.qmd",
   output_file = paste0(
     "kansengelijkheidanalysis_",
-    gsub(" ", "_", stringr::tolower(opleidingsnaam)),
+    gsub(" ", "_", tolower(opleidingsnaam)),
     "_",
     opleidingsvorm,
     ".pdf"

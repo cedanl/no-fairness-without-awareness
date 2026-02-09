@@ -17,9 +17,6 @@
 ## 1) Geen.
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-<<<<<<< HEAD
-=======
-library(dplyr)
 
 #' Lees alle metadata-bestanden in
 #'
@@ -48,7 +45,6 @@ library(dplyr)
 #' @importFrom dplyr filter pull select group_by arrange ungroup
 #' @importFrom tidyr drop_na
 #' @export
->>>>>>> claude/nifty-gauss
 read_metadata <- function() {
 
   dfapcg <- read.table("metadata/APCG_2019.csv", sep = ";", header = TRUE)

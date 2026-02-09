@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# Function to create the flextable for fairness analysis
-=======
-﻿library(flextable)
-
 #' Maak een opgemaakte flextable voor fairness-resultaten
 #'
 #' Past conditionele opmaak toe op een flextable met fairness-resultaten,
@@ -25,7 +20,6 @@
 #'   set_header_labels autofit italic color bg bold valign align_text_col
 #'   align_nottext_col align delete_columns
 #' @export
->>>>>>> claude/nifty-gauss
 get_ft_fairness <- function(ft, colors_default, with_extra = FALSE) {
   color_bias_positive <- colors_default[["color_bias_positive"]] # "#9DBF9E"
   color_bias_negative <- colors_default[["color_bias_negative"]] # "#A84268"
@@ -93,27 +87,14 @@ get_ft_fairness <- function(ft, colors_default, with_extra = FALSE) {
     flextable::valign(j = 1, valign = "top", part = "all") |>
     flextable::align_text_col(align = "left") |>
     flextable::align_nottext_col(align = "center") |>
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> claude/nifty-gauss
     # Align % and Bias column
     flextable::align(j = 4:5,
           align = "center",
           part = "header") |>
     flextable::align(j = 4:5, align = "center")
-<<<<<<< HEAD
-
-  if(with_extra == FALSE) {
-    ft <- flextable::delete_columns(ft, c("Geen Bias", "Negatieve Bias", "Positieve Bias", "Perc", "N")) |>
-
-=======
   
   if(with_extra == FALSE) {
     ft <- flextable::delete_columns(ft, c("Geen Bias", "Negatieve Bias", "Positieve Bias", "Perc", "N")) |>
-      
->>>>>>> claude/nifty-gauss
       # 3. Only now do vertical merge + valign on Variabele
       flextable::merge_v(j = "Variabele") |>
       flextable::valign(j = "Variabele", valign = "top", part = "all")

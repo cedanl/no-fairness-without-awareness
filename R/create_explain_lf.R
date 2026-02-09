@@ -1,4 +1,4 @@
-﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## create_explain_lf.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -18,9 +18,6 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-<<<<<<< HEAD
-=======
-library(DALEXtra)
 
 #' Maak een DALEX-explainer van een afgerond model
 #'
@@ -40,7 +37,6 @@ library(DALEXtra)
 #' @importFrom DALEX explain
 #' @importFrom tune extract_fit_parsnip extract_workflow
 #' @export
->>>>>>> claude/nifty-gauss
 create_explain_lf <- function(last_fit, best_model) {
 
   # Extract the fitted model

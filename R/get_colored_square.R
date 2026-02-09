@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-﻿library(glue)
-
-
 #' Genereer LaTeX-code voor een gekleurd vierkant
 #'
 #' Maakt LaTeX-code aan die een klein gekleurd vierkant rendert met een
@@ -20,7 +15,6 @@
 #'   rendert.
 #'
 #' @export
->>>>>>> claude/nifty-gauss
 get_colored_square <- function(color,
                                bordercolor = "#A9A9A9",
                                size = 12) {

@@ -1,27 +1,3 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## transform_1cho_data.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2025 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Doel
-##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-<<<<<<< HEAD
-=======
-library(dplyr)
-
 #' Koppel vakcijfers aan 1CHO-studentgegevens
 #'
 #' Voegt vakcijferdata samen met de studentgegevens op basis van
@@ -40,7 +16,6 @@ library(dplyr)
 #'
 #' @importFrom dplyr left_join mutate across starts_with where
 #' @export
->>>>>>> claude/nifty-gauss
 transform_1cho_data <- function(df, df_vak) {
 
 
@@ -52,17 +27,7 @@ transform_1cho_data <- function(df, df_vak) {
     )
 
   df <- df |>
-<<<<<<< HEAD
 
-    dplyr::mutate(dplyr::across(dplyr::starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
-
-    # Convert character variables to factor
-    dplyr::mutate(dplyr::across(where(is.character), as.factor)) |>
-
-    # Convert logical variables to 0 or 1
-    dplyr::mutate(dplyr::across(where(is.logical), as.integer)) |>
-=======
-    
     dplyr::mutate(dplyr::across(dplyr::starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
 
     # Convert character variables to factor
@@ -70,7 +35,6 @@ transform_1cho_data <- function(df, df_vak) {
 
     # Convert logical variables to 0 or 1
     dplyr::mutate(dplyr::across(dplyr::where(is.logical), as.integer)) |>
->>>>>>> claude/nifty-gauss
 
     ## Create variable dagen_tussen_inschrijving_1_september
     dplyr::mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 

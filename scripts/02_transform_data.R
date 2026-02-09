@@ -91,9 +91,6 @@ transform_data <- function(metadata,
     dplyr::select(dplyr::all_of(variables)) |>
     # Impute all numeric variables with the mean
     dplyr::mutate(dplyr::across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))) 
-    
-
-  
   
   return(df)
 }

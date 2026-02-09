@@ -1,29 +1,3 @@
-﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## set_theme.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2025 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Doel
-##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-<<<<<<< HEAD
-# Determine the basic theme
-=======
-library(ggplot2)
-library(ggtext)
-
 #' Stel het basisthema in voor ggplot2-plots
 #'
 #' Configureert het globale ggplot2-thema met aangepaste typografie,
@@ -43,7 +17,6 @@ library(ggtext)
 #'   element_blank element_rect margin unit
 #' @importFrom ggtext element_textbox_simple
 #' @export
->>>>>>> claude/nifty-gauss
 set_theme <- function(title_font = c("sans"),
                       type = "plot") {
   ggplot2::theme_set(ggplot2::theme_minimal())
@@ -76,11 +49,7 @@ set_theme <- function(title_font = c("sans"),
 
     # Assen
     axis.title.x = ggplot2::element_text(face = "bold", vjust = 5),
-<<<<<<< HEAD
     axis.title.y = ggplot2::element_text(face = "bold", margin = ggplot2::margin(
-=======
-    axis.title.y = element_text(face = "bold", margin = margin(
->>>>>>> claude/nifty-gauss
       t = 0,
       r = 10,
       b = 0,
@@ -88,7 +57,6 @@ set_theme <- function(title_font = c("sans"),
     )),
     axis.text.x  = ggplot2::element_text(size = 11),
     axis.text.y  = ggplot2::element_text(size = 11),
-<<<<<<< HEAD
 
     # Lines
     panel.grid.minor = ggplot2::element_blank(),
@@ -101,20 +69,6 @@ set_theme <- function(title_font = c("sans"),
     # Background white and border not visible
     plot.background = ggplot2::element_rect(fill = colors_default["background_color"], color = NA)
 
-=======
-    
-    # Lines
-    panel.grid.minor = ggplot2::element_blank(),
-    panel.grid.major.x = ggplot2::element_blank(),
-    
-    # Legend
-    legend.key.size = ggplot2::unit(.5, "cm"),
-    legend.text = ggplot2::element_text(size = 10),
-    
-    # Background white and border not visible
-    plot.background = ggplot2::element_rect(fill = colors_default["background_color"], color = NA)
-    
->>>>>>> claude/nifty-gauss
   )
 
 }

@@ -55,7 +55,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
       
       dplyr::group_by(persoonsgebonden_nummer, inschrijvingsjaar) |>
       
-      dplyr::summarize(aantal_inschrijvingen = n()) |>
+      dplyr::summarize(aantal_inschrijvingen = dplyr::n()) |>
       
       dplyr::ungroup() |>
       

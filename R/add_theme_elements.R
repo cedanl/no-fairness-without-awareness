@@ -1,4 +1,4 @@
-﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## add_theme_elements.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -81,17 +81,10 @@ add_theme_elements <- function(p,
       # Adjust the position of the legend and hide the title
       ggplot2::theme(legend.position = "bottom",
             legend.title = ggplot2::element_blank()) +
-<<<<<<< HEAD
-
-      # Make the grid a little quieter
-      ggplot2::theme(panel.grid.minor = ggplot2::element_blank()) +
-
-=======
       
       # Make the grid a little quieter
       ggplot2::theme(panel.grid.minor = ggplot2::element_blank()) +
-      
->>>>>>> claude/nifty-gauss
+
       # Make the cups of the facets larger
       ggplot2::theme(strip.text = ggplot2::element_text(size = 12))
   }

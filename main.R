@@ -19,7 +19,6 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 renv::restore()
-rio::install_formats()
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -30,25 +29,20 @@ opleidingsnaam <- "B International Business Administration"
 eoi <- 2010
 opleidingsvorm <- "VT"
 
-## TODO: Pas aan naar waar jou parquet bestand staat.
+## TODO: Pas aan naar waar jouw parquet bestand staat.
 df1cho <- rio::import(
-  fs::path(
-    Sys.getenv("LTA_ROOT"),
-    "00 LTA Data",
-    "1CHO",
-    "synthetische data",
-    "EV299XX24.parquet"
+  fs::path("data",
+    "input",
+    "EV299XX24_DEMO.parquet"
   )
 )
 
 
 df1cho_vak <- rio::import(
   fs::path(
-    Sys.getenv("LTA_ROOT"),
-    "00 LTA Data",
-    "1CHO",
-    "synthetische data",
-    "VAKHAVW_99XX.parquet"
+    "data",
+    "input",
+    "VAKHAVW_99XX_DEMO.parquet"
   )
 )
 

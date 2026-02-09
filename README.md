@@ -65,7 +65,7 @@ Dit installeert automatisch alle benodigde packages in de juiste versies.
 
 ### Stap 4: Voeg je data toe
 
-Plaats je databestanden (Parquet of CSV):
+Plaats je databestanden (Parquet of CSV) in data/input:
 - `df1cho` - studentniveau data (instroom/retentie basis)
 - `df1cho_vak` - vakniveau data
 

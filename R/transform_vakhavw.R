@@ -20,6 +20,26 @@
 
 library(dplyr)
 
+#' Transformeer HAVO/VWO-vakcijfers naar breed formaat
+#'
+#' Verwerkt ruwe vakcijferdata: selecteert relevante kolommen, berekent
+#' de hoogste cijfers per student en vak, pivotteert naar breed formaat
+#' (vakken als kolommen) en berekent een gemiddeld wiskundecijfer.
+#'
+#' @param df Data frame met vakcijfergegevens. Moet de kolommen
+#'   `persoonsgebonden_nummer`, `afkorting_vak`,
+#'   `cijfer_eerste_centraal_examen`, `gemiddeld_cijfer_cijferlijst` en
+#'   `cijfer_schoolexamen` bevatten.
+#'
+#' @return Een data frame in breed formaat met per student een rij,
+#'   vakken als kolommen (centraal examencijfer) en een berekende
+#'   kolom `wis` (gemiddeld wiskundecijfer).
+#'
+#' @importFrom janitor clean_names
+#' @importFrom dplyr select group_by summarize ungroup mutate across
+#'   starts_with
+#' @importFrom tidyr pivot_wider
+#' @export
 transform_vakhavw <- function(df) {
   
   df |>

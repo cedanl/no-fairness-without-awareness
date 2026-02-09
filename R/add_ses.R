@@ -18,6 +18,23 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+#' Voeg SES-data toe aan een dataset
+#'
+#' Koppelt sociaaleconomische status (SES) gegevens van het CBS aan een
+#' studentdataset op basis van 4-cijferig postcodegebied. Per postcode wordt
+#' het meest recente verslagjaar geselecteerd.
+#'
+#' @param df Data frame met studentgegevens. Moet de kolom
+#'   `postcodecijfers_student_op_1_oktober` bevatten.
+#' @param dfses Data frame met SES-gegevens per postcode. Moet de kolommen
+#'   `ses_pc4` en `ses_verslagjaar` bevatten.
+#'
+#' @return Een data frame met dezelfde structuur als `df`, aangevuld met
+#'   SES-kolommen en `postcodecijfers_student_op_1_oktober` als integer.
+#'
+#' @importFrom janitor clean_names
+#' @importFrom dplyr left_join mutate across group_by slice_max ungroup
+#' @export
 add_ses <- function(df, dfses) {
   
   dfses <- dfses |>

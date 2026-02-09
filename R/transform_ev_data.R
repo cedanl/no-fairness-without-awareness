@@ -20,6 +20,32 @@
 
 library(dplyr)
 
+#' Transformeer inschrijvingsgegevens (EV-data)
+#'
+#' Hoofdtransformatiefunctie voor inschrijvingsgegevens. Filtert op
+#' opleiding, vorm en startjaar, bepaalt retentie, telt inschrijvingen,
+#' herkodeert vooropleidingen en classificeert het type aansluiting
+#' (Direct, Tussenjaar, Switch, etc.).
+#'
+#' @param df Data frame met ruwe inschrijvingsgegevens (1CHO EV-data).
+#' @param naam Character. Naam van de opleiding om op te filteren.
+#' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
+#'   (minimumwaarde voor filtering).
+#' @param vorm Character. Opleidingsvorm: `"VT"` (voltijd), `"DT"`
+#'   (deeltijd) of `"DU"` (duaal).
+#' @param dec_vopl Data frame met decodering van vooropleidingscodes.
+#'   Moet de kolommen `code_vooropleiding` en
+#'   `omschrijving_vooropleiding` bevatten.
+#' @param dec_isat Data frame met decodering van ISAT-codes.
+#'
+#' @return Een data frame met getransformeerde inschrijvingsgegevens,
+#'   inclusief `retentie`, `aantal_inschrijvingen`, `vooropleiding`,
+#'   `aansluiting` en diverse hulpvariabelen.
+#'
+#' @importFrom janitor clean_names
+#' @importFrom dplyr left_join filter group_by mutate ungroup inner_join
+#'   summarize across case_when pull
+#' @export
 transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {

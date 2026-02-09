@@ -21,7 +21,25 @@
 library(ggplot2)
 library(ggtext)
 
-# Determine the basic theme
+#' Stel het basisthema in voor ggplot2-plots
+#'
+#' Configureert het globale ggplot2-thema met aangepaste typografie,
+#' kleuren en opmaak. Stelt `theme_minimal()` in als basis en past
+#' vervolgens uitgebreide aanpassingen toe voor titels, assen, legenda
+#' en achtergrond.
+#'
+#' @param title_font Character vector. Lettertypefamilie voor de titel.
+#'   Standaard `"sans"`.
+#' @param type Character. Type thema (momenteel alleen `"plot"`
+#'   ondersteund). Standaard `"plot"`.
+#'
+#' @return Onzichtbaar. Past het globale ggplot2-thema aan via
+#'   [ggplot2::theme_set()] en [ggplot2::theme_update()].
+#'
+#' @importFrom ggplot2 theme_set theme_minimal theme_update element_text
+#'   element_blank element_rect margin unit
+#' @importFrom ggtext element_textbox_simple
+#' @export
 set_theme <- function(title_font = c("sans"),
                       type = "plot") {
   theme_set(theme_minimal())

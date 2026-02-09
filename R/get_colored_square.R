@@ -1,6 +1,23 @@
 library(glue)
 
 
+#' Genereer LaTeX-code voor een gekleurd vierkant
+#'
+#' Maakt LaTeX-code aan die een klein gekleurd vierkant rendert met een
+#' rand. Geschikt voor gebruik in LaTeX-documenten en Quarto/RMarkdown
+#' met PDF-output. Hex-kleuren worden automatisch gedefinieerd via
+#' `\\providecolor`.
+#'
+#' @param color Character. Vulkleur als hex-code (bijv. `"#FF0000"`) of
+#'   LaTeX-kleurnaam.
+#' @param bordercolor Character. Randkleur als hex-code of LaTeX-kleurnaam.
+#'   Standaard `"#A9A9A9"` (donkergrijs).
+#' @param size Numeriek. Grootte van het vierkant in punten. Standaard `12`.
+#'
+#' @return Een character string met LaTeX-code die het gekleurde vierkant
+#'   rendert.
+#'
+#' @export
 get_colored_square <- function(color,
                                bordercolor = "#A9A9A9",
                                size = 12) {

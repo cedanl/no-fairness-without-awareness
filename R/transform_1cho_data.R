@@ -20,6 +20,24 @@
 
 library(dplyr)
 
+#' Koppel vakcijfers aan 1CHO-studentgegevens
+#'
+#' Voegt vakcijferdata samen met de studentgegevens op basis van
+#' persoonsgebonden nummer. Converteert datumvelden naar Date-objecten,
+#' character-variabelen naar factors, logische variabelen naar integers
+#' en berekent het aantal dagen tussen inschrijving en 1 september.
+#'
+#' @param df Data frame met 1CHO-studentgegevens. Moet de kolommen
+#'   `persoonsgebonden_nummer`, `datum_inschrijving` en
+#'   `inschrijvingsjaar` bevatten.
+#' @param df_vak Data frame met vakcijfers. Moet de kolom
+#'   `persoonsgebonden_nummer` bevatten.
+#'
+#' @return Een data frame met de gecombineerde en getransformeerde data,
+#'   inclusief de nieuwe kolom `dagen_tussen_inschrijving_1_september`.
+#'
+#' @importFrom dplyr left_join mutate across starts_with where
+#' @export
 transform_1cho_data <- function(df, df_vak) {
 
   

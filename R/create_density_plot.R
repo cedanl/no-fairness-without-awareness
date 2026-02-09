@@ -24,7 +24,33 @@ library(glue)
 source("R/set_theme.R")
 source("R/add_theme_elements.R")
 
-# Function to create a density plot
+#' Maak een dichtheidsplot voor fairness-analyse
+#'
+#' Genereert een dichtheidsplot op basis van een fairness-object dat de
+#' verdeling van retentie-voorspellingen toont, opgesplitst per groep.
+#' Het plot wordt opgeslagen als PNG-bestand in de `output/` map.
+#'
+#' @param fairness_object Een fairness-object aangemaakt met
+#'   [fairmodels::fairness_check()].
+#' @param group Character. Naam van de groepsvariabele (bijv. `"geslacht"`)
+#'   of `"all"` voor een enkele kleur.
+#' @param caption Character. Onderschrift voor het plot.
+#' @param colors_default Named list met standaardkleuren. Moet minstens
+#'   `metrics_blue`, `positive_color` en `background_color` bevatten.
+#' @param colors_list Named list met kleurvectoren per groepsvariabele.
+#' @param n_categories Numeriek. Aantal categorieen minus 1, gebruikt voor
+#'   het berekenen van de plothoogte.
+#' @param var Character. Naam van de variabele (voor bestandsnaam).
+#'
+#' @return Onzichtbaar. Het plot wordt opgeslagen als
+#'   `output/fairness_density_{group}.png`.
+#'
+#' @importFrom ggplot2 ggsave scale_fill_manual scale_x_continuous geom_vline
+#'   annotate theme element_blank guides guide_legend
+#' @importFrom glue glue
+#' @importFrom fairmodels plot_density
+#' @importFrom ragg agg_png
+#' @export
 create_density_plot <- function(fairness_object,
                                 group,
                                 caption,

@@ -1,4 +1,19 @@
-# Function to determine the order of a number of levels
+#' Haal de niveaus op per variabele uit een levels-dataframe
+#'
+#' Extraheert de niveaus (levels) per variabele uit een dataframe met
+#' variabele-informatie. Kan werken met zowel formele als eenvoudige
+#' variabelenamen.
+#'
+#' @param df Data frame met variabele-informatie. Moet de kolommen
+#'   `VAR_Formal_variable` of `VAR_Simple_variable` en `VAR_Level_NL`
+#'   bevatten.
+#' @param formal Logical. Indien `TRUE`, wordt `VAR_Formal_variable`
+#'   gebruikt; anders `VAR_Simple_variable`. Standaard `FALSE`.
+#'
+#' @return Een named list met per variabele een character vector van
+#'   niveaus (in het Nederlands).
+#'
+#' @export
 get_levels <- function(df, formal = FALSE) {
   ## Set levels
   levels <- list()
@@ -17,7 +32,34 @@ get_levels <- function(df, formal = FALSE) {
   
 }
 
-# Function to convert fairness analysis df to a wide df
+#' Converteer fairness-analyselijst naar een breed data frame
+#'
+#' Combineert meerdere fairness-checkresultaten (per sensitieve variabele)
+#' tot een breed data frame met bias-tellingen, groepsgroottes, percentages
+#' en tekstuele samenvattingen. Het resultaat is geschikt voor weergave in
+#' een flextable of rapport.
+#'
+#' @param df_list List van data frames met fairness-checkdata per variabele.
+#'   Elk data frame moet de kolommen `FRN_Group`, `FRN_Subgroup` en
+#'   `FRN_Bias` bevatten.
+#' @param df_data Data frame met de oorspronkelijke dataset, gebruikt voor
+#'   het berekenen van groepsgroottes.
+#' @param df_levels Data frame met variabele- en level-informatie. Moet de
+#'   kolommen `VAR_Level_NL`, `VAR_Level_label_NL_description` en
+#'   `VAR_Formal_variable` bevatten.
+#' @param sensitive_variables Character vector met namen van sensitieve
+#'   variabelen.
+#'
+#' @return Een data frame met kolommen: `Variabele`, `Groep`, `Groep_label`,
+#'   `N`, `Perc`, `Bias`, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`
+#'   en `Text`.
+#'
+#' @importFrom dplyr bind_rows group_by summarise full_join mutate select
+#'   arrange filter left_join rename case_when if_else
+#' @importFrom tidyr pivot_wider replace_na pivot_longer crossing
+#' @importFrom glue glue
+#' @importFrom stringr str_to_title
+#' @export
 get_df_fairness_wide <- function(df_list,
                                  df_data,
                                  df_levels,

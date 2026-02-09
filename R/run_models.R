@@ -22,6 +22,31 @@ library(tidymodels)
 library(glmnet)
 library(knitr)
 
+#' Train en evalueer classificatiemodellen voor retentievoorspelling
+#'
+#' Traint een logistisch regressiemodel (met LASSO-regularisatie) en een
+#' random forest-model op de data, evalueert beide op AUC/ROC en geeft
+#' het beste model terug. De data wordt gesplitst in 60% training, 20%
+#' validatie en 20% test.
+#'
+#' @param df Data frame met de modeldata. Moet de kolom `retentie`
+#'   (uitkomstvariabele), `persoonsgebonden_nummer` (student-ID) en
+#'   `inschrijvingsjaar` bevatten.
+#'
+#' @return Een list met twee elementen:
+#'   \describe{
+#'     \item{last_fit}{Het `last_fit`-object van het beste model.}
+#'     \item{best_model}{Character. Naam van het beste model
+#'       (`"Logistic Regression"` of `"Random Forest"`).}
+#'   }
+#'
+#' @importFrom tidymodels initial_validation_split training testing
+#'   validation_set vfold_cv logistic_reg rand_forest workflow add_model
+#'   add_recipe recipe update_role step_rm step_dummy step_zv
+#'   step_normalize tune_grid control_grid metric_set roc_auc
+#'   collect_metrics collect_predictions select_best last_fit
+#' @importFrom glmnet glmnet
+#' @export
 run_models <- function(df) {
   df_model_results <- data.frame(model = character(), auc = numeric())
   

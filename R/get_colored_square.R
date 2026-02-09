@@ -1,6 +1,3 @@
-library(glue)
-
-
 get_colored_square <- function(color,
                                bordercolor = "#A9A9A9",
                                size = 12) {

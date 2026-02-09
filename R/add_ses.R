@@ -25,18 +25,18 @@ add_ses <- function(df, dfses) {
     janitor::clean_names() |>
     
     ## Remove doubles and choose only one year (2022)
-    group_by(ses_pc4) |>
+    dplyr::group_by(ses_pc4) |>
     
-    slice_max(ses_verslagjaar) |>
+    dplyr::slice_max(ses_verslagjaar) |>
     
-    ungroup() 
+    dplyr::ungroup() 
   
   df <- df |>
     
-    left_join(dfses, by = c("postcodecijfers_student_op_1_oktober" = "ses_pc4")) |>
+    dplyr::left_join(dfses, by = c("postcodecijfers_student_op_1_oktober" = "ses_pc4")) |>
     
     ## Make postcode integer
-    mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.)))
+    dplyr::mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.)))
   
   ## Fill in NA with mean
   

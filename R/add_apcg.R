@@ -25,13 +25,13 @@ add_apcg <- function(df1cho, dfapcg) {
 
   df1cho |>
     ## Join APCG with 1CHO
-    left_join(dfapcg, by = c("postcodecijfers_student_op_1_oktober" = "cbs_apcg_pc4")) |>
+    dplyr::left_join(dfapcg, by = c("postcodecijfers_student_op_1_oktober" = "cbs_apcg_pc4")) |>
 
     ## Coalesce FALSE with variable for APCG
-    mutate(cbs_apcg_tf = as.numeric(coalesce(cbs_apcg_tf, FALSE))) |>
+    dplyr::mutate(cbs_apcg_tf = as.numeric(dplyr::coalesce(cbs_apcg_tf, FALSE))) |>
     
     ## Make postcode integer
-    mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.)))
+    dplyr::mutate(across(postcodecijfers_student_op_1_oktober, ~as.integer(.)))
 
 }
 

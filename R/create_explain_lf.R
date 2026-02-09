@@ -18,28 +18,27 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-library(DALEXtra)
-
 create_explain_lf <- function(last_fit, best_model) {
-  
+
   # Extract the fitted model
   fitted_model <- last_fit |>
     tune::extract_fit_parsnip()
-  
+
   # Extract the workflow
   workflow <- last_fit |>
     tune::extract_workflow()
-  
+
   # Create an explainer
   DALEX::explain(
-    model = workflow,
-    data = df |> select(-retentie),
+    model = fitted_model,
+    data = df |> dplyr::select(-retentie),
     y = as.numeric(df$retentie),
     colorize = TRUE,
     verbose = TRUE,
-    label = best_model
+    label = best_model,
+    type = "classification"
   )
-  
+
 }
 
 

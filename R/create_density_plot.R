@@ -18,9 +18,6 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-library(ggplot2)
-library(glue)
-
 source("R/set_theme.R")
 source("R/add_theme_elements.R")
 
@@ -63,40 +60,40 @@ create_density_plot <- function(fairness_object,
   
   # Create a density plot
   density_plot <- fairness_object |>
-    
+
     fairmodels::plot_density() +
-    
+
     # Add title and subtitle
-    labs(
-      title = glue("Verdeling en dichtheid van retentie"),
-      subtitle = glue("Naar **{stringr::str_to_title(group)}**"),
+    ggplot2::labs(
+      title = glue::glue("Verdeling en dichtheid van retentie"),
+      subtitle = glue::glue("Naar **{stringr::str_to_title(group)}**"),
       caption = caption,
       x = NULL,
       y = NULL
     )
-  
+
   # Remove the existing color scale,
   # so there is no warning about the existing color scale
   density_plot$scales$scales <- list()
-  
+
   # Define the color
   density_plot <- density_plot +
-    
+
     # Add a single scale for the fill
-    scale_fill_manual(name = NULL, values = .values) +
-    
+    ggplot2::scale_fill_manual(name = NULL, values = .values) +
+
     # Adjust the x-axis scale
-    scale_x_continuous(breaks = x_axis_list[["x_breaks"]],
+    ggplot2::scale_x_continuous(breaks = x_axis_list[["x_breaks"]],
                        labels = x_axis_list[["x_labels"]],
                        limits = c(0, 1)) +
-    
-    # Add a line on the 50% labeled “50%”
-    geom_vline(xintercept = 0.5,
+
+    # Add a line on the 50% labeled "50%"
+    ggplot2::geom_vline(xintercept = 0.5,
                linetype = "dotted",
                color = colors_default[["positive_color"]]) +
-    
-    # Add the label “50%”
-    annotate(
+
+    # Add the label "50%"
+    ggplot2::annotate(
       "text",
       x = 0.53,
       y = 0.5,
@@ -104,21 +101,21 @@ create_density_plot <- function(fairness_object,
       vjust = -0.3,
       color = colors_default[["positive_color"]]
     ) +
-    
+
     # Apply the theme
     set_theme()  +
-    
+
     # Customize some theme elements
-    theme(
-      panel.grid.minor = element_blank(),
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
       legend.position = "none",
-      strip.text = element_blank()
+      strip.text = ggplot2::element_blank()
     )
-  
+
   # Add elements.
   density_plot <- add_theme_elements(density_plot, title_subtitle = TRUE) +
-    theme(legend.position = "bottom", legend.title = element_blank()) +
-    guides(fill = guide_legend(nrow = 1))
+    ggplot2::theme(legend.position = "bottom", legend.title = ggplot2::element_blank()) +
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   
   ggplot2::ggsave(
     filename  = glue::glue("output/fairness_density_{group}.png"),

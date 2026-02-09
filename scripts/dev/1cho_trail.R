@@ -23,7 +23,6 @@ eoi <- 2010
 opleidingsvorm <- "VT"
 cutoff <- 0.2
 
-library(dplyr)
 source("config/colors.R")
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -63,21 +62,21 @@ dfses <- read.table(
 df_variables <- readxl::read_xlsx("metadata/variabelen.xlsx")
 
 variables <- df_variables |>
-  filter(Used) |>
-  pull(Variable)
+  dplyr::filter(Used) |>
+  dplyr::pull(Variable)
 
 sensitive_variables <- df_variables |>
-  filter(Sensitive) |>
-  pull(Variable)
+  dplyr::filter(Sensitive) |>
+  dplyr::pull(Variable)
 
 mapping_newname <- df_variables |>
-  select(Variable, Newname) |>
+  dplyr::select(Variable, Newname) |>
   tidyr::drop_na()
 
 df_levels <- readxl::read_xlsx("metadata/levels.xlsx") |>
-  group_by(VAR_Formal_variable) |>
-  arrange(VAR_Level_order, .by_group = TRUE) |>
-  ungroup()
+  dplyr::group_by(VAR_Formal_variable) |>
+  dplyr::arrange(VAR_Level_order, .by_group = TRUE) |>
+  dplyr::ungroup()
 
 dec_vopl <- read.csv("metadata/dec/Dec_vopl.csv", sep = "|") |>
   janitor::clean_names()
@@ -110,17 +109,17 @@ dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
 source("R/add_apcg.R")
 source("R/add_ses.R")
 df <- dfcyfer |>
-  
+
   add_apcg(dfapcg) |>
-  
-  
+
+
   add_ses(dfses) |>
-  
+
   ## Select variables used in the model
-  select(all_of(variables)) |>
-  
+  dplyr::select(dplyr::all_of(variables)) |>
+
   # Imputate all numeric variables with the mean
-  mutate(across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
+  dplyr::mutate(dplyr::across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x)))
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -145,7 +144,7 @@ flextable::save_as_image(x = tbl_summary, path = "output/sensitive_variables_des
 
 ## Make retentie numeric
 df <- df |>
-  mutate(across(retentie, ~ if_else(. == 0, "0", "1")))
+  dplyr::mutate(dplyr::across(retentie, ~ dplyr::if_else(. == 0, "0", "1")))
 
 source("R/run_models.R")
 output <- run_models(df)
@@ -197,7 +196,7 @@ for (i in 1:length(sensitive_variables)) {
   n_categories <- length(unique(df[[var]])) - 1
   
   ggplot2::ggsave(
-    filename = glue("output/fairness_density_{var}.png"),
+    filename = glue::glue("output/fairness_density_{var}.png"),
     height = (250 + (50 * n_categories)) / 72,
     width = 640 / 72,
     bg = colors_default[["background_color"]],
@@ -215,15 +214,15 @@ for (i in 1:length(sensitive_variables)) {
       privileged = privileged,
       colors_default = colors_default
     ) +
-      theme(panel.border = element_rect(
+      ggplot2::theme(panel.border = ggplot2::element_rect(
         colour = "darkgrey",
         fill = NA,
         size = 0.4
       ))
   )
-  
+
   ggplot2::ggsave(
-    filename = glue("output/fairness_plot_{var}.png"),
+    filename = glue::glue("output/fairness_plot_{var}.png"),
     height = (250 + (50 * n_categories)) / 72,
     width = 640 / 72,
     bg = colors_default[["background_color"]],
@@ -236,8 +235,8 @@ for (i in 1:length(sensitive_variables)) {
   df_fairness_check_data <- get_df_fairness_check_data(df, fairness_object[["fairness_check_data"]], var)
   
   df_fairness_list[[i]] <- df_fairness_check_data |>
-    mutate(
-      FRN_Bias = case_when(
+    dplyr::mutate(
+      FRN_Bias = dplyr::case_when(
         FRN_Score < 0.8 ~ "Negatieve Bias",
         FRN_Score > 1.25 ~ "Positieve Bias",
         .default = "Geen Bias"
@@ -257,8 +256,8 @@ df_fairness_wide  <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensi
 
 # Create a flextable
 source("R/get_ft_fairness.R")
-ft_fairness <- get_ft_fairness(flextable(df_fairness_wide |>
-                                           select(-c(Groep_label, Text))), colors_default = colors_default)
+ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>
+                                           dplyr::select(-c(Groep_label, Text))), colors_default = colors_default)
 
 
 flextable::save_as_image(x = ft_fairness, path = "output/result_table.png")

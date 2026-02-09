@@ -89,7 +89,7 @@ flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_var
 ## NFWA runnen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-cutoff <- sum(df$retentie)/nrow(df)
+cutoff <- sum(df$retentie) / nrow(df)
 source("scripts/03_run_nfwa.R")
 run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 
@@ -103,7 +103,7 @@ quarto::quarto_render(
   input = "scripts/04_render_pdf.qmd",
   output_file = paste0(
     "kansengelijkheidanalysis_",
-    gsub(" ", "_", tolower(opleidingsnaam)),
+    gsub(" ", "_", stringr::tolower(opleidingsnaam)),
     "_",
     opleidingsvorm,
     ".pdf"

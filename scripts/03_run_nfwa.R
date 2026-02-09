@@ -17,7 +17,6 @@
 ## 1) Geen.
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-library(dplyr)
 source("config/colors.R")  # must define colors_default, colors_list
 
 run_nfwa <- function(df,
@@ -27,12 +26,12 @@ run_nfwa <- function(df,
                      cutoff = 0.2,
                      caption = NULL) {
 
-  
+
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Model Trainen ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
+
   # Make retentie numeric / binary as character
   df <- df |>
     dplyr::mutate(dplyr::across(retentie, ~ dplyr::if_else(. == 0, "0", "1")))

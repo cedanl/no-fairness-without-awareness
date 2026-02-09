@@ -17,33 +17,31 @@
 ## 1) Geen.
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-library(dplyr)
-
 read_metadata <- function() {
 
   dfapcg <- read.table("metadata/APCG_2019.csv", sep = ";", header = TRUE)
-  
+
   dfses <- read.table(
     "metadata/SES_PC4_2021-2022.csv",
     sep = ";",
     header = TRUE,
     dec = ","
   )
-  
+
   df_variables <- readxl::read_xlsx("metadata/variabelen.xlsx")
-  
+
   variables <- df_variables |>
     dplyr::filter(Used) |>
     dplyr::pull(Variable)
-  
+
   sensitive_variables <- df_variables |>
     dplyr::filter(Sensitive) |>
     dplyr::pull(Variable)
-  
+
   mapping_newname <- df_variables |>
     dplyr::select(Variable, Newname) |>
     tidyr::drop_na()
-  
+
   df_levels <- readxl::read_xlsx("metadata/levels.xlsx") |>
     dplyr::group_by(VAR_Formal_variable) |>
     dplyr::arrange(VAR_Level_order, .by_group = TRUE) |>

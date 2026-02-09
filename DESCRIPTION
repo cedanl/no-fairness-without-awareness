@@ -1,0 +1,47 @@
+Package: nfwa
+Type: Package
+Title: No Fairness Without Awareness - Kansengelijkheidsanalyse
+Version: 0.1.0
+Authors@R: c(
+    person("Aslam", "Tanjung", email = "aslam.tanjung@surf.nl", role = c("aut", "cre")),
+    person("De Haagse Hogeschool", role = "cph")
+    )
+Description: Analyseer de kansengelijkheid van een opleiding aan de hand van
+    studiedata. De tool traint prognosemodellen (logistische regressie en random
+    forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals
+    geslacht en vooropleiding. Resultaten worden gepresenteerd in een
+    automatisch gegenereerd PDF-rapport.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.3)
+Imports:
+    DALEX,
+    DALEXtra,
+    dplyr,
+    fairmodels,
+    flextable,
+    forcats,
+    fs,
+    ggplot2,
+    ggtext,
+    glmnet,
+    glue,
+    gtsummary,
+    janitor,
+    quarto,
+    ragg,
+    ranger,
+    readxl,
+    recipes,
+    rio,
+    rsample,
+    stringr,
+    tidyr,
+    tidymodels,
+    tune
+Suggests:
+    renv,
+    testthat (>= 3.0.0)

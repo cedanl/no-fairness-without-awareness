@@ -1,4 +1,23 @@
-# Function to create a data frame from the fairness check data
+#' Transformeer fairness-checkdata naar een gestructureerd data frame
+#'
+#' Verwerkt de ruwe fairness-checkdata uit een fairness-object tot een
+#' gestandaardiseerd data frame met herbenoemde kolommen, fairness-metrieken
+#' en groepsgroottes.
+#'
+#' @param df Data frame met de oorspronkelijke dataset. Moet de kolom
+#'   bevatten die overeenkomt met `var`.
+#' @param fairness_object Data frame met fairness-checkdata, typisch
+#'   afkomstig uit `fairness_object[["fairness_check_data"]]`. Moet de
+#'   kolommen `score`, `metric`, `subgroup` en `model` bevatten.
+#' @param var Character. Naam van de sensitieve variabele (bijv.
+#'   `"geslacht"`).
+#'
+#' @return Een data frame met kolommen `FRN_Model`, `FRN_Group`,
+#'   `FRN_Subgroup`, `FRN_Metric`, `FRN_Score`, `FRN_Fair` en `N`.
+#'
+#' @importFrom dplyr mutate rename select left_join case_when
+#' @importFrom tidyr pivot_longer replace_na
+#' @export
 get_df_fairness_check_data <- function(df, fairness_object, var) {
   fairness_object <- fairness_object |>
     dplyr::mutate(

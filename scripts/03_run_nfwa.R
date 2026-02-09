@@ -19,6 +19,42 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 source("config/colors.R")  # must define colors_default, colors_list
 
+#' Voer de volledige NFWA fairness-analyse uit
+#'
+#' Hoofdfunctie die de complete No Fairness Without Awareness (NFWA)
+#' analyse-pipeline uitvoert: traint classificatiemodellen, maakt een
+#' DALEX-explainer, voert fairness-checks uit per sensitieve variabele,
+#' genereert dichtheids- en fairness-plots, en produceert een
+#' samenvattende flextable met conclusies.
+#'
+#' @param df Data frame met de analyse-data. Moet de kolom `retentie`
+#'   en alle sensitieve variabelen bevatten.
+#' @param df_levels Data frame met level-definities per variabele,
+#'   zoals geretourneerd in `metadata$df_levels`.
+#' @param sensitive_variables Character vector met namen van sensitieve
+#'   variabelen om te analyseren.
+#' @param colors_default Named list met kleurdefinities voor plots en
+#'   tabellen.
+#' @param cutoff Numeriek. Cutoff-waarde voor de fairness-check.
+#'   Standaard `0.2`.
+#' @param caption Character of `NULL`. Optioneel onderschrift voor
+#'   plots.
+#'
+#' @return Onzichtbaar. Slaat de volgende bestanden op:
+#'   \describe{
+#'     \item{output/fairness_density_{var}.png}{Dichtheidsplot per
+#'       variabele.}
+#'     \item{output/fairness_plot_{var}.png}{Fairness-check plot per
+#'       variabele.}
+#'     \item{output/conclusions_list.rds}{List met tekstuele
+#'       conclusies per variabele.}
+#'     \item{output/result_table.png}{Afbeelding van de
+#'       fairness-resultatentabel.}
+#'   }
+#'
+#' @importFrom dplyr mutate across if_else case_when select
+#' @importFrom flextable flextable save_as_image
+#' @export
 run_nfwa <- function(df,
                      df_levels,
                      sensitive_variables,

@@ -1,4 +1,4 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## add_theme_elements.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -20,7 +20,25 @@
 
 source("config/colors.R")
 
-# Function to add theme elements
+#' Voeg thema-elementen toe aan een ggplot
+#'
+#' Past aanvullende thema-instellingen toe op een bestaand ggplot-object,
+#' waaronder opmaak van titel, ondertitel, caption en as-tekst. Optioneel
+#' kunnen uitgebreide elementen worden toegevoegd zoals legenda-positie,
+#' facet-opmaak en x-as marge.
+#'
+#' @param p Een ggplot-object waaraan thema-elementen worden toegevoegd.
+#' @param title_subtitle Logical. Indien `TRUE` (standaard), worden titel- en
+#'   ondertitel-opmaak toegepast.
+#' @param extended Logical. Indien `TRUE`, worden extra thema-elementen
+#'   toegevoegd: legenda onderaan, verborgen legenda-titel, minimale
+#'   gridlijnen en grotere facet-labels. Standaard `FALSE`.
+#'
+#' @return Het aangepaste ggplot-object.
+#'
+#' @importFrom ggplot2 theme element_text element_blank margin
+#' @importFrom ggtext element_markdown element_textbox_simple
+#' @export
 add_theme_elements <- function(p,
                                title_subtitle = TRUE,
                                extended = FALSE) {
@@ -63,10 +81,17 @@ add_theme_elements <- function(p,
       # Adjust the position of the legend and hide the title
       ggplot2::theme(legend.position = "bottom",
             legend.title = ggplot2::element_blank()) +
+<<<<<<< HEAD
 
       # Make the grid a little quieter
       ggplot2::theme(panel.grid.minor = ggplot2::element_blank()) +
 
+=======
+      
+      # Make the grid a little quieter
+      ggplot2::theme(panel.grid.minor = ggplot2::element_blank()) +
+      
+>>>>>>> claude/nifty-gauss
       # Make the cups of the facets larger
       ggplot2::theme(strip.text = ggplot2::element_text(size = 12))
   }

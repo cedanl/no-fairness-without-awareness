@@ -18,7 +18,32 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Function to create a fairness plot
+#' Maak een fairness-check plot
+#'
+#' Genereert een staafdiagram met fairness-metrieken op basis van een
+#' fairness-object. Het plot toont de verhouding van metrieken per subgroep
+#' ten opzichte van de geprivilegieerde groep. Het plot wordt opgeslagen als
+#' PNG-bestand in de `output/` map.
+#'
+#' @param fairness_object Een fairness-object aangemaakt met
+#'   [fairmodels::fairness_check()].
+#' @param group Character. Naam van de groepsvariabele (bijv. `"geslacht"`).
+#' @param privileged Character. Naam van de geprivilegieerde
+#'   (referentie)groep.
+#' @param colors_default Named list met standaardkleuren. Moet minstens
+#'   `positive_color` en `background_color` bevatten.
+#' @param n_categories Numeriek. Aantal categorieen minus 1, gebruikt voor
+#'   het berekenen van de plothoogte.
+#' @param caption Character of `NULL`. Optioneel onderschrift voor het plot.
+#'
+#' @return Onzichtbaar. Het plot wordt opgeslagen als
+#'   `output/fairness_plot_{group}.png`.
+#'
+#' @importFrom ggplot2 ggsave theme_minimal scale_fill_manual
+#'   scale_y_continuous theme element_blank element_text element_rect
+#' @importFrom glue glue
+#' @importFrom ragg agg_png
+#' @export
 create_fairness_plot <- function(fairness_object,
                                  group,
                                  privileged,

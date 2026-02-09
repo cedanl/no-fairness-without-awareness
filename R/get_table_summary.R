@@ -1,39 +1,39 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## get_table_summary.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2025 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Doel
-##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# Function to create a summary table
+#' Maak een samenvattingstabel van studentkenmerken versus retentie
+#'
+#' Genereert een opgemaakte flextable met descriptieve statistieken per
+#' variabele, uitgesplitst naar retentie (Ja/Nee). Bevat p-waarden,
+#' Bonferroni-gecorrigeerde q-waarden en significantiesterren.
+#'
+#' @param df Data frame met studentgegevens. Moet de kolommen `retentie`,
+#'   `persoonsgebonden_nummer` en `inschrijvingsjaar` bevatten.
+#' @param mapping Data frame met kolommen `Variable` (originele namen) en
+#'   `Newname` (nieuwe weergavenamen).
+#'
+#' @return Een [flextable::flextable()]-object met de samenvattingstabel.
+#'
+#' @importFrom gtsummary tbl_summary modify_header modify_spanning_header
+#'   bold_labels add_p add_q add_significance_stars add_overall
+#'   as_flex_table style_pvalue all_continuous all_categorical
+#' @importFrom flextable border set_table_properties
+#' @importFrom forcats fct_recode fct_relevel
+#' @importFrom dplyr select mutate across rename rename_with where
+#' @importFrom stringr str_replace_all str_to_title
+#' @export
 get_table_summary <- function(df, mapping) {
   df2 <- df |>
 
     # Remove columns not relevant to the analysis
     dplyr::select(-c(persoonsgebonden_nummer, inschrijvingsjaar)) |>
-
+    
     # Adjust the labels of Retention from True to Ja, and from False to Nee
     dplyr::mutate(retentie = forcats::fct_recode(factor(retentie), "Nee" = "0", "Ja" = "1")) |>
-
+    
     # Adjust the order of the labels of Retentie
     dplyr::mutate(retentie = forcats::fct_relevel(retentie, "Ja", "Nee")) |>
-
+    
     # Factor all character variables
-    dplyr::mutate(dplyr::across(where(is.character), as.factor)) |>
-
+    dplyr::mutate(dplyr::across(dplyr::where(is.character), as.factor)) |>
+    
     dplyr::rename(!!!setNames(mapping$Variable, mapping$Newname)) |>
 
     dplyr::rename_with( ~ .x |>
@@ -41,7 +41,6 @@ get_table_summary <- function(df, mapping) {
                    stringr::str_to_title())
 
   df_summary <- df2 |>
-
     gtsummary::tbl_summary(
       by = Retentie,
       statistic = list(
@@ -78,6 +77,26 @@ get_table_summary <- function(df, mapping) {
   
 }
 
+#' Maak een samenvattingstabel voor fairness-variabelen
+#'
+#' Genereert een opgemaakte flextable met descriptieve statistieken voor
+#' enkel de sensitieve variabelen, uitgesplitst naar retentie na 1 jaar.
+#'
+#' @param df Data frame met studentgegevens. Moet de kolom `retentie` en
+#'   de in `sensitive_variables` genoemde kolommen bevatten.
+#' @param mapping Data frame met kolommen `Variable` (originele namen) en
+#'   `Newname` (nieuwe weergavenamen).
+#' @param sensitive_variables Character vector met namen van sensitieve
+#'   variabelen.
+#'
+#' @return Een [flextable::flextable()]-object met de samenvattingstabel.
+#'
+#' @importFrom gtsummary tbl_summary add_p add_significance_stars
+#'   add_overall add_n modify_header modify_spanning_header bold_labels
+#'   as_flex_table style_pvalue
+#' @importFrom flextable border set_table_properties
+#' @importFrom dplyr select rename rename_with mutate all_of
+#' @export
 get_table_summary_fairness <- function(df, mapping, sensitive_variables) {
   df |>
     dplyr::rename(!!!setNames(mapping$Variable, mapping$Newname)) |>
@@ -103,5 +122,4 @@ get_table_summary_fairness <- function(df, mapping, sensitive_variables) {
     gtsummary::as_flex_table() |>
     flextable::border(border.top = officer::fp_border(color = "grey")) |>
     flextable::set_table_properties(width = 0.8, layout = "autofit")
-
 }

@@ -36,11 +36,6 @@
 #'       (`"Logistic Regression"` of `"Random Forest"`).}
 #'   }
 #'
-#' @importFrom tidymodels initial_validation_split training testing
-#'   validation_set vfold_cv logistic_reg rand_forest workflow add_model
-#'   add_recipe recipe update_role step_rm step_dummy step_zv
-#'   step_normalize tune_grid control_grid metric_set roc_auc
-#'   collect_metrics collect_predictions select_best last_fit
 #' @importFrom glmnet glmnet
 #' @export
 run_models <- function(df) {

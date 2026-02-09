@@ -51,7 +51,7 @@ df1cho_vak <- rio::import(
 ## Metadata Inlezen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("scripts/01_read_metadata.R")
+source("R/read_metadata.R")
 metadata <- read_metadata()
 
 ## . ####
@@ -59,7 +59,7 @@ metadata <- read_metadata()
 ## Transform Data ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("scripts/02_transform_data.R")
+source("R/transform_data.R")
 df <- transform_data(metadata,
                      opleidingsnaam,
                      opleidingsvorm,
@@ -90,7 +90,7 @@ flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_var
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 cutoff <- sum(df$retentie) / nrow(df)
-source("scripts/03_run_nfwa.R")
+source("R/run_nfwa.R")
 run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 
 ## . ####
@@ -100,7 +100,7 @@ run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 
 
 quarto::quarto_render(
-  input = "scripts/04_render_pdf.qmd",
+  input = "scripts/render_pdf.qmd",
   output_file = paste0(
     "kansengelijkheidanalysis_",
     gsub(" ", "_", tolower(opleidingsnaam)),

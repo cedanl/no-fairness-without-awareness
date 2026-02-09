@@ -1,4 +1,4 @@
-library(dplyr)
+﻿library(dplyr)
 
 #' Maak een fairness-object voor een sensitieve variabele
 #'
@@ -27,9 +27,9 @@ library(dplyr)
 get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE, cutoff = 0.2) {
   # Define the protected variable
   protected <- df |>
-    select(-retentie) |>
-    select(all_of({{var}})) |>
-    pull()
+    dplyr::select(-retentie) |>
+    dplyr::select(dplyr::all_of({{var}})) |>
+    dplyr::pull()
   
   # Create a fairness object
   fairness_object <- fairmodels::fairness_check(

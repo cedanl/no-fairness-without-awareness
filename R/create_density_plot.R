@@ -1,4 +1,4 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## create_density_plot.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -93,9 +93,9 @@ create_density_plot <- function(fairness_object,
     fairmodels::plot_density() +
     
     # Add title and subtitle
-    labs(
-      title = glue("Verdeling en dichtheid van retentie"),
-      subtitle = glue("Naar **{stringr::str_to_title(group)}**"),
+    ggplot2::labs(
+      title = glue::glue("Verdeling en dichtheid van retentie"),
+      subtitle = glue::glue("Naar **{stringr::str_to_title(group)}**"),
       caption = caption,
       x = NULL,
       y = NULL
@@ -109,20 +109,20 @@ create_density_plot <- function(fairness_object,
   density_plot <- density_plot +
     
     # Add a single scale for the fill
-    scale_fill_manual(name = NULL, values = .values) +
+    ggplot2::scale_fill_manual(name = NULL, values = .values) +
     
     # Adjust the x-axis scale
-    scale_x_continuous(breaks = x_axis_list[["x_breaks"]],
+    ggplot2::scale_x_continuous(breaks = x_axis_list[["x_breaks"]],
                        labels = x_axis_list[["x_labels"]],
                        limits = c(0, 1)) +
     
-    # Add a line on the 50% labeled “50%”
-    geom_vline(xintercept = 0.5,
+    # Add a line on the 50% labeled â€œ50%â€
+    ggplot2::geom_vline(xintercept = 0.5,
                linetype = "dotted",
                color = colors_default[["positive_color"]]) +
     
-    # Add the label “50%”
-    annotate(
+    # Add the label â€œ50%â€
+    ggplot2::annotate(
       "text",
       x = 0.53,
       y = 0.5,
@@ -144,7 +144,7 @@ create_density_plot <- function(fairness_object,
   # Add elements.
   density_plot <- add_theme_elements(density_plot, title_subtitle = TRUE) +
     theme(legend.position = "bottom", legend.title = element_blank()) +
-    guides(fill = guide_legend(nrow = 1))
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   
   ggplot2::ggsave(
     filename  = glue::glue("output/fairness_density_{group}.png"),

@@ -1,4 +1,4 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## run_models.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -102,8 +102,8 @@ run_models <- function(df) {
   lr_best <-
     lr_res |>
     collect_metrics() |>
-    filter(mean == max(mean)) |>
-    slice(1)
+    dplyr::filter(mean == max(mean)) |>
+    dplyr::slice(1)
   
   
   # Collect the predictions and evaluate the model (AUC/ROC): logistic regression
@@ -167,7 +167,7 @@ run_models <- function(df) {
   # Show the best models
   rf_res |>
     show_best(metric = "roc_auc", n = 15) |>
-    mutate(mean = round(mean, 6)) |>
+    dplyr::mutate(mean = round(mean, 6)) |>
     knitr::kable(
       col.names = c(
         "Mtry",
@@ -222,9 +222,9 @@ run_models <- function(df) {
   
   # Determine which of the models is best based on highest AUC/ROC
   df_model_results <- df_model_results |>
-    mutate(number = row_number()) |>
-    mutate(best = ifelse(auc == max(auc), TRUE, FALSE)) |>
-    arrange(number)
+    dplyr::mutate(number = dplyr::row_number()) |>
+    dplyr::mutate(best = ifelse(auc == max(auc), TRUE, FALSE)) |>
+    dplyr::arrange(number)
   
   # Determine the best model
   best_model     <- df_model_results$model[df_model_results$best == TRUE][1]

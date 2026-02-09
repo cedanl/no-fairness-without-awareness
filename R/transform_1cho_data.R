@@ -42,7 +42,7 @@ transform_1cho_data <- function(df, df_vak) {
 
   
   df <- df |>
-    left_join(
+    dplyr::left_join(
       df_vak,
       by = c("persoonsgebonden_nummer" = "persoonsgebonden_nummer"),
       relationship = "many-to-one"
@@ -50,16 +50,16 @@ transform_1cho_data <- function(df, df_vak) {
   
   df <- df |>
     
-    mutate(across(starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
-    
+    dplyr::mutate(dplyr::across(dplyr::starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
+
     # Convert character variables to factor
-    mutate(across(where(is.character), as.factor)) |>
-    
+    dplyr::mutate(dplyr::across(dplyr::where(is.character), as.factor)) |>
+
     # Convert logical variables to 0 or 1
-    mutate(across(where(is.logical), as.integer)) |>
-    
+    dplyr::mutate(dplyr::across(dplyr::where(is.logical), as.integer)) |>
+
     ## Create variable dagen_tussen_inschrijving_1_september
-    mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 
+    dplyr::mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 
   
   df
   

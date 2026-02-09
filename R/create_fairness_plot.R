@@ -1,4 +1,4 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## create_fairness_plot.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -56,13 +56,13 @@ create_fairness_plot <- function(fairness_object,
   # Create a fairness plot
   fairness_plot <- fairness_object |>
     plot() +
-    theme_minimal() +
+    ggplot2::theme_minimal() +
     set_theme() +
     
     # Add title and subtitle
-    labs(
+    ggplot2::labs(
       title = "Fairness check",
-      subtitle = glue(
+      subtitle = glue::glue(
         "Fairness van het model voor **{stringr::str_to_title(group)}** ",
         "ten opzichte van **{privileged}**"
       ),
@@ -79,19 +79,19 @@ create_fairness_plot <- function(fairness_object,
   fairness_plot <- fairness_plot +
     
     # Define the color
-    scale_fill_manual(values = c(colors_default[["positive_color"]])) +
+    ggplot2::scale_fill_manual(values = c(colors_default[["positive_color"]])) +
     
     # Adjust the y-axis scale
-    scale_y_continuous(breaks = y_breaks)
+    ggplot2::scale_y_continuous(breaks = y_breaks)
   
   # Add elements.
   fairness_plot <- add_theme_elements(fairness_plot, title_subtitle = TRUE) +
     
     # Customize some theme elements
     theme(
-      panel.grid.minor = element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
       legend.position = "none",
-      strip.text = element_text(hjust = 0),
+      strip.text = ggplot2::element_text(hjust = 0),
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
         fill   = NA,

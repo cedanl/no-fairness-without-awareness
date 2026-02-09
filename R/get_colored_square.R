@@ -1,4 +1,4 @@
-library(glue)
+﻿library(glue)
 
 
 #' Genereer LaTeX-code voor een gekleurd vierkant
@@ -27,7 +27,7 @@ get_colored_square <- function(color,
     if (grepl("^#", value)) {
       hex <- toupper(gsub("^#", "", value))
       if (!grepl("^[0-9A-F]{6}$", hex)) {
-        cli_abort("'{value}' is not a valid hex color")
+        cli::cli_abort("'{value}' is not a valid hex color")
       }
       
       name <- paste0(prefix, hex)

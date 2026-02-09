@@ -1,4 +1,4 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+﻿## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## tarnsform_ev_data.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
@@ -49,19 +49,19 @@ library(dplyr)
 transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {
-    students <- unique(pull(df, persoonsgebonden_nummer))
+    students <- unique(dplyr::pull(df, persoonsgebonden_nummer))
     
     df_full |>
       
-      filter(persoonsgebonden_nummer %in% students) |>
+      dplyr::filter(persoonsgebonden_nummer %in% students) |>
       
-      group_by(persoonsgebonden_nummer, inschrijvingsjaar) |>
+      dplyr::group_by(persoonsgebonden_nummer, inschrijvingsjaar) |>
       
-      summarize(aantal_inschrijvingen = n()) |>
+      dplyr::summarize(aantal_inschrijvingen = n()) |>
       
-      ungroup() |>
+      dplyr::ungroup() |>
       
-      inner_join(df)
+      dplyr::inner_join(df)
     
   }
   
@@ -76,9 +76,9 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
                         dec_vopl$code_vooropleiding)
     
     df <- df |>
-      mutate(across(
-        all_of(cols_vo),
-        ~ recode(as.character(.x), !!!mapping, .default = as.character(.x))
+      dplyr::mutate(dplyr::across(
+        dplyr::all_of(cols_vo),
+        ~ dplyr::recode(as.character(.x), !!!mapping, .default = as.character(.x))
       ))
     
     
@@ -90,16 +90,16 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   
   df_selection <- df |>
     
-    left_join(dec_isat) |>
+    dplyr::left_join(dec_isat) |>
     
     ## Recode opleidingsvorm
-    mutate(across(
+    dplyr::mutate(dplyr::across(
       opleidingsvorm,
-      ~ case_when(. == 1 ~ "VT", . == 2 ~ "DT", . == 3 ~ "DU", TRUE ~ as.character(.))
+      ~ dplyr::case_when(. == 1 ~ "VT", . == 2 ~ "DT", . == 3 ~ "DU", TRUE ~ as.character(.))
     )) |>
     
     ## Filter
-    filter(
+    dplyr::filter(
       naam_opleiding == naam,
       eerste_jaar_aan_deze_opleiding_instelling >= eoi,
       opleidingsvorm == vorm
@@ -108,29 +108,29 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   ## Split this proces such that only relevant students are selected and safe time
   df_selection |>
     
-    group_by(persoonsgebonden_nummer) |>
+    dplyr::group_by(persoonsgebonden_nummer) |>
     
-    mutate(retentie = any(
+    dplyr::mutate(retentie = any(
       inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling + 1
     )) |>
     
-    ungroup() |>
+    dplyr::ungroup() |>
     
-    filter(inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling) |>
+    dplyr::filter(inschrijvingsjaar == eerste_jaar_aan_deze_opleiding_instelling) |>
     
     ## Create variable aantal_inschrijvingen
     mutate_aantal_inschrijvingen(df) |>
     
     ## Create variable dubbele studie
-    mutate(dubbele_studie = ifelse(aantal_inschrijvingen > 1, TRUE, FALSE)) |>
+    dplyr::mutate(dubbele_studie = ifelse(aantal_inschrijvingen > 1, TRUE, FALSE)) |>
     
     ## Make postcode integer
-    mutate(across(postcodecijfers_student_op_1_oktober, ~ as.integer(.))) |>
+    dplyr::mutate(dplyr::across(postcodecijfers_student_op_1_oktober, ~ as.integer(.))) |>
     
     recode_vooropleiding(dec_vopl) |>
     
-    mutate(
-      vooropleiding = case_when(
+    dplyr::mutate(
+      vooropleiding = dplyr::case_when(
         grepl("^vwo", hoogste_vooropleiding) ~ "VWO",
         grepl("^wo|^hbo", hoogste_vooropleiding) ~ "HO",
         grepl("^mbo", hoogste_vooropleiding) ~ "MBO",
@@ -141,7 +141,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
         TRUE ~ "Onbekend"
       )
     ) |>
-    mutate(
+    dplyr::mutate(
       # Zorg dat jaarvelden numeriek zijn
       inschrijvingsjaar                  = as.integer(inschrijvingsjaar),
       diplomajaar_hoogste_vooropleiding  = as.integer(diplomajaar_hoogste_vooropleiding),
@@ -149,13 +149,13 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
       eerste_jaar_aan_deze_instelling    = as.integer(eerste_jaar_aan_deze_instelling)
       
     ) |>
-    mutate(
+    dplyr::mutate(
       # 2e studie: neveninschrijving in continu-domein HO
       # (code 2 = echte neveninschrijving)
       is_2e_studie =
         as.character(soort_inschrijving_continu_hoger_onderwijs) == "2",
       
-      # Na CD / 21+ op basis van hoogste vooropleiding vóór HO
+      # Na CD / 21+ op basis van hoogste vooropleiding vÃ³Ã³r HO
       is_na_cd = vooropleiding == "CD",
       
       # Heeft eerder HO-jaar dan de huidige inschrijving?
@@ -170,15 +170,15 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
         eerste_jaar_aan_deze_instelling == inschrijvingsjaar,
       
       # Interne switch:
-      # eerder HO én eerder jaar aan deze instelling dan huidig inschrijvingsjaar
+      # eerder HO Ã©n eerder jaar aan deze instelling dan huidig inschrijvingsjaar
       # => eerder andere opleiding binnen dezelfde instelling
       is_interne_switch =
         !indicatie_eerstejaars_type &
         !is.na(eerste_jaar_aan_deze_instelling) &
         eerste_jaar_aan_deze_instelling < inschrijvingsjaar
     ) |>
-    mutate(
-      aansluiting = case_when(
+    dplyr::mutate(
+      aansluiting = dplyr::case_when(
         # 1) 2e studie (simultane inschrijving)
         is_2e_studie ~ "2e Studie",
         
@@ -186,7 +186,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
         is_na_cd ~ "Na CD",
         
         # 3) Directe instroom:
-        # diplomajaar = inschrijvingsjaar - 1 (diploma-jaar (T) → instroomjaar T+1)!is.na(diplomajaar_hoogste_vooropleiding) &
+        # diplomajaar = inschrijvingsjaar - 1 (diploma-jaar (T) â†’ instroomjaar T+1)!is.na(diplomajaar_hoogste_vooropleiding) &
         indicatie_eerstejaars_type & diplomajaar_hoogste_vooropleiding == (inschrijvingsjaar - 1L) ~ "Direct",
         
         # 4) Tussenjaar:

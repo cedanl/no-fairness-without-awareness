@@ -20,14 +20,16 @@
 
 renv::restore()
 
+config <- config::get()
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## INPUT ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingsnaam <- "B International Business Administration"
-eoi <- 2010
-opleidingsvorm <- "VT"
+opleidingsnaam <- config$params$opleidingsnaam
+eoi <- config$params$eoi
+opleidingsvorm <- config$params$opleidingsvorm
 
 ## TODO: Pas aan naar waar jouw parquet bestand staat.
 df1cho <- rio::import(

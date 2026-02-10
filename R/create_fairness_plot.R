@@ -37,7 +37,7 @@
 #' @param caption Character of `NULL`. Optioneel onderschrift voor het plot.
 #'
 #' @return Onzichtbaar. Het plot wordt opgeslagen als
-#'   `output/fairness_plot_{group}.png`.
+#'   `output/cache/fairness_plot_{group}.png`.
 #'
 #' @importFrom ggplot2 ggsave theme_minimal scale_fill_manual
 #'   scale_y_continuous theme element_blank element_text element_rect
@@ -100,7 +100,7 @@ create_fairness_plot <- function(fairness_object,
     )
   
   ggplot2::ggsave(
-    filename  = glue::glue("output/fairness_plot_{group}.png"),
+    filename  = glue::glue("output/cache/fairness_plot_{group}.png"),
     plot      = fairness_plot,
     height    = (250 + (50 * n_categories)) / 72,
     width     = 640 / 72,

@@ -42,13 +42,13 @@ source("config/colors.R")  # must define colors_default, colors_list
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
-#'     \item{output/fairness_density_{var}.png}{Dichtheidsplot per
+#'     \item{output/cache/fairness_density_{var}.png}{Dichtheidsplot per
 #'       variabele.}
-#'     \item{output/fairness_plot_{var}.png}{Fairness-check plot per
+#'     \item{output/cache/fairness_plot_{var}.png}{Fairness-check plot per
 #'       variabele.}
-#'     \item{output/conclusions_list.rds}{List met tekstuele
+#'     \item{output/cache/conclusions_list.rds}{List met tekstuele
 #'       conclusies per variabele.}
-#'     \item{output/result_table.png}{Afbeelding van de
+#'     \item{output/cache/result_table.png}{Afbeelding van de
 #'       fairness-resultatentabel.}
 #'   }
 #'
@@ -178,7 +178,7 @@ run_nfwa <- function(df,
     conclusions_list[[i]] <- get_fairness_conclusions(df_fairness_wide, i)
   }
   
-  saveRDS(conclusions_list, file = "output/conclusions_list.rds")
+  saveRDS(conclusions_list, file = "output/cache/conclusions_list.rds")
   
   
   source("R/get_ft_fairness.R")
@@ -186,7 +186,7 @@ run_nfwa <- function(df,
                                                         dplyr::select(-c(Groep_label, Text))),
                                  colors_default = colors_default)
   
-  flextable::save_as_image(x= ft_fairness, path = "output/result_table.png")
+  flextable::save_as_image(x= ft_fairness, path = "output/cache/result_table.png")
   
   
 }

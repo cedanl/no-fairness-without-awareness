@@ -144,7 +144,7 @@ create_density_plot <- function(fairness_object,
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   
   ggplot2::ggsave(
-    filename  = glue::glue("output/fairness_density_{group}.png"),
+    filename  = glue::glue("output/cache/fairness_density_{group}.png"),
     plot      = density_plot,
     height    = (250 + (50 * n_categories)) / 72,
     width     = 640 / 72,

@@ -18,12 +18,15 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-renv::restore()
+renv::restore(prompt = FALSE)
 
 config <- config::get()
 
 # Install TinyTeX if not already
 tinytex::install_tinytex()
+
+## Install packages such as nanoparquet
+rio::install_formats()
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

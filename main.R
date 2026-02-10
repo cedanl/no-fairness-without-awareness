@@ -26,7 +26,7 @@ config <- config::get()
 tinytex::install_tinytex()
 
 ## Install packages such as nanoparquet
-rio::install_formats()
+rio::install_formats(type = "binary")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -3725,6 +3725,12 @@
       "Maintainer": "Emil Hvitfeldt <emil.hvitfeldt@posit.co>",
       "Repository": "RSPM"
     },
+    "nanoparquet": {
+      "Package": "nanoparquet",
+      "Version": "0.4.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },
     "nnet": {
       "Package": "nnet",
       "Version": "7.3-20",
@@ -4510,6 +4516,12 @@
       "SystemRequirements": "freetype2, libpng, libtiff, libjpeg, libwebp, libwebpmux",
       "NeedsCompilation": "yes",
       "Author": "Thomas Lin Pedersen [cre, aut] (ORCID: <https://orcid.org/0000-0002-5147-4711>), Maxim Shemanarev [aut, cph] (Author of AGG), Tony Juricic [ctb, cph] (Contributor to AGG), Milan Marusinec [ctb, cph] (Contributor to AGG), Spencer Garrett [ctb] (Contributor to AGG), Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
+      "Repository": "CRAN"
+    },
+    "ranger": {
+      "Package": "ranger",
+      "Version": "0.18.0",
+      "Source": "Repository",
       "Repository": "CRAN"
     },
     "rappdirs": {

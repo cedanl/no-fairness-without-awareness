@@ -39,7 +39,7 @@ test_that("add_ses selects most recent year when duplicates exist", {
 
 test_that("add_ses converts postcode to integer", {
   df <- data.frame(
-    postcodecijfers_student_op_1_oktober = c("1234", "5678")
+    postcodecijfers_student_op_1_oktober = c(1234, 5678)
   )
 
   dfses <- data.frame(

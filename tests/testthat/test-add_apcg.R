@@ -36,7 +36,7 @@ test_that("add_apcg sets missing APCG to 0", {
 
 test_that("add_apcg converts postcode to integer", {
   df <- data.frame(
-    postcodecijfers_student_op_1_oktober = c("1234", "5678")
+    postcodecijfers_student_op_1_oktober = c(1234, 5678)
   )
 
   dfapcg <- data.frame(

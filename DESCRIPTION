@@ -4,7 +4,7 @@ Title: No Fairness Without Awareness - Kansengelijkheidsanalyse
 Version: 0.1.0
 Authors@R: c(
     person("Aslam", "Tanjung", email = "aslam.tanjung@surf.nl", role = c("aut", "cre")),
-    person("Theo", "Bakker", email = "t.bakker@hhs.nl", role = "auth")
+    person("Theo", "Bakker", email = "t.bakker@hhs.nl", role = "aut"))
 Description: Analyseer de kansengelijkheid van een opleiding aan de hand van
     studiedata. De tool traint prognosemodellen (logistische regressie en random
     forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals

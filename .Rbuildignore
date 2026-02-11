@@ -1,4 +1,15 @@
-^renv$
-^renv\.lock$
-^.*\.Rproj$
-^\.Rproj\.user$
+  ^.*\.Rproj$
+  ^\.Rproj\.user$
+  ^data/input
+  ^output
+  ^scripts
+  ^utils/renv
+  ^config
+  ^main\.R$
+  ^\.claude
+  ^\.github/workflows/test-coverage\.yaml$
+  ^README\.Rmd$
+  ^LICENSE\.md$
+  ^_pkgdown\.yml$
+  ^docs$
+  ^pkgdown$

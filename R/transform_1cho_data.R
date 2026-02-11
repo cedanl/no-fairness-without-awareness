@@ -1,47 +1,43 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## transform_1cho_data.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2025 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Doel
-##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-library(dplyr)
-
+#' Koppel vakcijfers aan 1CHO-studentgegevens
+#'
+#' Voegt vakcijferdata samen met de studentgegevens op basis van
+#' persoonsgebonden nummer. Converteert datumvelden naar Date-objecten,
+#' character-variabelen naar factors, logische variabelen naar integers
+#' en berekent het aantal dagen tussen inschrijving en 1 september.
+#'
+#' @param df Data frame met 1CHO-studentgegevens. Moet de kolommen
+#'   `persoonsgebonden_nummer`, `datum_inschrijving` en
+#'   `inschrijvingsjaar` bevatten.
+#' @param df_vak Data frame met vakcijfers. Moet de kolom
+#'   `persoonsgebonden_nummer` bevatten.
+#'
+#' @return Een data frame met de gecombineerde en getransformeerde data,
+#'   inclusief de nieuwe kolom `dagen_tussen_inschrijving_1_september`.
+#'
+#' @importFrom dplyr left_join mutate across starts_with where
+#' @export
 transform_1cho_data <- function(df, df_vak) {
 
-  
+
   df <- df |>
-    left_join(
+    dplyr::left_join(
       df_vak,
       by = c("persoonsgebonden_nummer" = "persoonsgebonden_nummer"),
       relationship = "many-to-one"
     )
-  
+
   df <- df |>
-    
-    mutate(across(starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
-    
+
+    dplyr::mutate(dplyr::across(dplyr::starts_with("datum"), ~as.Date(as.character(.x), format = "%Y%m%d"))) |>
+
     # Convert character variables to factor
-    mutate(across(where(is.character), as.factor)) |>
-    
+    dplyr::mutate(dplyr::across(dplyr::where(is.character), as.factor)) |>
+
     # Convert logical variables to 0 or 1
-    mutate(across(where(is.logical), as.integer)) |>
-    
+    dplyr::mutate(dplyr::across(dplyr::where(is.logical), as.integer)) |>
+
     ## Create variable dagen_tussen_inschrijving_1_september
-    mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 
+    dplyr::mutate(dagen_tussen_inschrijving_1_september = as.integer(datum_inschrijving - as.Date(paste0(inschrijvingsjaar, "0901"), format = "%Y%m%d"))) 
   
   df
   

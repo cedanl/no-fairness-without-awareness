@@ -18,7 +18,32 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Function to create a fairness plot
+#' Maak een fairness-check plot
+#'
+#' Genereert een staafdiagram met fairness-metrieken op basis van een
+#' fairness-object. Het plot toont de verhouding van metrieken per subgroep
+#' ten opzichte van de geprivilegieerde groep. Het plot wordt opgeslagen als
+#' PNG-bestand in de `output/` map.
+#'
+#' @param fairness_object Een fairness-object aangemaakt met
+#'   [fairmodels::fairness_check()].
+#' @param group Character. Naam van de groepsvariabele (bijv. `"geslacht"`).
+#' @param privileged Character. Naam van de geprivilegieerde
+#'   (referentie)groep.
+#' @param colors_default Named list met standaardkleuren. Moet minstens
+#'   `positive_color` en `background_color` bevatten.
+#' @param n_categories Numeriek. Aantal categorieen minus 1, gebruikt voor
+#'   het berekenen van de plothoogte.
+#' @param caption Character of `NULL`. Optioneel onderschrift voor het plot.
+#'
+#' @return Onzichtbaar. Het plot wordt opgeslagen als
+#'   `output/cache/fairness_plot_{group}.png`.
+#'
+#' @importFrom ggplot2 ggsave theme_minimal scale_fill_manual
+#'   scale_y_continuous theme element_blank element_text element_rect
+#' @importFrom glue glue
+#' @importFrom ragg agg_png
+#' @export
 create_fairness_plot <- function(fairness_object,
                                  group,
                                  privileged,
@@ -31,13 +56,13 @@ create_fairness_plot <- function(fairness_object,
   # Create a fairness plot
   fairness_plot <- fairness_object |>
     plot() +
-    theme_minimal() +
+    ggplot2::theme_minimal() +
     set_theme() +
     
     # Add title and subtitle
-    labs(
+    ggplot2::labs(
       title = "Fairness check",
-      subtitle = glue(
+      subtitle = glue::glue(
         "Fairness van het model voor **{stringr::str_to_title(group)}** ",
         "ten opzichte van **{privileged}**"
       ),
@@ -54,19 +79,19 @@ create_fairness_plot <- function(fairness_object,
   fairness_plot <- fairness_plot +
     
     # Define the color
-    scale_fill_manual(values = c(colors_default[["positive_color"]])) +
+    ggplot2::scale_fill_manual(values = c(colors_default[["positive_color"]])) +
     
     # Adjust the y-axis scale
-    scale_y_continuous(breaks = y_breaks)
+    ggplot2::scale_y_continuous(breaks = y_breaks)
   
   # Add elements.
   fairness_plot <- add_theme_elements(fairness_plot, title_subtitle = TRUE) +
     
     # Customize some theme elements
-    theme(
-      panel.grid.minor = element_blank(),
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
       legend.position = "none",
-      strip.text = element_text(hjust = 0),
+      strip.text = ggplot2::element_text(hjust = 0),
       panel.border = ggplot2::element_rect(
         colour = "darkgrey",
         fill   = NA,
@@ -75,7 +100,7 @@ create_fairness_plot <- function(fairness_object,
     )
   
   ggplot2::ggsave(
-    filename  = glue::glue("output/fairness_plot_{group}.png"),
+    filename  = glue::glue("output/cache/fairness_plot_{group}.png"),
     plot      = fairness_plot,
     height    = (250 + (50 * n_categories)) / 72,
     width     = 640 / 72,

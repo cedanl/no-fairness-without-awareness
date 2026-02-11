@@ -40,7 +40,7 @@ Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken
 #| echo: false
 #| results: asis
 
-conclusions_list <- readRDS("../output/conclusions_list.rds")
+conclusions_list <- readRDS("../output/cache/conclusions_list.rds")
 
 wrapped <- mapply(
   function(title, text, i) {
@@ -60,7 +60,7 @@ cat(paste(wrapped, collapse = "\n"))
 
 \newpage 
 
-![](../output/result_table.png){fig-align="center"}
+![](../output/cache/result_table.png){fig-align="center"}
 
 **Toelichting:**
 

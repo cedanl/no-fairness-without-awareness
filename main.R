@@ -18,37 +18,39 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-renv::restore()
-rio::install_formats()
+renv::restore(prompt = FALSE)
+
+config <- config::get()
+
+# Install TinyTeX if not already
+tinytex::install_tinytex()
+
+## Install packages such as nanoparquet
+rio::install_formats(type = "binary")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## INPUT ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingsnaam <- "B International Business Administration"
-eoi <- 2010
-opleidingsvorm <- "VT"
+opleidingsnaam <- config$params$opleidingsnaam
+eoi <- config$params$eoi
+opleidingsvorm <- config$params$opleidingsvorm
 
-## TODO: Pas aan naar waar jou parquet bestand staat.
+## TODO: Pas aan naar waar jouw parquet bestand staat.
 df1cho <- rio::import(
-  fs::path(
-    Sys.getenv("LTA_ROOT"),
-    "00 LTA Data",
-    "1CHO",
-    "synthetische data",
-    "EV299XX24.parquet"
+  fs::path("data",
+    "input",
+    "EV299XX24_DEMO.parquet"
   )
 )
 
 
 df1cho_vak <- rio::import(
   fs::path(
-    Sys.getenv("LTA_ROOT"),
-    "00 LTA Data",
-    "1CHO",
-    "synthetische data",
-    "VAKHAVW_99XX.parquet"
+    "data",
+    "input",
+    "VAKHAVW_99XX_DEMO.parquet"
   )
 )
 
@@ -57,15 +59,20 @@ df1cho_vak <- rio::import(
 ## Metadata Inlezen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("scripts/01_read_metadata.R")
+source("R/read_metadata.R")
 metadata <- read_metadata()
+
+sensitive_variables <- metadata$sensitive_variables
+mapping_newname <- metadata$mapping_newname
+df_levels <- metadata$df_levels
+
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## Transform Data ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("scripts/02_transform_data.R")
+source("R/transform_data.R")
 df <- transform_data(metadata,
                      opleidingsnaam,
                      opleidingsvorm,
@@ -78,16 +85,13 @@ df <- transform_data(metadata,
 ## Create Data Summary ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-sensitive_variables <- metadata$sensitive_variables
-mapping_newname <- metadata$mapping_newname
-df_levels <- metadata$df_levels
-
-source("R/get_table_summary.R")
-tbl_summary <- get_table_summary(df, mapping_newname)
-flextable::save_as_image(x = tbl_summary, path = "output/descriptive_table.png")
-
-tbl_summary_sensitive <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
-flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_variables_descriptive_table.png")
+# 
+# source("R/get_table_summary.R")
+# tbl_summary <- get_table_summary(df, mapping_newname)
+# flextable::save_as_image(x = tbl_summary, path = "output/cache/descriptive_table.png")
+# 
+# tbl_summary_sensitive <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
+# flextable::save_as_image(x = tbl_summary_sensitive, path = "output/cache/sensitive_variables_descriptive_table.png")
 
 
 ## . ####
@@ -95,8 +99,8 @@ flextable::save_as_image(x = tbl_summary_sensitive, path = "output/sensitive_var
 ## NFWA runnen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-cutoff <- sum(df$retentie)/nrow(df)
-source("scripts/03_run_nfwa.R")
+cutoff <- sum(df$retentie) / nrow(df)
+source("R/run_nfwa.R")
 run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 
 ## . ####
@@ -105,14 +109,24 @@ run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+output_filename <- paste0(
+  "kansengelijkheidanalysis_",
+  gsub(" ", "_", tolower(opleidingsnaam)),
+  "_",
+  opleidingsvorm,
+  ".pdf"
+)
+
+# Render to scripts/
 quarto::quarto_render(
-  input = "scripts/04_render_pdf.qmd",
-  output_file = paste0(
-    "kansengelijkheidanalysis_",
-    gsub(" ", "_", tolower(opleidingsnaam)),
-    "_",
-    opleidingsvorm,
-    ".pdf"
-  ),
+  input = "scripts/render_pdf.qmd",
+  output_file = output_filename,
   execute_params = list(subtitle = paste0(opleidingsnaam, " ", opleidingsvorm))
+)
+
+# Move it
+dir.create(paste0(getwd(), "/output/"), recursive = TRUE, showWarnings = FALSE)
+file.rename(
+  file.path("scripts", output_filename),
+  file.path("output/", output_filename)
 )

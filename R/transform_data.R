@@ -18,7 +18,29 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-transform_data <- function(metadata, 
+#' Voer de volledige datatransformatie-pipeline uit
+#'
+#' Orchestreert de transformatie van ruwe 1CHO-data naar een
+#' analyse-klaar data frame. Combineert inschrijvingsgegevens,
+#' vakcijfers, APCG- en SES-data, maakt missing-indicatoren aan
+#' en imputeert ontbrekende numerieke waarden met het gemiddelde.
+#'
+#' @param metadata Named list met metadatabestanden, zoals geretourneerd
+#'   door [read_metadata()].
+#' @param opleidingsnaam Character. Naam van de opleiding.
+#' @param opleidingsvorm Character. Opleidingsvorm (`"VT"`, `"DT"` of
+#'   `"DU"`).
+#' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
+#'   (minimumwaarde).
+#' @param df1cho Data frame met ruwe 1CHO-inschrijvingsgegevens.
+#' @param df1cho_vak Data frame met ruwe 1CHO-vakcijfergegevens.
+#'
+#' @return Een data frame met getransformeerde en geimputeerde data,
+#'   gefilterd op de in metadata gedefinieerde variabelen.
+#'
+#' @importFrom dplyr mutate across select all_of where
+#' @export
+transform_data <- function(metadata,
                            opleidingsnaam,
                            opleidingsvorm,
                            eoi,
@@ -69,9 +91,6 @@ transform_data <- function(metadata,
     dplyr::select(dplyr::all_of(variables)) |>
     # Impute all numeric variables with the mean
     dplyr::mutate(dplyr::across(where(is.numeric), ~ ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))) 
-    
-
-  
   
   return(df)
 }

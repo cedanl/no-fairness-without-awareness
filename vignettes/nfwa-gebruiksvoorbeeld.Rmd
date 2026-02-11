@@ -1,0 +1,207 @@
+---
+title: "NFWA Gebruiksvoorbeeld: Fairness-analyse op studiedata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NFWA Gebruiksvoorbeeld: Fairness-analyse op studiedata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Introductie
+
+Het No Fairness Without Awareness (NFWA) package is ontwikkeld op basis van onderzoek van het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool. Het doel is om kansengelijkheid voor studenten te analyseren met behulp van machine learning modellen en fairness-metrieken.
+
+Deze vignette laat zien hoe je het package kunt gebruiken voor een complete fairness-analyse op je eigen studiedata.
+
+## Installatie
+
+```{r install}
+# Installeer het package vanuit GitHub
+remotes::install_github("cedanl/no-fairness-without-awareness")
+```
+
+## Workflow
+
+Een typische NFWA-analyse bestaat uit drie stappen:
+
+1. **Metadata inlezen** - Definities van variabelen en categorie-levels
+2. **Data transformeren** - Ruwe data omzetten naar analyse-klaar formaat
+3. **Fairness-analyse uitvoeren** - Modellen trainen en fairness evalueren
+
+### Stap 1: Metadata inlezen
+
+Metadata definieert welke variabelen in de analyse worden gebruikt en hoe categorieën worden gelabeld.
+
+```{r metadata}
+library(nfwa)
+
+# Lees metadata in uit Excel-bestanden
+metadata <- read_metadata()
+
+# Metadata bevat:
+# - variables: Lijst van variabelen voor het model
+# - df_levels: Categorie labels per variabele
+# - sensitive_variables: Variabelen voor fairness-checks
+# - dfapcg: APCG-verrijkingsdata (optioneel)
+# - dfses: SES-verrijkingsdata (optioneel)
+```
+
+**Bestandsstructuur metadata:**
+
+- `metadata/variabelen.xlsx`: Kolommen met variabelenamen
+- `metadata/levels.xlsx`: Mapping van categoriewaarden naar labels
+- `metadata/apcg.parquet`: APCG-verrijking (optioneel)
+- `metadata/ses.parquet`: SES-verrijking (optioneel)
+
+### Stap 2: Data transformeren
+
+De ruwe 1CHO-data moet worden getransformeerd naar een analyse-klaar formaat.
+
+```{r transform}
+# Laad je ruwe data (Parquet of CSV)
+df1cho <- rio::import("data/input/EV_data.parquet")
+df1cho_vak <- rio::import("data/input/VAKHAVW_data.parquet")
+
+# Transformeer de data
+df <- transform_data(
+  metadata = metadata,
+  opleidingsnaam = "Informatica",
+  opleidingsvorm = "VT",  # VT = Voltijd, DT = Deeltijd, DU = Duaal
+  eoi = 2020,  # Eerste jaar aan deze opleiding/instelling
+  df1cho = df1cho,
+  df1cho_vak = df1cho_vak
+)
+
+# De getransformeerde data bevat:
+# - retentie: Uitkomstvariabele (0/1)
+# - Alle modelvariabelen (numeriek en categorisch)
+# - Gevoelige variabelen voor fairness-analyse
+# - Geimputeerde waarden voor missings
+```
+
+**Wat doet `transform_data()`?**
+
+1. Filtert op opleiding, vorm en instroompjaar
+2. Hercoderen van vooropleiding en aansluitingstype
+3. Aggregeert vakcijfers (HAVW-vakken)
+4. Verrijkt met APCG en SES data
+5. Maakt missing-indicatoren aan
+6. Imputeert numerieke missings met gemiddelde
+
+### Stap 3: Fairness-analyse uitvoeren
+
+De hoofdfunctie `run_nfwa()` voert de complete analyse-pipeline uit.
+
+```{r analyze}
+# Bepaal de cutoff voor fairness-check
+# (vaak het gemiddelde van de retentie)
+cutoff <- sum(df$retentie) / nrow(df)
+
+# Voer de analyse uit
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = nfwa::colors_default,
+  colors_list = nfwa::colors_list,
+  cutoff = cutoff,
+  caption = "Bron: 1CHO data, eigen analyse"
+)
+```
+
+**Wat doet `run_nfwa()`?**
+
+1. **Traint modellen**: Logistische regressie en Random Forest
+2. **Maakt explainer**: DALEX-object voor model-interpretatie
+3. **Fairness-checks**: Per sensitieve variabele (geslacht, vooropleiding, etc.)
+4. **Genereert plots**:
+   - Dichtheidsplots van voorspellingen per groep
+   - Fairness-check plots met metrieken
+5. **Creëert tabel**: Samenvattende resultatentabel met conclusies
+
+### Stap 4: Resultaten bekijken
+
+De analyse slaat resultaten op in `output/cache/`:
+
+```{r results}
+# Laad de conclusies
+conclusions <- readRDS("output/cache/conclusions_list.rds")
+
+# Bekijk conclusies per variabele
+print(conclusions$geslacht)
+print(conclusions$vooropleiding)
+
+# Plots zijn opgeslagen als PNG:
+# - fairness_density_geslacht.png
+# - fairness_plot_geslacht.png
+# - result_table.png
+```
+
+## Fairness-metrieken
+
+Het package gebruikt de volgende fairness-metrieken (via `fairmodels` package):
+
+- **Equal Opportunity (TPR)**: Gelijke True Positive Rate tussen groepen
+- **Predictive Parity (PPV)**: Gelijke Positive Predictive Value
+- **Accuracy Equality**: Gelijke accuracy tussen groepen
+- **Statistical Parity (STP)**: Gelijke voorspellingsratio
+
+Een model is "fair" als de verhouding tussen groepen binnen een epsilon-range ligt (standaard 0.8-1.25).
+
+## Interpretatie
+
+**Bias-classificatie:**
+
+- **Negatieve Bias**: FRN-score < 0.8 - De groep heeft lagere kansen dan de referentiegroep
+- **Positieve Bias**: FRN-score > 1.25 - De groep heeft hogere kansen dan de referentiegroep
+- **Geen Bias**: FRN-score tussen 0.8 en 1.25 - Geen significant verschil
+
+**Let op:** Bias in het model kan verschillende oorzaken hebben:
+- Historische ongelijkheid in de data
+- Verschillen in onderliggende populaties
+- Meetfouten of missing data
+- Legitieme verschillen (bijv. vooropleiding-niveau)
+
+## Aanpassingen
+
+### Eigen kleuren gebruiken
+
+```{r custom_colors}
+# Definieer je eigen kleurenschema
+mijn_kleuren <- nfwa::colors_default
+mijn_kleuren["positive_color"] <- "#0066CC"
+mijn_kleuren["negative_color"] <- "#CC0000"
+
+# Gebruik ze in de analyse
+run_nfwa(df, df_levels, sensitive_variables,
+         colors_default = mijn_kleuren,
+         colors_list = nfwa::colors_list)
+```
+
+### Andere cutoff-waarde
+
+```{r custom_cutoff}
+# Gebruik een vaste cutoff in plaats van gemiddelde
+run_nfwa(df, df_levels, sensitive_variables,
+         colors_default = nfwa::colors_default,
+         cutoff = 0.3)  # 30% cutoff
+```
+
+## Meer informatie
+
+Voor meer details over de onderzoeksmethode, zie:
+
+Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs.* Intreerede lectoraat Learning Technology & Analytics. [https://zenodo.org/records/14204674](https://zenodo.org/records/14204674)
+
+## Help en ondersteuning
+
+- GitHub issues: [https://github.com/cedanl/no-fairness-without-awareness/issues](https://github.com/cedanl/no-fairness-without-awareness/issues)
+- Functiedocumentatie: `?run_nfwa`, `?transform_data`, `?read_metadata`

@@ -85,7 +85,7 @@ create_fairness_plot <- function(fairness_object,
     ggplot2::scale_y_continuous(breaks = y_breaks)
   
   # Add elements.
-  fairness_plot <- add_theme_elements(fairness_plot, title_subtitle = TRUE) +
+  fairness_plot <- add_theme_elements(fairness_plot, colors_default, title_subtitle = TRUE) +
     
     # Customize some theme elements
     ggplot2::theme(

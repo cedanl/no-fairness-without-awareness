@@ -52,12 +52,11 @@ transform_data <- function(metadata,
   variables <- metadata$variables
   dec_vopl <- metadata$dec_vopl
   dec_isat <- metadata$dec_isat
-  
-  
+
+
   #-------------------------------------------------------------------
   # Transform
   #-------------------------------------------------------------------
-  source("R/transform_ev_data.R")
   df1cho2 <- transform_ev_data(
     df1cho,
     naam = opleidingsnaam,
@@ -66,19 +65,15 @@ transform_data <- function(metadata,
     dec_vopl = dec_vopl,
     dec_isat = dec_isat
   )
-  
-  source("R/transform_vakhavw.R")
+
   df1cho_vak2 <- transform_vakhavw(df1cho_vak)
-  
-  source("R/transform_1cho_data.R")
+
   dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
-  
+
   #-------------------------------------------------------------------
   # Add APCG & SES + basic cleaning
   #-------------------------------------------------------------------
-  source("R/add_apcg.R")
-  source("R/add_ses.R")
-  
+
   vars <- c("netl", "entl", "nat", "wis")
   df <- dfcyfer |>
     

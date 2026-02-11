@@ -18,9 +18,6 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/set_theme.R")
-source("R/add_theme_elements.R")
-
 #' Maak een dichtheidsplot voor fairness-analyse
 #'
 #' Genereert een dichtheidsplot op basis van een fairness-object dat de
@@ -81,7 +78,7 @@ create_density_plot <- function(fairness_object,
   if (group == "all") {
     .values <- colors_default[["metrics_blue"]]
   } else {
-    .values <- color_list[[group]]
+    .values <- colors_list[[group]]
   }
   
   # Create a density plot
@@ -139,7 +136,7 @@ create_density_plot <- function(fairness_object,
     )
 
   # Add elements.
-  density_plot <- add_theme_elements(density_plot, title_subtitle = TRUE) +
+  density_plot <- add_theme_elements(density_plot, colors_default, title_subtitle = TRUE) +
     ggplot2::theme(legend.position = "bottom", legend.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   

@@ -3,6 +3,8 @@
 export(add_apcg)
 export(add_ses)
 export(add_theme_elements)
+export(colors_default)
+export(colors_list)
 export(concatenate_list)
 export(create_density_plot)
 export(create_explain_lf)

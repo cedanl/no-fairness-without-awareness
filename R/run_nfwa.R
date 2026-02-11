@@ -17,7 +17,6 @@
 ## 1) Geen.
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-source("config/colors.R")  # must define colors_default, colors_list
 
 #' Voer de volledige NFWA fairness-analyse uit
 #'
@@ -35,6 +34,8 @@ source("config/colors.R")  # must define colors_default, colors_list
 #'   variabelen om te analyseren.
 #' @param colors_default Named list met kleurdefinities voor plots en
 #'   tabellen.
+#' @param colors_list Named list met kleurvectoren per groepsvariabele.
+#'   Standaard wordt het package-ingebouwde palet gebruikt.
 #' @param cutoff Numeriek. Cutoff-waarde voor de fairness-check.
 #'   Standaard `0.2`.
 #' @param caption Character of `NULL`. Optioneel onderschrift voor
@@ -59,6 +60,7 @@ run_nfwa <- function(df,
                      df_levels,
                      sensitive_variables,
                      colors_default,
+                     colors_list = nfwa::colors_list,
                      cutoff = 0.2,
                      caption = NULL) {
 
@@ -71,33 +73,24 @@ run_nfwa <- function(df,
   # Make retentie numeric / binary as character
   df <- df |>
     dplyr::mutate(dplyr::across(retentie, ~ dplyr::if_else(. == 0, "0", "1")))
-  
-  source("R/run_models.R")
+
   output     <- run_models(df)
   last_fit   <- output$last_fit
   best_model <- output$best_model
-  
+
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Create Explain LF ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
-  source("R/create_explain_lf.R")
+
   explainer <- create_explain_lf(last_fit, best_model)
-  
+
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Analyses ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
+
   df_fairness_list <- list()
-  
-  # Load functions used in the loop only once
-  source("R/get_largest_group.R")
-  source("R/get_obj_fairness.R")
-  source("R/create_density_plot.R")
-  source("R/create_fairness_plot.R")
-  source("R/get_df_fairness_check_data.R")
   
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
@@ -167,21 +160,18 @@ run_nfwa <- function(df,
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Create Flextable ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
-  source("R/get_df_fairness_wide.R")
+
   df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
-  
-  source("R/get_fairness_conclusions.R")
+
   # Now create a text per variable from the table
   conclusions_list <- list()
   for (i in sensitive_variables) {
     conclusions_list[[i]] <- get_fairness_conclusions(df_fairness_wide, i)
   }
-  
+
   saveRDS(conclusions_list, file = "output/cache/conclusions_list.rds")
-  
-  
-  source("R/get_ft_fairness.R")
+
+
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>
                                                         dplyr::select(-c(Groep_label, Text))),
                                  colors_default = colors_default)

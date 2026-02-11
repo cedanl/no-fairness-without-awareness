@@ -38,28 +38,34 @@ Een typische NFWA-analyse bestaat uit drie stappen:
 
 ### Stap 1: Metadata inlezen
 
-Metadata definieert welke variabelen in de analyse worden gebruikt en hoe categorieën worden gelabeld.
+**Belangrijk:** Het NFWA package bevat standaard metadata! Je hoeft geen eigen bestanden aan te leveren.
 
 ```{r metadata}
 library(nfwa)
 
-# Lees metadata in uit Excel-bestanden
+# Lees de meegeleverde metadata in
 metadata <- read_metadata()
 
-# Metadata bevat:
+# Metadata bevat automatisch:
 # - variables: Lijst van variabelen voor het model
 # - df_levels: Categorie labels per variabele
-# - sensitive_variables: Variabelen voor fairness-checks
-# - dfapcg: APCG-verrijkingsdata (optioneel)
-# - dfses: SES-verrijkingsdata (optioneel)
+# - sensitive_variables: Variabelen voor fairness-checks (geslacht, vooropleiding, etc.)
+# - dfapcg: APCG-verrijkingsdata (2019)
+# - dfses: SES-verrijkingsdata (2021-2022)
+# - dec_vopl: Decodeertabel vooropleidingen
+# - dec_isat: Decodeertabel ISAT codes
 ```
 
-**Bestandsstructuur metadata:**
+**Meegeleverde bestanden:**
 
-- `metadata/variabelen.xlsx`: Kolommen met variabelenamen
-- `metadata/levels.xlsx`: Mapping van categoriewaarden naar labels
-- `metadata/apcg.parquet`: APCG-verrijking (optioneel)
-- `metadata/ses.parquet`: SES-verrijking (optioneel)
+Het package installeert automatisch:
+- ✅ `variabelen.xlsx` - Welke variabelen gebruikt worden
+- ✅ `levels.xlsx` - Labels voor categorische variabelen
+- ✅ `APCG_2019.csv` - Armoede/probleemwijken per postcode
+- ✅ `SES_PC4_2021-2022.csv` - Sociaaleconomische status per postcode
+- ✅ Decodeertabellen voor 1CHO data
+
+Je kunt direct aan de slag zonder eigen metadata bestanden!
 
 ### Stap 2: Data transformeren
 

@@ -21,9 +21,25 @@
 #' Lees alle metadata-bestanden in
 #'
 #' Leest de configuratie- en metadatabestanden die nodig zijn voor de
-#' NFWA-analyse: APCG-data, SES-data, variabelendefinities, sensitieve
-#' variabelen, naamgeving-mapping, level-definities en decodeertabellen
-#' voor vooropleidingen en ISAT-codes.
+#' NFWA-analyse. Deze bestanden worden automatisch meegeleverd met het
+#' package en bevatten APCG-data, SES-data, variabelendefinities,
+#' sensitieve variabelen, naamgeving-mapping, level-definities en
+#' decodeertabellen voor vooropleidingen en ISAT-codes.
+#'
+#' @details
+#' De metadata wordt automatisch geïnstalleerd met het package in
+#' `inst/metadata/`. Je hoeft geen eigen metadata-bestanden aan te
+#' leveren - `read_metadata()` vindt de bestanden automatisch.
+#'
+#' Meegeleverde bestanden:
+#' \itemize{
+#'   \item `variabelen.xlsx` - Definitie van te gebruiken variabelen
+#'   \item `levels.xlsx` - Labels voor categorische variabelen
+#'   \item `APCG_2019.csv` - Armoede/probleemwijken per postcode
+#'   \item `SES_PC4_2021-2022.csv` - Sociaaleconomische status per postcode
+#'   \item `dec/Dec_vopl.csv` - Decodering vooropleidingscodes
+#'   \item `dec/Dec_isat.csv` - Decodering ISAT-codes
+#' }
 #'
 #' @return Een named list met de volgende elementen:
 #'   \describe{

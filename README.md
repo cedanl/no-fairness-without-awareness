@@ -86,9 +86,14 @@ Je data moet de volgende structuur hebben:
 
 ### Metadata
 
-Het package heeft metadata nodig voor variabele mapping en levels. Plaats de volgende bestanden in een `metadata/` map:
-- `variabelen.xlsx` - Variabele definities
-- `levels.xlsx` - Categorie levels per variabele
-- Optioneel: APCG en SES data voor verrijking
+**Het package bevat standaard metadata!** De volgende bestanden worden automatisch meegeleverd bij installatie:
+- ✅ `variabelen.xlsx` - Variabele definities
+- ✅ `levels.xlsx` - Categorie levels per variabele
+- ✅ `APCG_2019.csv` - APCG verrijkingsdata
+- ✅ `SES_PC4_2021-2022.csv` - SES verrijkingsdata
+- ✅ Decodeertabellen voor vooropleiding en ISAT codes
 
-Zie `?read_metadata` voor meer details.
+Je hoeft **geen eigen metadata** aan te leveren - gebruik gewoon `read_metadata()` en het werkt direct!
+
+**Eigen metadata gebruiken (optioneel):**
+Als je eigen metadata wilt gebruiken, kun je de functie aanpassen of handmatig bestanden inladen. Zie `?read_metadata` voor details over de verwachte structuur.

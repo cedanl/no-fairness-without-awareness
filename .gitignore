@@ -13,3 +13,5 @@ scripts/.quarto
 
 ## Claude files
 .claude/
+/doc/
+/Meta/

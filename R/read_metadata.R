@@ -47,16 +47,23 @@
 #' @export
 read_metadata <- function() {
 
-  dfapcg <- read.table("metadata/APCG_2019.csv", sep = ";", header = TRUE)
+  # Use system.file() to find package-installed metadata files
+  dfapcg <- read.table(
+    system.file("metadata", "APCG_2019.csv", package = "nfwa"),
+    sep = ";",
+    header = TRUE
+  )
 
   dfses <- read.table(
-    "metadata/SES_PC4_2021-2022.csv",
+    system.file("metadata", "SES_PC4_2021-2022.csv", package = "nfwa"),
     sep = ";",
     header = TRUE,
     dec = ","
   )
 
-  df_variables <- readxl::read_xlsx("metadata/variabelen.xlsx")
+  df_variables <- readxl::read_xlsx(
+    system.file("metadata", "variabelen.xlsx", package = "nfwa")
+  )
 
   variables <- df_variables |>
     dplyr::filter(Used) |>
@@ -70,15 +77,23 @@ read_metadata <- function() {
     dplyr::select(Variable, Newname) |>
     tidyr::drop_na()
 
-  df_levels <- readxl::read_xlsx("metadata/levels.xlsx") |>
+  df_levels <- readxl::read_xlsx(
+    system.file("metadata", "levels.xlsx", package = "nfwa")
+  ) |>
     dplyr::group_by(VAR_Formal_variable) |>
     dplyr::arrange(VAR_Level_order, .by_group = TRUE) |>
     dplyr::ungroup()
-  
-  dec_vopl <- read.csv("metadata/dec/Dec_vopl.csv", sep = "|") |>
+
+  dec_vopl <- read.csv(
+    system.file("metadata", "dec", "Dec_vopl.csv", package = "nfwa"),
+    sep = "|"
+  ) |>
     janitor::clean_names()
-  
-  dec_isat <- read.csv("metadata/dec/Dec_isat.csv", sep = "|") |>
+
+  dec_isat <- read.csv(
+    system.file("metadata", "dec", "Dec_isat.csv", package = "nfwa"),
+    sep = "|"
+  ) |>
     janitor::clean_names()
   
   return(

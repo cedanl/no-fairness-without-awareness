@@ -14,67 +14,81 @@ Over deze methode heeft lector, Dr. Theo Bakker, zijn intreerede uitgesproken op
 
 ## Snel aan de slag
 
-Voor gebruikers die het project gewoon willen uitvoeren, volg deze eenvoudige stappen:
+### Installatie
 
-### Stap 1: Installeer de benodigde software
+Je kunt het NFWA package direct vanuit GitHub installeren:
+
+```r
+# Installeer remotes package als je het nog niet hebt
+install.packages("remotes")
+
+# Installeer het NFWA package
+remotes::install_github("cedanl/no-fairness-without-awareness")
+```
+
+### Vereisten
 
 | Software | Beschrijving | Download |
 |----------|--------------|----------|
 | **R** | Versie 4.3 of hoger | [Download R](https://cran.r-project.org/) |
 | **RStudio** | Aanbevolen IDE (optioneel maar handig) | [Download RStudio](https://posit.co/download/rstudio-desktop/) |
-| **Quarto** | Voor het genereren van PDF-rapporten | [Download Quarto](https://quarto.org/docs/get-started/) |
-| **LaTeX** | Voor PDF-uitvoer (TinyTeX of TeX Live) | Zie instructies hieronder |
 | **Rtools** | Alleen voor Windows - nodig voor package compilatie | [Download Rtools](https://cran.r-project.org/bin/windows/Rtools/) |
 
-#### LaTeX installeren
-
-**Optie 1: TinyTeX (aanbevolen - eenvoudigst)**
-```r
-# Voer dit uit in R/RStudio
-install.packages("tinytex")
-tinytex::install_tinytex()
-```
-
-**Optie 2: TeX Live**
-- Windows: Download van [tug.org/texlive](https://tug.org/texlive/)
-- macOS: `brew install --cask mactex` of download [MacTeX](https://www.tug.org/mactex/)
-- Linux: `sudo apt install texlive-full` (Ubuntu/Debian)
-
-### Stap 2: Download het project
-
-```bash
-git clone https://github.com/cedanl/no-fairness-without-awareness.git
-cd no-fairness-without-awareness
-```
-
-Of download als ZIP via GitHub en pak uit.
-
-### Stap 3: Installeer R-packages
-
-Open het project in RStudio of navigeer naar de projectmap in R en voer uit:
+### Gebruik
 
 ```r
-# Installeer renv als je het nog niet hebt
-install.packages("renv")
+# Laad het package
+library(nfwa)
 
-# Herstel alle project-packages
-renv::restore()
+# 1. Lees metadata in
+metadata <- read_metadata()
+
+# 2. Transformeer je data
+df <- transform_data(
+  metadata = metadata,
+  opleidingsnaam = "Jouw Opleiding",
+  opleidingsvorm = "VT",
+  eoi = 2020,
+  df1cho = jouw_1cho_data,
+  df1cho_vak = jouw_vak_data
+)
+
+# 3. Voer de fairness-analyse uit
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = nfwa::colors_default,
+  colors_list = nfwa::colors_list,
+  cutoff = 0.2
+)
 ```
 
-Dit installeert automatisch alle benodigde packages in de juiste versies.
+Resultaten verschijnen in de `output/cache/` map:
+- `fairness_density_{variabele}.png` - Dichtheidsplots
+- `fairness_plot_{variabele}.png` - Fairness-check plots
+- `conclusions_list.rds` - Tekstuele conclusies
+- `result_table.png` - Samenvattende resultatentabel
 
-### Stap 4: Voeg je data toe
+### Data Vereisten
 
-Plaats je databestanden (Parquet of CSV) in data/input:
-- `df1cho` - studentniveau data (instroom/retentie basis)
-- `df1cho_vak` - vakniveau data
+Je data moet de volgende structuur hebben:
 
-Pas de paden aan in `main.R` naar de locatie van je bestanden.
+**df1cho** (studentniveau):
+- Inschrijvingsgegevens per student
+- Retentie-indicator
+- Persoonsgebonden nummer (student-ID)
+- Gevoelige variabelen (geslacht, vooropleiding, etc.)
 
-### Stap 5: Voer de analyse uit
+**df1cho_vak** (vakniveau):
+- Vakcijfers per student
+- Gekoppeld aan student-ID
 
-```r
-source("main.R")
-```
+### Metadata
 
-Resultaten verschijnen in de `output/` map, inclusief een PDF-rapport.
+Het package heeft metadata nodig voor variabele mapping en levels. Plaats de volgende bestanden in een `metadata/` map:
+- `variabelen.xlsx` - Variabele definities
+- `levels.xlsx` - Categorie levels per variabele
+- Optioneel: APCG en SES data voor verrijking
+
+Zie `?read_metadata` voor meer details.

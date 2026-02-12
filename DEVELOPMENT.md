@@ -215,7 +215,7 @@ renv::restore()
 
 ### Styling aanpassen
 
-- Kleuren: `config/colors.R`
+- Kleuren: `R/colors_data.R`
 - Rapport layout: `scripts/04_render_pdf.qmd`
 
 ---

@@ -37,7 +37,7 @@
 #' @param var Character. Naam van de variabele (voor bestandsnaam).
 #'
 #' @return Onzichtbaar. Het plot wordt opgeslagen als
-#'   `output/fairness_density_{group}.png`.
+#'   `output/fairness_density_\{group\}.png`.
 #'
 #' @importFrom ggplot2 ggsave scale_fill_manual scale_x_continuous geom_vline
 #'   annotate theme element_blank guides guide_legend

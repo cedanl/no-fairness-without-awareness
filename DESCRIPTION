@@ -10,7 +10,9 @@ Description: Analyseer de kansengelijkheid van een opleiding aan de hand van
     forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals
     geslacht en vooropleiding. Resultaten worden gepresenteerd in een
     automatisch gegenereerd PDF-rapport.
-License: file LICENSE
+License: MIT + file LICENSE
+URL: https://github.com/cedanl/no-fairness-without-awareness
+BugReports: https://github.com/cedanl/no-fairness-without-awareness/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
@@ -19,31 +21,38 @@ Depends:
 Imports:
     DALEX,
     DALEXtra,
+    cli,
     dplyr,
     fairmodels,
     flextable,
     forcats,
-    fs,
     ggplot2,
     ggtext,
     glmnet,
     glue,
     gtsummary,
     janitor,
-    quarto,
+    officer,
+    parsnip,
     ragg,
-    ranger,
     readxl,
     recipes,
-    rio,
     rsample,
     stringr,
+    tibble,
     tidyr,
-    tidymodels,
-    tune
+    tidyselect,
+    tune,
+    workflows,
+    yardstick
 Suggests:
+    config,
+    fs,
     knitr,
-    renv,
+    quarto,
+    ranger,
+    rio,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tidymodels
 VignetteBuilder: knitr

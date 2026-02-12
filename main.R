@@ -19,9 +19,9 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Laad het NFWA package
-# Voor development: devtools::load_all()
+# Voor development: gebruik devtools::load_all()
 # Na installatie: library(nfwa)
-library(nfwa)
+devtools::load_all()
 
 # Laad configuratie (optioneel - kan ook handmatig ingesteld worden)
 config <- config::get()
@@ -65,7 +65,7 @@ df1cho_vak <- rio::import(
 
 # Lees de meegeleverde metadata in
 # Deze zit automatisch in het package - geen eigen bestanden nodig!
-metadata <- read_metadata()
+metadata <- nfwa::read_metadata()
 
 # Haal belangrijke componenten eruit
 sensitive_variables <- metadata$sensitive_variables  # Bijv. geslacht, vooropleiding
@@ -155,7 +155,16 @@ message("  - Conclusies opgeslagen in conclusions_list.rds")
 # Genereer een PDF rapport met Quarto
 # Dit vereist een Quarto template in scripts/render_pdf.qmd
 
-if (file.exists("scripts/render_pdf.qmd")) {
+# Check if Quarto is available
+quarto_available <- requireNamespace("quarto", quietly = TRUE) &&
+  !is.null(tryCatch(quarto::quarto_path(), error = function(e) NULL))
+
+if (!quarto_available) {
+  message("\nLet op: Quarto niet geïnstalleerd - PDF generatie overgeslagen")
+  message("  Installeer Quarto vanaf https://quarto.org voor PDF rapporten")
+} else if (!file.exists("scripts/render_pdf.qmd")) {
+  message("\nLet op: scripts/render_pdf.qmd niet gevonden - PDF generatie overgeslagen")
+} else {
   message("\nPDF rapport genereren...")
 
   output_filename <- paste0(
@@ -181,9 +190,7 @@ if (file.exists("scripts/render_pdf.qmd")) {
   )
 
   message("  - PDF rapport: output/", output_filename)
-} else {
-  message("\nLet op: scripts/render_pdf.qmd niet gevonden - PDF generatie overgeslagen")
 }
 
 message("\n✓ NFWA analyse compleet!")
-message("  Bekijk de resultaten in output/cache/")
+message("  Bekijk de resultaten in output/")

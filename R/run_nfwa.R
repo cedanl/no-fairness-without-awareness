@@ -43,9 +43,9 @@
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
-#'     \item{output/cache/fairness_density_{var}.png}{Dichtheidsplot per
+#'     \item{output/cache/fairness_density_\{var\}.png}{Dichtheidsplot per
 #'       variabele.}
-#'     \item{output/cache/fairness_plot_{var}.png}{Fairness-check plot per
+#'     \item{output/cache/fairness_plot_\{var\}.png}{Fairness-check plot per
 #'       variabele.}
 #'     \item{output/cache/conclusions_list.rds}{List met tekstuele
 #'       conclusies per variabele.}

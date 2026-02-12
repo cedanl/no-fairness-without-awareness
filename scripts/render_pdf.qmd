@@ -22,7 +22,7 @@ format:
 #| echo: false
 #| include: false
 
-source("../config/colors.R")
+source("../R/colors_data.R")
 source("../R/get_colored_square.R")
 ```
 

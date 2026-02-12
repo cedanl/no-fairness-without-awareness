@@ -32,7 +32,7 @@ het berekenen van de plothoogte.}
 }
 \value{
 Onzichtbaar. Het plot wordt opgeslagen als
-  `output/cache/fairness_plot_{group}.png`.
+  `output/cache/fairness_plot_\{group\}.png`.
 }
 \description{
 Genereert een staafdiagram met fairness-metrieken op basis van een

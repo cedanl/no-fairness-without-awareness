@@ -37,7 +37,7 @@
 #' @param caption Character of `NULL`. Optioneel onderschrift voor het plot.
 #'
 #' @return Onzichtbaar. Het plot wordt opgeslagen als
-#'   `output/cache/fairness_plot_{group}.png`.
+#'   `output/cache/fairness_plot_\{group\}.png`.
 #'
 #' @importFrom ggplot2 ggsave theme_minimal scale_fill_manual
 #'   scale_y_continuous theme element_blank element_text element_rect

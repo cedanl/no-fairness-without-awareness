@@ -153,44 +153,11 @@ message("  - Conclusies opgeslagen in conclusions_list.rds")
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Genereer een PDF rapport met Quarto
-# Dit vereist een Quarto template in scripts/render_pdf.qmd
-
-# Check if Quarto is available
-quarto_available <- requireNamespace("quarto", quietly = TRUE) &&
-  !is.null(tryCatch(quarto::quarto_path(), error = function(e) NULL))
-
-if (!quarto_available) {
-  message("\nLet op: Quarto niet geïnstalleerd - PDF generatie overgeslagen")
-  message("  Installeer Quarto vanaf https://quarto.org voor PDF rapporten")
-} else if (!file.exists("scripts/render_pdf.qmd")) {
-  message("\nLet op: scripts/render_pdf.qmd niet gevonden - PDF generatie overgeslagen")
-} else {
-  message("\nPDF rapport genereren...")
-
-  output_filename <- paste0(
-    "kansengelijkheidanalysis_",
-    gsub(" ", "_", tolower(opleidingsnaam)),
-    "_",
-    opleidingsvorm,
-    ".pdf"
-  )
-
-  # Render het rapport
-  quarto::quarto_render(
-    input = "scripts/render_pdf.qmd",
-    output_file = output_filename,
-    execute_params = list(subtitle = paste0(opleidingsnaam, " ", opleidingsvorm))
-  )
-
-  # Verplaats naar output directory
-  dir.create("output", recursive = TRUE, showWarnings = FALSE)
-  file.rename(
-    file.path("scripts", output_filename),
-    file.path("output", output_filename)
-  )
-
-  message("  - PDF rapport: output/", output_filename)
-}
+# Dit gebruikt de render_report() functie uit het NFWA package
+nfwa::render_report(
+  opleidingsnaam = opleidingsnaam,
+  opleidingsvorm = opleidingsvorm
+)
 
 message("\n✓ NFWA analyse compleet!")
 message("  Bekijk de resultaten in output/")

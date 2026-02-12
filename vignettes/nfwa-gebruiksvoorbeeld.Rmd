@@ -151,6 +151,40 @@ print(conclusions$vooropleiding)
 # - result_table.png
 ```
 
+### Stap 5: PDF-rapport genereren (Optioneel)
+
+Genereer een professioneel PDF-rapport met alle resultaten:
+
+```{r render_pdf}
+# Genereer PDF rapport
+render_report(
+  opleidingsnaam = "Informatica",
+  opleidingsvorm = "VT"
+)
+```
+
+**Vereisten:**
+- Quarto geïnstalleerd op je systeem ([https://quarto.org](https://quarto.org))
+- Het `quarto` R package
+- LaTeX distributie (bijv. TinyTeX: `tinytex::install_tinytex()`)
+
+Het PDF-rapport bevat:
+- Inleiding over de onderzoeksmethode
+- Automatisch gegenereerde conclusies per variabele
+- Overzichtstabel met bias-classificaties
+- Kleurgecodeerde legenda
+
+**Eigen template gebruiken:**
+
+```{r custom_template}
+# Gebruik je eigen Quarto template
+render_report(
+  opleidingsnaam = "Informatica",
+  opleidingsvorm = "VT",
+  qmd_template = "path/to/your/template.qmd"
+)
+```
+
 ## Fairness-metrieken
 
 Het package gebruikt de volgende fairness-metrieken (via `fairmodels` package):

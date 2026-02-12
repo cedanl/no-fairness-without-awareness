@@ -24,7 +24,21 @@
 devtools::load_all()
 
 # Laad configuratie (optioneel - kan ook handmatig ingesteld worden)
-config <- config::get()
+# Als config package beschikbaar is, gebruik dan config.yml
+if (requireNamespace("config", quietly = TRUE) && file.exists("config.yml")) {
+  config <- config::get()
+} else {
+  # Fallback: gebruik default waarden
+  config <- list(
+    params = list(
+      opleidingsnaam = "B International Business Administration",
+      eoi = 2010,
+      opleidingsvorm = "VT"
+    )
+  )
+  message("Let op: config package niet gevonden, gebruik default waarden")
+  message("Installeer config package of pas hieronder handmatig de waarden aan")
+}
 
 # Installeer benodigde dependencies (alleen eerste keer)
 if (!tinytex::is_tinytex()) {

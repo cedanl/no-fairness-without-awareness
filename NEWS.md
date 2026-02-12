@@ -1,10 +1,10 @@
 # nfwa 0.1.0
 
-* Initial release
-* Implemented fairness analysis pipeline using DALEX and fairmodels
-* Support for logistic regression and random forest models
-* Automated fairness metric calculation and visualization
-* PDF report generation with Quarto via `render_report()` function
-* Metadata-driven variable transformation
-* Functions for processing 1CHO education data
-* Quarto template included in package for professional PDF reports
+* Eerste release
+* Fairness-analyse pipeline geïmplementeerd met DALEX en fairmodels
+* Ondersteuning voor logistische regressie en random forest modellen
+* Geautomatiseerde berekening en visualisatie van fairness-metrieken
+* PDF rapportgeneratie met Quarto via `render_report()` functie
+* Metadata-gestuurde variabele transformatie
+* Functies voor verwerking van 1CHO onderwijsdata
+* Quarto template inbegrepen in package voor professionele PDF rapporten

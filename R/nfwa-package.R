@@ -1,3 +1,7 @@
+# Package-level documentatie
+# Dit bestand bevat de package-level documentatie die verschijnt wanneer
+# iemand ?nfwa typt in R. Het is een standaard onderdeel van R packages.
+
 #' @keywords internal
 "_PACKAGE"
 

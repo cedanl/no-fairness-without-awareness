@@ -66,9 +66,9 @@ transform_data <- function(metadata,
     dec_isat = dec_isat
   )
 
-  df1cho_vak2 <- transform_vakhavw(df1cho_vak)
+  df_vak_aggregated <- transform_vakhavw(df1cho_vak)
 
-  dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
+  dfcyfer <- transform_1cho_data(df1cho2, df_vak_aggregated)
 
   #-------------------------------------------------------------------
   # Add APCG & SES + basic cleaning

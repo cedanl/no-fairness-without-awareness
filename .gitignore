@@ -10,3 +10,8 @@ scripts/*.pdf
 
 scripts/dev/*
 scripts/.quarto
+
+## Claude files
+.claude/
+/doc/
+/Meta/

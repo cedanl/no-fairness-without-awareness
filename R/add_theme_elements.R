@@ -18,8 +18,6 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("config/colors.R")
-
 #' Voeg thema-elementen toe aan een ggplot
 #'
 #' Past aanvullende thema-instellingen toe op een bestaand ggplot-object,
@@ -28,6 +26,8 @@ source("config/colors.R")
 #' facet-opmaak en x-as marge.
 #'
 #' @param p Een ggplot-object waaraan thema-elementen worden toegevoegd.
+#' @param colors_default Named list met standaardkleuren. Moet minstens
+#'   `caption_color` bevatten.
 #' @param title_subtitle Logical. Indien `TRUE` (standaard), worden titel- en
 #'   ondertitel-opmaak toegepast.
 #' @param extended Logical. Indien `TRUE`, worden extra thema-elementen
@@ -40,6 +40,7 @@ source("config/colors.R")
 #' @importFrom ggtext element_markdown element_textbox_simple
 #' @export
 add_theme_elements <- function(p,
+                               colors_default,
                                title_subtitle = TRUE,
                                extended = FALSE) {
 

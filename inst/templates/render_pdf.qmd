@@ -22,8 +22,14 @@ format:
 #| echo: false
 #| include: false
 
-source("../R/colors_data.R")
-source("../R/get_colored_square.R")
+# Load package functions (works for both installed package and development)
+if (requireNamespace("nfwa", quietly = TRUE)) {
+  library(nfwa)
+} else {
+  # Fallback for development environment
+  source("../R/colors_data.R")
+  source("../R/get_colored_square.R")
+}
 ```
 
 ## Onderzoek naar kansengelijkheid

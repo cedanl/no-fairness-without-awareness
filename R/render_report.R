@@ -19,12 +19,12 @@
 #' @details
 #' Deze functie vereist:
 #' \itemize{
-#'   \item Quarto geïnstalleerd op het systeem (https://quarto.org)
+#'   \item Quarto ge\u00efnstalleerd op het systeem (https://quarto.org)
 #'   \item Het \code{quarto} R package
 #'   \item Output van \code{\link{run_nfwa}} in de temp/ directory
 #' }
 #'
-#' Als Quarto niet geïnstalleerd is, krijgt de gebruiker een waarschuwing
+#' Als Quarto niet ge\u00efnstalleerd is, krijgt de gebruiker een waarschuwing
 #' en wordt er geen PDF gegenereerd.
 #'
 #' Na het genereren van het PDF rapport, kun je de tijdelijke bestanden
@@ -71,7 +71,7 @@ render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) 
     !is.null(tryCatch(quarto::quarto_path(), error = function(e) NULL))
 
   if (!quarto_available) {
-    message("\nLet op: Quarto niet geïnstalleerd - PDF generatie overgeslagen")
+    message("\nLet op: Quarto niet ge\u00efnstalleerd - PDF generatie overgeslagen")
     message("  Installeer Quarto vanaf https://quarto.org voor PDF rapporten")
     return(invisible(NULL))
   }

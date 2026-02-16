@@ -56,17 +56,17 @@ data_vakhavw <- read.csv(
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Uncomment deze sectie om de snelle 1-functie aanpak te gebruiken:
-# 
-# result <- nfwa::analyze_fairness(
-#   data_ev = data_ev,
-#   data_vakhavw = data_vakhavw,
-#   opleidingsnaam = opleidingsnaam,
-#   eoi = eoi,
-#   opleidingsvorm = opleidingsvorm,
-#   generate_pdf = TRUE,
-#   cleanup_temp = FALSE
-# )
-#
+
+result <- nfwa::analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = opleidingsnaam,
+  eoi = eoi,
+  opleidingsvorm = opleidingsvorm,
+  generate_pdf = TRUE,
+  cleanup_temp = FALSE
+)
+
 # # Klaar! Het PDF rapport staat in je working directory.
 # # Bekijk het getransformeerde dataframe:
 # # head(result$df)

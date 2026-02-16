@@ -77,8 +77,8 @@ Output bestanden worden opgeslagen in:
 \examples{
 \dontrun{
 # Laad je 1CHO data
-data_ev <- rio::import("EV299XX24.parquet")
-data_vakhavw <- rio::import("VAKHAVW_99XX.parquet")
+data_ev <- read.csv("EV299XX24.csv", sep = ";")
+data_vakhavw <- read.csv("VAKHAVW_99XX.parquet", ";")
 
 # Voer complete analyse uit met PDF rapport
 result <- analyze_fairness(

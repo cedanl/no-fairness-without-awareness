@@ -4,9 +4,11 @@
 \alias{create_explain_lf}
 \title{Maak een DALEX-explainer van een afgerond model}
 \usage{
-create_explain_lf(last_fit, best_model)
+create_explain_lf(df, last_fit, best_model)
 }
 \arguments{
+\item{df}{Verwerkte 1CHO en 1CHO vak data uit NFWA package}
+
 \item{last_fit}{Een `last_fit`-object uit het tidymodels-framework, met
 daarin het getrainde model en de bijbehorende workflow.}
 

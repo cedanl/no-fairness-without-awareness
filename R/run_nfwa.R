@@ -87,7 +87,7 @@ run_nfwa <- function(df,
   ## Create Explain LF ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  explainer <- create_explain_lf(last_fit, best_model)
+  explainer <- create_explain_lf(df, last_fit, best_model)
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

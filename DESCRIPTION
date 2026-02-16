@@ -35,7 +35,6 @@ Imports:
     officer,
     parsnip,
     ragg,
-    readxl,
     recipes,
     rsample,
     stringr,
@@ -46,7 +45,6 @@ Imports:
     workflows,
     yardstick
 Suggests:
-    config,
     fs,
     knitr,
     quarto,

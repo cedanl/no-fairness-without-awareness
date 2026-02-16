@@ -25,6 +25,8 @@
 #' en maakt een DALEX-explainer aan waarmee fairness-analyses kunnen worden
 #' uitgevoerd.
 #'
+#' @param df Verwerkte 1CHO en 1CHO vak data uit NFWA package
+#'   
 #' @param last_fit Een `last_fit`-object uit het tidymodels-framework, met
 #'   daarin het getrainde model en de bijbehorende workflow.
 #' @param best_model Character. Naam van het beste model, gebruikt als label
@@ -37,7 +39,7 @@
 #' @importFrom DALEX explain
 #' @importFrom tune extract_fit_parsnip extract_workflow
 #' @export
-create_explain_lf <- function(last_fit, best_model) {
+create_explain_lf <- function(df, last_fit, best_model) {
 
   # Extract the fitted model
   fitted_model <- last_fit |>

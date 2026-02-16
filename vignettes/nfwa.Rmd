@@ -21,6 +21,10 @@ Het No Fairness Without Awareness (NFWA) package is ontwikkeld op basis van onde
 
 Deze vignette laat zien hoe je het package kunt gebruiken voor een complete fairness-analyse op je eigen studiedata.
 
+### Data voorbereiding
+
+**Aanbevolen:** Gebruik het [1cijferho project](https://github.com/cedanl/1cijferho) om je ruwe 1CHO data voor te bereiden. Dit project converteert 1CHO bestanden naar het juiste formaat (CSV met puntkomma separator) dat direct gebruikt kan worden als input voor NFWA analyse.
+
 ## Installatie
 
 ```{r install}
@@ -35,7 +39,7 @@ if (!tinytex::is_tinytex()) {
 
 ## Snelstart: Complete analyse in één functie
 
-Voor een snelle complete analyse gebruik je de `analyze_fairness()` functie:
+**Aanbevolen:** Voor de meeste gebruikers is `analyze_fairness()` de eenvoudigste manier om een complete NFWA-analyse uit te voeren.
 
 ```{r quickstart}
 library(nfwa)
@@ -48,11 +52,11 @@ data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingsnaam = "Jouw Opleiding",  # Pas aan
-  eoi = 2020,                          # Pas aan: eerste jaar aan deze opleiding
-  opleidingsvorm = "VT",              # VT, DT, of DU
-  generate_pdf = TRUE,
-  cleanup_temp = FALSE
+  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
+  eoi = 2020,                          # Eerste jaar aan deze opleiding/instelling
+  opleidingsvorm = "VT",               # VT (voltijd), DT (deeltijd), of DU (duaal)
+  generate_pdf = TRUE,                 # Genereer PDF rapport
+  cleanup_temp = TRUE                  # Ruim tijdelijke bestanden automatisch op
 )
 
 # Het PDF rapport is opgeslagen in je working directory!
@@ -60,7 +64,27 @@ result <- analyze_fairness(
 head(result$df)
 ```
 
-Deze functie voert automatisch alle stappen uit: metadata laden, data transformeren, modellen trainen, fairness-analyse, en PDF generatie.
+**Wat doet `analyze_fairness()`?**
+
+Deze functie voert automatisch alle stappen uit:
+1. **Metadata laden** - Variabelen, sensitieve attributen, en labels
+2. **Data transformeren** - Ruwe 1CHO data naar analyse-klaar formaat
+3. **Modellen trainen** - Logistic Regression en Random Forest
+4. **Fairness-analyse** - Checks op alle sensitieve variabelen (geslacht, vooropleiding, etc.)
+5. **Visualisaties** - Dichtheidsplots en fairness-check plots
+6. **PDF rapport** - Professioneel rapport met alle bevindingen (optioneel)
+7. **Cleanup** - Verwijdert tijdelijke bestanden (optioneel)
+
+**Parameters:**
+
+- `data_ev`: 1CHO inschrijvingsdata (EV-bestand)
+- `data_vakhavw`: 1CHO vak/cijfer data (VAKHAVW-bestand)
+- `opleidingsnaam`: Naam van de opleiding (bijv. "Informatica")
+- `eoi`: Examenonderdeel identificatie (eerste jaar aan opleiding)
+- `opleidingsvorm`: "VT", "DT", of "DU"
+- `generate_pdf`: Genereer PDF rapport (standaard: `TRUE`)
+- `cleanup_temp`: Ruim tijdelijke bestanden op na PDF generatie (standaard: `TRUE`)
+- `caption`: Optionele caption voor visualisaties (standaard: automatisch gegenereerd)
 
 **Wil je meer controle?** Zie hieronder voor de stap-voor-stap workflow.
 
@@ -295,7 +319,7 @@ run_nfwa(
 ### Complete workflow met cleanup
 
 ```{r complete_workflow}
-# Alles in één keer, inclusief automatische cleanup
+# Aanbevolen: Complete analyse met automatische cleanup (standaard gedrag)
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
@@ -303,7 +327,18 @@ result <- analyze_fairness(
   eoi = 2020,
   opleidingsvorm = "VT",
   generate_pdf = TRUE,
-  cleanup_temp = TRUE  # Ruim automatisch op na PDF generatie
+  cleanup_temp = TRUE  # Standaard: tijdelijke bestanden worden opgeruimd
+)
+
+# Of zonder cleanup (als je de tussentijdse bestanden wilt bewaren):
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "Jouw Opleiding",
+  eoi = 2020,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE,
+  cleanup_temp = FALSE  # Behoud tijdelijke bestanden in temp/
 )
 ```
 

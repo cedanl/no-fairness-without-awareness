@@ -1,14 +1,27 @@
-<h1>No Fairness Without Awareness (NFWA) Analyse</h1>
+<h1>No Fairness Without Awareness (NFWA)</h1>
 
-<p>Analyseer de kansengelijkheid van je opleiding</p>
+<p>R package voor kansengelijkheidsanalyse in het hoger onderwijs</p>
 
 <p><a href="#"><img src="https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&amp;logoColor=white" alt="Windows"/></a> <a href="#"><img src="https://img.shields.io/badge/macOS-000000?logo=apple&amp;logoColor=F0F0F0" alt="macOS"/></a> <a href="#"><img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&amp;logoColor=black" alt="Linux"/></a> <img src="https://badgen.net/github/last-commit/cedanl/no-fairness-without-awareness" alt="GitHub Last Commit"/> <img src="https://badgen.net/github/contributors/cedanl/no-fairness-without-awareness" alt="Contributors"/> <img src="https://img.shields.io/github/license/cedanl/no-fairness-without-awareness" alt="GitHub License"/></p>
 
-De No Fairness Without Awareness tool is ontwikkeld op basis van het onderzoek van het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool. Het LTA heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
+## Over het package
+
+Het **NFWA** (No Fairness Without Awareness) package is een R package ontwikkeld op basis van het onderzoek van het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool. Het LTA heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
 
 Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een fairness analyse genoemd.
 
-Over deze methode heeft lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: "[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)"(Bakker, 2024).
+Over deze methode heeft lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: "[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)" (Bakker, 2024).
+
+## Features
+
+- **Complete analyse in één functie** - `analyze_fairness()` voert alle stappen automatisch uit
+- **Automatische data transformatie** - Van 1CHO data naar analyse-klaar formaat
+- **Machine learning modellen** - Logistic Regression en Random Forest voor prognoses
+- **Fairness-metrieken** - Equal Opportunity, Predictive Parity, Accuracy Equality, Statistical Parity
+- **Visualisaties** - Automatische generatie van dichtheidsplots en fairness-check plots
+- **PDF rapportage** - Professionele rapporten met Quarto
+- **Metadata inbegrepen** - Standaard metadata voor directe gebruik
+- **Cross-platform** - Werkt op Windows, macOS en Linux
 
 ---
 
@@ -115,7 +128,9 @@ render_report(
 
 ### Data Vereisten
 
-Je data moet de volgende structuur hebben:
+**Aanbevolen:** Gebruik het [1cijferho project](https://github.com/cedanl/1cijferho) om je data voor te bereiden. Dit project converteert 1CHO data naar het juiste formaat voor NFWA analyse.
+
+De output van 1cijferho is direct te gebruiken als input voor NFWA. Je data moet de volgende structuur hebben:
 
 **data_ev** (EV-bestand, studentniveau):
 - 1CHO inschrijvingsgegevens per student
@@ -126,6 +141,8 @@ Je data moet de volgende structuur hebben:
 **data_vakhavw** (VAKHAVW-bestand, vakniveau):
 - 1CHO vakcijfers per student
 - Gekoppeld aan student-ID via persoonsgebonden nummer
+
+**Data formaat:** CSV bestanden met puntkomma (`;`) als separator.
 
 ### Metadata
 
@@ -140,3 +157,68 @@ Je hoeft **geen eigen metadata** aan te leveren - gebruik gewoon `read_metadata(
 
 **Eigen metadata gebruiken (optioneel):**
 Als je eigen metadata wilt gebruiken, kun je de functie aanpassen of handmatig bestanden inladen. Zie `?read_metadata` voor details over de verwachte structuur.
+
+---
+
+## Documentatie en hulp
+
+### Package documentatie
+
+```r
+# Package overzicht
+?nfwa
+
+# Functie-specifieke help
+?analyze_fairness
+?transform_data
+?run_nfwa
+?render_report
+?cleanup_temp
+```
+
+### Vignette
+
+Voor een uitgebreide handleiding met voorbeelden:
+
+```r
+# Bekijk de vignette in R
+vignette("nfwa")
+
+# Of open in browser
+browseVignettes("nfwa")
+```
+
+### Belangrijkste functies
+
+| Functie | Beschrijving |
+|---------|--------------|
+| `analyze_fairness()` | Complete analyse in \u00e9\u00e9n functie (AANBEVOLEN) |
+| `read_metadata()` | Laad package metadata |
+| `transform_data()` | Transformeer ruwe 1CHO data |
+| `run_nfwa()` | Voer fairness-analyse uit |
+| `render_report()` | Genereer PDF rapport |
+| `cleanup_temp()` | Ruim tijdelijke bestanden op |
+
+### Ondersteunende projecten
+
+- **[1cijferho](https://github.com/cedanl/1cijferho)** - Data voorbereiding: converteert 1CHO bestanden naar het juiste formaat voor NFWA
+
+### Bijdragen en issues
+
+- GitHub repository: [cedanl/no-fairness-without-awareness](https://github.com/cedanl/no-fairness-without-awareness)
+- Issues en bugs: [GitHub Issues](https://github.com/cedanl/no-fairness-without-awareness/issues)
+- Pull requests zijn welkom!
+
+### Licentie
+
+Dit project is gelicenseerd onder de voorwaarden van de licentie zoals gespecificeerd in het LICENSE bestand.
+
+### Referenties
+
+Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs.* Intreerede lectoraat Learning Technology & Analytics. https://doi.org/10.5281/zenodo.14204674
+
+### Contact
+
+Lectoraat Learning Technology & Analytics
+De Haagse Hogeschool
+Web: http://www.hhs.nl

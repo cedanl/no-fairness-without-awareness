@@ -39,16 +39,16 @@ remotes::install_github("cedanl/no-fairness-without-awareness")
 ```r
 library(nfwa)
 
-# Laad je 1CHO data
-data_ev <- rio::import("path/to/EV_data.parquet")
-data_vakhavw <- rio::import("path/to/VAKHAVW_data.parquet")
+# Laad je 1CHO data (CSV bestanden met puntkomma separator)
+data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Voer complete analyse uit
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingsnaam = "International Business Administration",
-  eoi = 2010,
+  opleidingsnaam = "Jouw Opleiding",
+  eoi = 2020,
   opleidingsvorm = "VT",
   generate_pdf = TRUE
 )

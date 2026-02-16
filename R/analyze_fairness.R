@@ -59,40 +59,30 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Laad je 1CHO data
-#' data_ev <- read.csv("EV299XX24.csv", sep = ";")
-#' data_vakhavw <- read.csv("VAKHAVW_99XX.parquet", ";")
+#' # Laad je 1CHO data (CSV bestanden met puntkomma separator)
+#' data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+#' data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 #'
 #' # Voer complete analyse uit met PDF rapport
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
-#'   opleidingsnaam = "International Business Administration",
-#'   eoi = 2010,
+#'   opleidingsnaam = "Jouw Opleiding",
+#'   eoi = 2020,
 #'   opleidingsvorm = "VT",
 #'   generate_pdf = TRUE,
 #'   cleanup_temp = FALSE
-#' )
-#'
-#' # Zonder PDF rapport
-#' result <- analyze_fairness(
-#'   data_ev = data_ev,
-#'   data_vakhavw = data_vakhavw,
-#'   opleidingsnaam = "Informatica",
-#'   eoi = 3456,
-#'   opleidingsvorm = "VT",
-#'   generate_pdf = FALSE
 #' )
 #'
 #' # Bekijk het getransformeerde dataframe
 #' head(result$df)
 #'
 #' # Met automatische cleanup
-#' analyze_fairness(
+#' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
-#'   opleidingsnaam = "Informatica",
-#'   eoi = 3456,
+#'   opleidingsnaam = "Jouw Opleiding",
+#'   eoi = 2020,
 #'   opleidingsvorm = "VT",
 #'   generate_pdf = TRUE,
 #'   cleanup_temp = TRUE

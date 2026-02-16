@@ -192,7 +192,7 @@ browseVignettes("nfwa")
 
 | Functie | Beschrijving |
 |---------|--------------|
-| `analyze_fairness()` | Complete analyse in \u00e9\u00e9n functie (AANBEVOLEN) |
+| `analyze_fairness()` | Complete analyse in één functie (AANBEVOLEN) |
 | `read_metadata()` | Laad package metadata |
 | `transform_data()` | Transformeer ruwe 1CHO data |
 | `run_nfwa()` | Voer fairness-analyse uit |

@@ -3,6 +3,7 @@
 export(add_apcg)
 export(add_ses)
 export(add_theme_elements)
+export(analyze_fairness)
 export(cleanup_temp)
 export(colors_default)
 export(colors_list)

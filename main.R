@@ -6,8 +6,9 @@
 ## Web Page: http://www.hhs.nl
 ## Contact: Theo Bakker (t.c.bakker@hhs.nl)
 ##
-## Dit script demonstreert hoe je het NFWA package gebruikt voor een
-## complete fairness-analyse op studiedata.
+## Dit script demonstreert twee manieren om het NFWA package te gebruiken:
+## 1. SNELSTART: Gebruik analyze_fairness() voor complete analyse in één functie
+## 2. STAP-VOOR-STAP: Handmatige controle over elke stap
 ##
 ## BELANGRIJK: Dit script werkt alleen binnen het development project.
 ## Voor package gebruik, zie de vignette: vignette("nfwa-gebruiksvoorbeeld")
@@ -29,12 +30,6 @@ if (!tinytex::is_tinytex()) {
   tinytex::install_tinytex()
 }
 
-# Installeer rio formats voor Parquet support (alleen eerste keer)
-if (!requireNamespace("nanoparquet", quietly = TRUE)) {
-  message("nanoparquet niet gevonden - installeren...")
-  rio::install_formats(type = "binary")
-}
-
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## INPUT - Configuratie ####
@@ -47,17 +42,43 @@ opleidingsvorm = "VT"
 
 # Laad je 1CHO data
 # Pas de paden aan naar waar jouw bestanden staan!
-df1cho <- rio::import(
-  fs::path("data", "input", "EV299XX24_DEMO.parquet")
+data_ev <- read.csv(
+  fs::path("data", "input", "EV299XX24_DEMO.csv"), sep = ";"
 )
 
-df1cho_vak <- rio::import(
-  fs::path("data", "input", "VAKHAVW_99XX_DEMO.parquet")
+data_vakhavw <- read.csv(
+  fs::path("data", "input", "VAKHAVW_99XX_DEMO.csv"), sep = ";"
 )
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Metadata Inlezen ####
+## OPTIE 1: SNELSTART - Complete analyse met één functie ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Uncomment deze sectie om de snelle 1-functie aanpak te gebruiken:
+# 
+# result <- nfwa::analyze_fairness(
+#   data_ev = data_ev,
+#   data_vakhavw = data_vakhavw,
+#   opleidingsnaam = opleidingsnaam,
+#   eoi = eoi,
+#   opleidingsvorm = opleidingsvorm,
+#   generate_pdf = TRUE,
+#   cleanup_temp = FALSE
+# )
+#
+# # Klaar! Het PDF rapport staat in je working directory.
+# # Bekijk het getransformeerde dataframe:
+# # head(result$df)
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## OPTIE 2: STAP-VOOR-STAP - Handmatige controle ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Stap 1: Metadata Inlezen ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Lees de meegeleverde metadata in
@@ -76,7 +97,7 @@ message("  - ", length(sensitive_variables), " sensitieve variabelen: ",
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Transform Data ####
+## Stap 2: Transform Data ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 message("\nData transformeren...")
@@ -87,8 +108,8 @@ df <- nfwa::transform_data(
   opleidingsnaam = opleidingsnaam,
   opleidingsvorm = opleidingsvorm,
   eoi = eoi,
-  df1cho = df1cho,
-  df1cho_vak = df1cho_vak
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw
 )
 
 message("  - ", nrow(df), " studenten in analyse")
@@ -96,7 +117,7 @@ message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Create Data Summary (Optioneel) ####
+## (Optioneel) Create Data Summary ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Maak beschrijvende statistieken tabellen
@@ -118,7 +139,7 @@ message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## NFWA Fairness-Analyse Uitvoeren ####
+## Stap 3: NFWA Fairness-Analyse Uitvoeren ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 message("\nFairness-analyse uitvoeren...")
@@ -146,17 +167,16 @@ message("  - Conclusies opgeslagen in conclusions_list.rds")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Render PDF Rapport (Optioneel) ####
+## Stap 4: Render PDF Rapport (Optioneel) ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Genereer een PDF rapport met Quarto
 # Dit gebruikt de render_report() functie uit het NFWA package
 
-# Optie 1: Render zonder cleanup (temp bestanden blijven bestaan)
 nfwa::render_report(
   opleidingsnaam = opleidingsnaam,
   opleidingsvorm = opleidingsvorm,
-  cleanup_temp = TRUE
+  cleanup_temp = FALSE  # Set to TRUE om tijdelijke bestanden te verwijderen
 )
 
 

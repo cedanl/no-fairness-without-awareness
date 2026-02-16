@@ -34,10 +34,32 @@ remotes::install_github("cedanl/no-fairness-without-awareness")
 | **RStudio** | Aanbevolen IDE (optioneel maar handig) | [Download RStudio](https://posit.co/download/rstudio-desktop/) |
 | **Rtools** | Alleen voor Windows - nodig voor package compilatie | [Download Rtools](https://cran.r-project.org/bin/windows/Rtools/) |
 
-### Gebruik
+### Snelstart: Complete analyse in één functie
 
 ```r
-# Laad het package
+library(nfwa)
+
+# Laad je 1CHO data
+data_ev <- rio::import("path/to/EV_data.parquet")
+data_vakhavw <- rio::import("path/to/VAKHAVW_data.parquet")
+
+# Voer complete analyse uit
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "International Business Administration",
+  eoi = 2010,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE
+)
+```
+
+Dat is alles! De functie voert automatisch alle stappen uit en genereert een PDF rapport in je working directory.
+
+<details>
+<summary><b>Stap-voor-stap aanpak</b> (voor meer controle)</summary>
+
+```r
 library(nfwa)
 
 # 1. Lees metadata in
@@ -49,20 +71,28 @@ df <- transform_data(
   opleidingsnaam = "Jouw Opleiding",
   opleidingsvorm = "VT",
   eoi = 2020,
-  df1cho = jouw_1cho_data,
-  df1cho_vak = jouw_vak_data
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw
 )
 
 # 3. Voer de fairness-analyse uit
+cutoff <- sum(df$retentie) / nrow(df)
 run_nfwa(
   df = df,
   df_levels = metadata$df_levels,
   sensitive_variables = metadata$sensitive_variables,
   colors_default = nfwa::colors_default,
   colors_list = nfwa::colors_list,
-  cutoff = 0.2
+  cutoff = cutoff
+)
+
+# 4. Genereer PDF rapport
+render_report(
+  opleidingsnaam = "Jouw Opleiding",
+  opleidingsvorm = "VT"
 )
 ```
+</details>
 
 Resultaten verschijnen in de `temp/` map:
 - `fairness_density_{variabele}.png` - Dichtheidsplots
@@ -87,15 +117,15 @@ render_report(
 
 Je data moet de volgende structuur hebben:
 
-**df1cho** (studentniveau):
-- Inschrijvingsgegevens per student
+**data_ev** (EV-bestand, studentniveau):
+- 1CHO inschrijvingsgegevens per student
 - Retentie-indicator
 - Persoonsgebonden nummer (student-ID)
 - Gevoelige variabelen (geslacht, vooropleiding, etc.)
 
-**df1cho_vak** (vakniveau):
-- Vakcijfers per student
-- Gekoppeld aan student-ID
+**data_vakhavw** (VAKHAVW-bestand, vakniveau):
+- 1CHO vakcijfers per student
+- Gekoppeld aan student-ID via persoonsgebonden nummer
 
 ### Metadata
 

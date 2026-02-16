@@ -28,13 +28,43 @@ Deze vignette laat zien hoe je het package kunt gebruiken voor een complete fair
 remotes::install_github("cedanl/no-fairness-without-awareness")
 ```
 
-## Workflow
+## Snelstart: Complete analyse in één functie
 
-Een typische NFWA-analyse bestaat uit drie stappen:
+Voor een snelle complete analyse gebruik je de `analyze_fairness()` functie:
+
+```{r quickstart}
+library(nfwa)
+
+# Laad je 1CHO data
+data_ev <- rio::import("data/input/EV_data.parquet")
+data_vakhavw <- rio::import("data/input/VAKHAVW_data.parquet")
+
+# Voer complete analyse uit met één functie
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "International Business Administration",
+  eoi = 2010,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE,
+  cleanup_temp = FALSE
+)
+
+# Het PDF rapport is opgeslagen in je working directory!
+```
+
+Deze functie voert automatisch alle stappen uit: metadata laden, data transformeren, modellen trainen, fairness-analyse, en PDF generatie.
+
+**Wil je meer controle?** Zie hieronder voor de stap-voor-stap workflow.
+
+## Stap-voor-stap workflow
+
+Een typische NFWA-analyse bestaat uit vier stappen:
 
 1. **Metadata inlezen** - Definities van variabelen en categorie-levels
 2. **Data transformeren** - Ruwe data omzetten naar analyse-klaar formaat
 3. **Fairness-analyse uitvoeren** - Modellen trainen en fairness evalueren
+4. **PDF rapport genereren** - Optioneel rapport met alle bevindingen
 
 ### Stap 1: Metadata inlezen
 
@@ -72,18 +102,18 @@ Je kunt direct aan de slag zonder eigen metadata bestanden!
 De ruwe 1CHO-data moet worden getransformeerd naar een analyse-klaar formaat.
 
 ```{r transform}
-# Laad je ruwe data (Parquet of CSV)
-df1cho <- rio::import("data/input/EV_data.parquet")
-df1cho_vak <- rio::import("data/input/VAKHAVW_data.parquet")
+# Laad je ruwe 1CHO data (Parquet of CSV)
+data_ev <- rio::import("data/input/EV_data.parquet")        # Inschrijvingsdata
+data_vakhavw <- rio::import("data/input/VAKHAVW_data.parquet")  # Vak/cijferdata
 
 # Transformeer de data
 df <- transform_data(
   metadata = metadata,
   opleidingsnaam = "Informatica",
   opleidingsvorm = "VT",  # VT = Voltijd, DT = Deeltijd, DU = Duaal
-  eoi = 2020,  # Eerste jaar aan deze opleiding/instelling
-  df1cho = df1cho,
-  df1cho_vak = df1cho_vak
+  eoi = 2020,  # Eerste Opleiding Inschrijvingsjaar aan deze opleiding/instelling
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw
 )
 
 # De getransformeerde data bevat:

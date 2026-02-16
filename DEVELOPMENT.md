@@ -61,7 +61,7 @@ Of pas de paden direct aan in `main.R`.
 ### Pipeline overzicht
 
 ```
- Parquet/CSV (df1cho, df1cho_vak)   metadata/
+ Parquet/CSV (data_ev, data_vakhavw)   metadata/
                │                        │
                └───────────┬────────────┘
                            v

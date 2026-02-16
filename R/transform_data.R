@@ -32,8 +32,9 @@
 #'   `"DU"`).
 #' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
 #'   (minimumwaarde).
-#' @param df1cho Data frame met ruwe 1CHO-inschrijvingsgegevens.
-#' @param df1cho_vak Data frame met ruwe 1CHO-vakcijfergegevens.
+#' @param data_ev Data frame met ruwe 1CHO-inschrijvingsgegevens (EV-bestand).
+#' @param data_vakhavw Data frame met ruwe 1CHO-vakcijfergegevens
+#'   (VAKHAVW-bestand).
 #'
 #' @return Een data frame met getransformeerde en geimputeerde data,
 #'   gefilterd op de in metadata gedefinieerde variabelen.
@@ -44,8 +45,8 @@ transform_data <- function(metadata,
                            opleidingsnaam,
                            opleidingsvorm,
                            eoi,
-                           df1cho,
-                           df1cho_vak) {
+                           data_ev,
+                           data_vakhavw) {
   
   dfapcg <- metadata$dfapcg
   dfses <- metadata$dfses
@@ -58,7 +59,7 @@ transform_data <- function(metadata,
   # Transform
   #-------------------------------------------------------------------
   df1cho2 <- transform_ev_data(
-    df1cho,
+    data_ev,
     naam = opleidingsnaam,
     eoi  = eoi,
     vorm = opleidingsvorm,
@@ -66,7 +67,7 @@ transform_data <- function(metadata,
     dec_isat = dec_isat
   )
 
-  df_vak_aggregated <- transform_vakhavw(df1cho_vak)
+  df_vak_aggregated <- transform_vakhavw(data_vakhavw)
 
   dfcyfer <- transform_1cho_data(df1cho2, df_vak_aggregated)
 

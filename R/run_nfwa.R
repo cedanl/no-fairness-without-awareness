@@ -26,6 +26,10 @@
 #' genereert dichtheids- en fairness-plots, en produceert een
 #' samenvattende flextable met conclusies.
 #'
+#' Deze functie schrijft bestanden naar een tijdelijke map (\code{temp/}) in
+#' de huidige working directory. Gebruik \code{\link{cleanup_temp}} om deze
+#' bestanden te verwijderen na het genereren van het rapport.
+#'
 #' @param df Data frame met de analyse-data. Moet de kolom `retentie`
 #'   en alle sensitieve variabelen bevatten.
 #' @param df_levels Data frame met level-definities per variabele,
@@ -43,13 +47,13 @@
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
-#'     \item{output/cache/fairness_density_\{var\}.png}{Dichtheidsplot per
+#'     \item{temp/fairness_density_\{var\}.png}{Dichtheidsplot per
 #'       variabele.}
-#'     \item{output/cache/fairness_plot_\{var\}.png}{Fairness-check plot per
+#'     \item{temp/fairness_plot_\{var\}.png}{Fairness-check plot per
 #'       variabele.}
-#'     \item{output/cache/conclusions_list.rds}{List met tekstuele
+#'     \item{temp/conclusions_list.rds}{List met tekstuele
 #'       conclusies per variabele.}
-#'     \item{output/cache/result_table.png}{Afbeelding van de
+#'     \item{temp/result_table.png}{Afbeelding van de
 #'       fairness-resultatentabel.}
 #'   }
 #'
@@ -169,14 +173,14 @@ run_nfwa <- function(df,
     conclusions_list[[i]] <- get_fairness_conclusions(df_fairness_wide, i)
   }
 
-  saveRDS(conclusions_list, file = "output/cache/conclusions_list.rds")
+  saveRDS(conclusions_list, file = "temp/conclusions_list.rds")
 
 
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>
                                                         dplyr::select(-c(Groep_label, Text))),
                                  colors_default = colors_default)
   
-  flextable::save_as_image(x= ft_fairness, path = "output/cache/result_table.png")
+  flextable::save_as_image(x= ft_fairness, path = "temp/result_table.png")
   
   
 }

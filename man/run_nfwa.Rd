@@ -39,13 +39,13 @@ plots.}
 \value{
 Onzichtbaar. Slaat de volgende bestanden op:
   \describe{
-    \item{output/cache/fairness_density_\{var\}.png}{Dichtheidsplot per
+    \item{temp/fairness_density_\{var\}.png}{Dichtheidsplot per
       variabele.}
-    \item{output/cache/fairness_plot_\{var\}.png}{Fairness-check plot per
+    \item{temp/fairness_plot_\{var\}.png}{Fairness-check plot per
       variabele.}
-    \item{output/cache/conclusions_list.rds}{List met tekstuele
+    \item{temp/conclusions_list.rds}{List met tekstuele
       conclusies per variabele.}
-    \item{output/cache/result_table.png}{Afbeelding van de
+    \item{temp/result_table.png}{Afbeelding van de
       fairness-resultatentabel.}
   }
 }
@@ -55,4 +55,9 @@ analyse-pipeline uitvoert: traint classificatiemodellen, maakt een
 DALEX-explainer, voert fairness-checks uit per sensitieve variabele,
 genereert dichtheids- en fairness-plots, en produceert een
 samenvattende flextable met conclusies.
+}
+\details{
+Deze functie schrijft bestanden naar een tijdelijke map (\code{temp/}) in
+de huidige working directory. Gebruik \code{\link{cleanup_temp}} om deze
+bestanden te verwijderen na het genereren van het rapport.
 }

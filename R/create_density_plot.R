@@ -37,7 +37,7 @@
 #' @param var Character. Naam van de variabele (voor bestandsnaam).
 #'
 #' @return Onzichtbaar. Het plot wordt opgeslagen als
-#'   `output/fairness_density_\{group\}.png`.
+#'   `temp/fairness_density_\{group\}.png`.
 #'
 #' @importFrom ggplot2 ggsave scale_fill_manual scale_x_continuous geom_vline
 #'   annotate theme element_blank guides guide_legend
@@ -141,7 +141,7 @@ create_density_plot <- function(fairness_object,
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   
   ggplot2::ggsave(
-    filename  = glue::glue("output/cache/fairness_density_{group}.png"),
+    filename  = glue::glue("temp/fairness_density_{group}.png"),
     plot      = density_plot,
     height    = (250 + (50 * n_categories)) / 72,
     width     = 640 / 72,

@@ -21,24 +21,7 @@
 # Laad het NFWA package
 # Voor development: gebruik devtools::load_all()
 # Na installatie: library(nfwa)
-devtools::load_all()
-
-# Laad configuratie (optioneel - kan ook handmatig ingesteld worden)
-# Als config package beschikbaar is, gebruik dan config.yml
-if (requireNamespace("config", quietly = TRUE) && file.exists("config.yml")) {
-  config <- config::get()
-} else {
-  # Fallback: gebruik default waarden
-  config <- list(
-    params = list(
-      opleidingsnaam = "B International Business Administration",
-      eoi = 2010,
-      opleidingsvorm = "VT"
-    )
-  )
-  message("Let op: config package niet gevonden, gebruik default waarden")
-  message("Installeer config package of pas hieronder handmatig de waarden aan")
-}
+devtools::install()
 
 # Installeer benodigde dependencies (alleen eerste keer)
 if (!tinytex::is_tinytex()) {
@@ -58,9 +41,9 @@ if (!requireNamespace("nanoparquet", quietly = TRUE)) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Opleidingsinformatie
-opleidingsnaam <- config$params$opleidingsnaam  # Bijv. "Informatica"
-eoi <- config$params$eoi                        # Eerste jaar aan opleiding/instelling
-opleidingsvorm <- config$params$opleidingsvorm  # VT, DT, of DU
+opleidingsnaam = "B International Business Administration"
+eoi = 2010
+opleidingsvorm = "VT"
 
 # Laad je 1CHO data
 # Pas de paden aan naar waar jouw bestanden staan!
@@ -99,7 +82,7 @@ message("  - ", length(sensitive_variables), " sensitieve variabelen: ",
 message("\nData transformeren...")
 
 # Transformeer ruwe 1CHO data naar analyse-klaar formaat
-df <- transform_data(
+df <- nfwa::transform_data(
   metadata = metadata,
   opleidingsnaam = opleidingsnaam,
   opleidingsvorm = opleidingsvorm,
@@ -122,7 +105,7 @@ message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
 # tbl_summary <- get_table_summary(df, mapping_newname)
 # flextable::save_as_image(
 #   x = tbl_summary,
-#   path = "output/cache/descriptive_table.png"
+#   path = "temp/descriptive_table.png"
 # )
 #
 # tbl_summary_sensitive <- get_table_summary_fairness(
@@ -130,7 +113,7 @@ message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
 # )
 # flextable::save_as_image(
 #   x = tbl_summary_sensitive,
-#   path = "output/cache/sensitive_variables_descriptive_table.png"
+#   path = "temp/sensitive_variables_descriptive_table.png"
 # )
 
 ## . ####
@@ -145,7 +128,7 @@ cutoff <- sum(df$retentie) / nrow(df)
 
 # Voer de complete NFWA analyse uit
 # Dit traint modellen, maakt plots en genereert conclusies
-run_nfwa(
+nfwa::run_nfwa(
   df = df,
   df_levels = df_levels,
   sensitive_variables = sensitive_variables,
@@ -157,7 +140,7 @@ run_nfwa(
   )
 )
 
-message("  - Plots opgeslagen in output/cache/")
+message("  - Plots opgeslagen in temp/")
 message("  - Resultaten tabel opgeslagen")
 message("  - Conclusies opgeslagen in conclusions_list.rds")
 
@@ -168,10 +151,21 @@ message("  - Conclusies opgeslagen in conclusions_list.rds")
 
 # Genereer een PDF rapport met Quarto
 # Dit gebruikt de render_report() functie uit het NFWA package
+
+# Optie 1: Render zonder cleanup (temp bestanden blijven bestaan)
 nfwa::render_report(
   opleidingsnaam = opleidingsnaam,
-  opleidingsvorm = opleidingsvorm
+  opleidingsvorm = opleidingsvorm,
+  cleanup_temp = TRUE
 )
 
-message("\n✓ NFWA analyse compleet!")
-message("  Bekijk de resultaten in output/")
+
+message("\n NFWA analyse compleet!")
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Cleanup Tijdelijke Bestanden (Optioneel) ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Als je de tijdelijke bestanden wilt verwijderen na het genereren van het rapport:
+# nfwa::cleanup_temp()

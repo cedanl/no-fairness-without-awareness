@@ -64,11 +64,24 @@ run_nfwa(
 )
 ```
 
-Resultaten verschijnen in de `output/cache/` map:
+Resultaten verschijnen in de `temp/` map:
 - `fairness_density_{variabele}.png` - Dichtheidsplots
 - `fairness_plot_{variabele}.png` - Fairness-check plots
 - `conclusions_list.rds` - Tekstuele conclusies
 - `result_table.png` - Samenvattende resultatentabel
+
+**Tijdelijke bestanden opruimen:**
+```r
+# Na het genereren van je PDF rapport:
+cleanup_temp()
+
+# Of automatisch tijdens render:
+render_report(
+  opleidingsnaam = "Jouw Opleiding",
+  opleidingsvorm = "VT",
+  cleanup_temp = TRUE
+)
+```
 
 ### Data Vereisten
 

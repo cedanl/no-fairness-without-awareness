@@ -4,12 +4,7 @@
 \alias{render_report}
 \title{Render PDF rapport van NFWA analyse}
 \usage{
-render_report(
-  opleidingsnaam,
-  opleidingsvorm,
-  output_dir = "output",
-  qmd_template = NULL
-)
+render_report(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE)
 }
 \arguments{
 \item{opleidingsnaam}{Naam van de opleiding (bijv. "Informatica")}
@@ -17,14 +12,12 @@ render_report(
 \item{opleidingsvorm}{Vorm van de opleiding: "VT" (voltijd), "DT" (deeltijd),
 of "DU" (duaal)}
 
-\item{output_dir}{Directory waar het PDF rapport opgeslagen moet worden.
-Standaard: "output"}
-
-\item{qmd_template}{Pad naar het Quarto template bestand. Standaard gebruikt
-het de meegeleverde template in het package.}
+\item{cleanup_temp}{Logisch. Als `TRUE`, wordt de tijdelijke map automatisch
+verwijderd na het genereren van het PDF rapport. Standaard: `FALSE`.}
 }
 \value{
-Pad naar het gegenereerde PDF bestand (invisible)
+Pad naar het gegenereerde PDF bestand in de working directory
+  (invisible)
 }
 \description{
 Deze functie genereert een PDF rapport met de resultaten van de NFWA
@@ -32,15 +25,23 @@ fairness-analyse. Het rapport bevat de conclusies en visualisaties die
 gegenereerd zijn door \code{\link{run_nfwa}}.
 }
 \details{
+Het PDF bestand wordt opgeslagen in de huidige working directory van de
+gebruiker (zie \code{\link{getwd}}).
+
+
 Deze functie vereist:
 \itemize{
   \item Quarto geïnstalleerd op het systeem (https://quarto.org)
   \item Het \code{quarto} R package
-  \item Output van \code{\link{run_nfwa}} in de output/cache/ directory
+  \item Output van \code{\link{run_nfwa}} in de temp/ directory
 }
 
 Als Quarto niet geïnstalleerd is, krijgt de gebruiker een waarschuwing
 en wordt er geen PDF gegenereerd.
+
+Na het genereren van het PDF rapport, kun je de tijdelijke bestanden
+verwijderen met \code{\link{cleanup_temp}} of door `cleanup_temp = TRUE`
+te gebruiken in deze functie.
 }
 \examples{
 \dontrun{
@@ -49,5 +50,16 @@ render_report(
   opleidingsnaam = "Informatica",
   opleidingsvorm = "VT"
 )
+
+# Met automatische cleanup:
+render_report(
+  opleidingsnaam = "Informatica",
+  opleidingsvorm = "VT",
+  cleanup_temp = TRUE
+)
 }
+}
+\seealso{
+\code{\link{cleanup_temp}} om tijdelijke bestanden handmatig te
+  verwijderen.
 }

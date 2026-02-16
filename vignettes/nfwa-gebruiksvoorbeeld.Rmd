@@ -135,11 +135,11 @@ run_nfwa(
 
 ### Stap 4: Resultaten bekijken
 
-De analyse slaat resultaten op in `output/cache/`:
+De analyse slaat resultaten op in `temp/`:
 
 ```{r results}
 # Laad de conclusies
-conclusions <- readRDS("output/cache/conclusions_list.rds")
+conclusions <- readRDS("temp/conclusions_list.rds")
 
 # Bekijk conclusies per variabele
 print(conclusions$geslacht)
@@ -173,6 +173,24 @@ Het PDF-rapport bevat:
 - Automatisch gegenereerde conclusies per variabele
 - Overzichtstabel met bias-classificaties
 - Kleurgecodeerde legenda
+
+### Stap 6: Tijdelijke bestanden opruimen
+
+Na het genereren van je PDF rapport kun je de tijdelijke bestanden verwijderen:
+
+```{r cleanup}
+# Verwijder tijdelijke bestanden
+cleanup_temp()
+
+# Of automatisch tijdens render:
+render_report(
+  opleidingsnaam = "Informatica",
+  opleidingsvorm = "VT",
+  cleanup_temp = TRUE
+)
+```
+
+**Let op:** Zorg dat je het PDF rapport hebt gegenereerd voordat je de tijdelijke bestanden verwijdert!
 
 **Eigen template gebruiken:**
 

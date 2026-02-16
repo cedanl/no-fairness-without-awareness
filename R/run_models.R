@@ -85,7 +85,7 @@ run_models <- function(df) {
     tune::tune_grid(
       df_validation,
       grid = lr_reg_grid,
-      control = tune::control_grid(save_pred = TRUE),
+      control = tune::control_grid(save_pred = TRUE, verbose = FALSE),
       metrics = yardstick::metric_set(yardstick::roc_auc)
     )
 
@@ -150,7 +150,7 @@ run_models <- function(df) {
     tune::tune_grid(
       df_validation,
       grid = 25,
-      control = tune::control_grid(save_pred = TRUE),
+      control = tune::control_grid(save_pred = TRUE, verbose = FALSE),
       metrics = yardstick::metric_set(yardstick::roc_auc)
     )
 

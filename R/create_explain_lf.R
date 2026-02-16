@@ -52,8 +52,8 @@ create_explain_lf <- function(last_fit, best_model) {
     model = fitted_model,
     data = df |> dplyr::select(-retentie),
     y = as.numeric(df$retentie),
-    colorize = TRUE,
-    verbose = TRUE,
+    colorize = FALSE,
+    verbose = FALSE,
     label = best_model,
     type = "classification"
   )

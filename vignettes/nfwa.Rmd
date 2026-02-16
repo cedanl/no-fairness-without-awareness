@@ -26,6 +26,11 @@ Deze vignette laat zien hoe je het package kunt gebruiken voor een complete fair
 ```{r install}
 # Installeer het package vanuit GitHub
 remotes::install_github("cedanl/no-fairness-without-awareness")
+
+# Installeer TinyTeX voor PDF generatie (alleen eerste keer)
+if (!tinytex::is_tinytex()) {
+  tinytex::install_tinytex()
+}
 ```
 
 ## Snelstart: Complete analyse in één functie
@@ -35,22 +40,24 @@ Voor een snelle complete analyse gebruik je de `analyze_fairness()` functie:
 ```{r quickstart}
 library(nfwa)
 
-# Laad je 1CHO data
-data_ev <- rio::import("data/input/EV_data.parquet")
-data_vakhavw <- rio::import("data/input/VAKHAVW_data.parquet")
+# Laad je 1CHO data (CSV bestanden met puntkomma als separator)
+data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Voer complete analyse uit met één functie
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingsnaam = "International Business Administration",
-  eoi = 2010,
-  opleidingsvorm = "VT",
+  opleidingsnaam = "Jouw Opleiding",  # Pas aan
+  eoi = 2020,                          # Pas aan: eerste jaar aan deze opleiding
+  opleidingsvorm = "VT",              # VT, DT, of DU
   generate_pdf = TRUE,
   cleanup_temp = FALSE
 )
 
 # Het PDF rapport is opgeslagen in je working directory!
+# Bekijk het getransformeerde dataframe:
+head(result$df)
 ```
 
 Deze functie voert automatisch alle stappen uit: metadata laden, data transformeren, modellen trainen, fairness-analyse, en PDF generatie.
@@ -101,17 +108,20 @@ Je kunt direct aan de slag zonder eigen metadata bestanden!
 
 De ruwe 1CHO-data moet worden getransformeerd naar een analyse-klaar formaat.
 
+**Data formaat:** CSV bestanden met puntkomma (`;`) als separator
+
 ```{r transform}
-# Laad je ruwe 1CHO data (Parquet of CSV)
-data_ev <- rio::import("data/input/EV_data.parquet")        # Inschrijvingsdata
-data_vakhavw <- rio::import("data/input/VAKHAVW_data.parquet")  # Vak/cijferdata
+# Laad je ruwe 1CHO data
+# Pas de paden aan naar waar jouw bestanden staan
+data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Transformeer de data
 df <- transform_data(
   metadata = metadata,
-  opleidingsnaam = "Informatica",
+  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
   opleidingsvorm = "VT",  # VT = Voltijd, DT = Deeltijd, DU = Duaal
-  eoi = 2020,  # Eerste Opleiding Inschrijvingsjaar aan deze opleiding/instelling
+  eoi = 2020,  # Eerste jaar dat studenten aan deze opleiding/instelling konden starten
   data_ev = data_ev,
   data_vakhavw = data_vakhavw
 )
@@ -149,7 +159,7 @@ run_nfwa(
   colors_default = nfwa::colors_default,
   colors_list = nfwa::colors_list,
   cutoff = cutoff,
-  caption = "Bron: 1CHO data, eigen analyse"
+  caption = paste0("Bron: 1CHO data | Analyse: ", format(Sys.Date(), "%B %Y"))
 )
 ```
 
@@ -186,9 +196,9 @@ print(conclusions$vooropleiding)
 Genereer een professioneel PDF-rapport met alle resultaten:
 
 ```{r render_pdf}
-# Genereer PDF rapport
+# Genereer PDF rapport (wordt opgeslagen in working directory)
 render_report(
-  opleidingsnaam = "Informatica",
+  opleidingsnaam = "Jouw Opleiding",
   opleidingsvorm = "VT"
 )
 ```
@@ -196,7 +206,7 @@ render_report(
 **Vereisten:**
 - Quarto geïnstalleerd op je systeem ([https://quarto.org](https://quarto.org))
 - Het `quarto` R package
-- LaTeX distributie (bijv. TinyTeX: `tinytex::install_tinytex()`)
+- LaTeX distributie (TinyTeX: `tinytex::install_tinytex()`)
 
 Het PDF-rapport bevat:
 - Inleiding over de onderzoeksmethode
@@ -209,29 +219,18 @@ Het PDF-rapport bevat:
 Na het genereren van je PDF rapport kun je de tijdelijke bestanden verwijderen:
 
 ```{r cleanup}
-# Verwijder tijdelijke bestanden
+# Verwijder tijdelijke bestanden handmatig
 cleanup_temp()
 
-# Of automatisch tijdens render:
+# Of automatisch tijdens PDF generatie:
 render_report(
-  opleidingsnaam = "Informatica",
+  opleidingsnaam = "Jouw Opleiding",
   opleidingsvorm = "VT",
   cleanup_temp = TRUE
 )
 ```
 
 **Let op:** Zorg dat je het PDF rapport hebt gegenereerd voordat je de tijdelijke bestanden verwijdert!
-
-**Eigen template gebruiken:**
-
-```{r custom_template}
-# Gebruik je eigen Quarto template
-render_report(
-  opleidingsnaam = "Informatica",
-  opleidingsvorm = "VT",
-  qmd_template = "path/to/your/template.qmd"
-)
-```
 
 ## Fairness-metrieken
 
@@ -269,18 +268,43 @@ mijn_kleuren["positive_color"] <- "#0066CC"
 mijn_kleuren["negative_color"] <- "#CC0000"
 
 # Gebruik ze in de analyse
-run_nfwa(df, df_levels, sensitive_variables,
-         colors_default = mijn_kleuren,
-         colors_list = nfwa::colors_list)
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = mijn_kleuren,
+  colors_list = nfwa::colors_list,
+  cutoff = cutoff
+)
 ```
 
 ### Andere cutoff-waarde
 
 ```{r custom_cutoff}
 # Gebruik een vaste cutoff in plaats van gemiddelde
-run_nfwa(df, df_levels, sensitive_variables,
-         colors_default = nfwa::colors_default,
-         cutoff = 0.3)  # 30% cutoff
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = nfwa::colors_default,
+  colors_list = nfwa::colors_list,
+  cutoff = 0.3  # 30% cutoff
+)
+```
+
+### Complete workflow met cleanup
+
+```{r complete_workflow}
+# Alles in één keer, inclusief automatische cleanup
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "Jouw Opleiding",
+  eoi = 2020,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE,
+  cleanup_temp = TRUE  # Ruim automatisch op na PDF generatie
+)
 ```
 
 ## Meer informatie
@@ -292,4 +316,5 @@ Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kans
 ## Help en ondersteuning
 
 - GitHub issues: [https://github.com/cedanl/no-fairness-without-awareness/issues](https://github.com/cedanl/no-fairness-without-awareness/issues)
-- Functiedocumentatie: `?run_nfwa`, `?transform_data`, `?read_metadata`
+- Functiedocumentatie: `?analyze_fairness`, `?run_nfwa`, `?transform_data`, `?read_metadata`
+- Package help: `?nfwa`

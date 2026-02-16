@@ -58,7 +58,7 @@ transform_data <- function(metadata,
   #-------------------------------------------------------------------
   # Transform
   #-------------------------------------------------------------------
-  df1cho2 <- transform_ev_data(
+  data_ev <- transform_ev_data(
     data_ev,
     naam = opleidingsnaam,
     eoi  = eoi,
@@ -67,9 +67,9 @@ transform_data <- function(metadata,
     dec_isat = dec_isat
   )
 
-  df_vak_aggregated <- transform_vakhavw(data_vakhavw)
+  data_vakhavw <- transform_vakhavw(data_vakhavw)
 
-  dfcyfer <- transform_1cho_data(df1cho2, df_vak_aggregated)
+  dfcyfer <- transform_1cho_data(data_ev, data_vakhavw)
 
   #-------------------------------------------------------------------
   # Add APCG & SES + basic cleaning

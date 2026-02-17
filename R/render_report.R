@@ -105,7 +105,7 @@ render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) 
   work_dir <- getwd()
 
   # Copy template to working directory so LaTeX can find relative paths
-  local_template <- file.path(work_dir, ".render_pdf_temp.qmd")
+  local_template <- file.path(work_dir, "render_pdf_temp.qmd")
   file.copy(qmd_template, local_template, overwrite = TRUE)
 
   # Ensure cleanup of temporary template

@@ -61,7 +61,7 @@ Of pas de paden direct aan in `main.R`.
 ### Pipeline overzicht
 
 ```
- Parquet/CSV (data_ev, data_vakhavw)   metadata/
+      CSV (data_ev, data_vakhavw)   metadata/
                │                        │
                └───────────┬────────────┘
                            v
@@ -138,8 +138,8 @@ project/
 
 ### Vereiste invoerbestanden
 
-- **EV (1CHO)** - Studentniveau instroom/retentie data (Parquet of CSV)
-- **VAKHAVW (1CHO)** - Vakniveau data (Parquet of CSV)
+- **EV (1CHO)** - Studentniveau instroom/retentie data (CSV)
+- **VAKHAVW (1CHO)** - Vakniveau data (CSV)
 
 Beide zijn output van het [1cijferho](https://github.com/cedanl/1cijferho) project.
 

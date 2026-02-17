@@ -22,7 +22,7 @@
 # Laad het NFWA package
 # Voor development: gebruik devtools::load_all()
 # Na installatie: library(nfwa)
-devtools::install(upgrade = "never")
+devtools::install()
 
 # Installeer benodigde dependencies (alleen eerste keer)
 if (!tinytex::is_tinytex()) {

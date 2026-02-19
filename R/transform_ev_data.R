@@ -59,7 +59,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
       
       dplyr::ungroup() |>
       
-      dplyr::inner_join(df)
+      dplyr::inner_join(df, by = c("persoonsgebonden_nummer", "inschrijvingsjaar"))
 
   }
 
@@ -88,7 +88,7 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
 
   df_selection <- df |>
     
-    dplyr::left_join(dec_isat) |>
+    dplyr::left_join(dec_isat, by = "opleidingscode") |>
     
     ## Recode opleidingsvorm
     dplyr::mutate(dplyr::across(

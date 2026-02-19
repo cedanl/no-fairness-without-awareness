@@ -1,0 +1,355 @@
+---
+title: "NFWA Gebruiksvoorbeeld: Fairness-analyse op studiedata"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NFWA Gebruiksvoorbeeld: Fairness-analyse op studiedata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Introductie
+
+Het No Fairness Without Awareness (NFWA) package is ontwikkeld op basis van onderzoek van het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool. Het doel is om kansengelijkheid voor studenten te analyseren met behulp van machine learning modellen en fairness-metrieken.
+
+Deze vignette laat zien hoe je het package kunt gebruiken voor een complete fairness-analyse op je eigen studiedata.
+
+### Data voorbereiding
+
+**Aanbevolen:** Gebruik het [1cijferho project](https://github.com/cedanl/1cijferho) om je ruwe 1CHO data voor te bereiden. Dit project converteert 1CHO bestanden naar het juiste formaat (CSV met puntkomma separator) dat direct gebruikt kan worden als input voor NFWA analyse.
+
+## Installatie
+
+```{r install}
+# Installeer het package vanuit GitHub
+remotes::install_github("cedanl/no-fairness-without-awareness")
+
+# Installeer TinyTeX voor PDF generatie (alleen eerste keer)
+if (!tinytex::is_tinytex()) {
+  tinytex::install_tinytex()
+}
+```
+
+## Snelstart: Complete analyse in één functie
+
+**Aanbevolen:** Voor de meeste gebruikers is `analyze_fairness()` de eenvoudigste manier om een complete NFWA-analyse uit te voeren.
+
+```{r quickstart}
+library(nfwa)
+
+# Laad je 1CHO data (CSV bestanden met puntkomma als separator)
+data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
+
+# Voer complete analyse uit met één functie
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
+  eoi = 2020,                          # Eerste jaar aan deze opleiding/instelling
+  opleidingsvorm = "VT",               # VT (voltijd), DT (deeltijd), of DU (duaal)
+  generate_pdf = TRUE,                 # Genereer PDF rapport
+  cleanup_temp = TRUE                  # Ruim tijdelijke bestanden automatisch op
+)
+
+# Het PDF rapport is opgeslagen in je working directory!
+# Bekijk het getransformeerde dataframe:
+head(result$df)
+```
+
+**Wat doet `analyze_fairness()`?**
+
+Deze functie voert automatisch alle stappen uit:
+1. **Metadata laden** - Variabelen, sensitieve attributen, en labels
+2. **Data transformeren** - Ruwe 1CHO data naar analyse-klaar formaat
+3. **Modellen trainen** - Logistic Regression en Random Forest
+4. **Fairness-analyse** - Checks op alle sensitieve variabelen (geslacht, vooropleiding, etc.)
+5. **Visualisaties** - Dichtheidsplots en fairness-check plots
+6. **PDF rapport** - Professioneel rapport met alle bevindingen (optioneel)
+7. **Cleanup** - Verwijdert tijdelijke bestanden (optioneel)
+
+**Parameters:**
+
+- `data_ev`: 1CHO inschrijvingsdata (EV-bestand)
+- `data_vakhavw`: 1CHO vak/cijfer data (VAKHAVW-bestand)
+- `opleidingsnaam`: Naam van de opleiding (bijv. "Informatica")
+- `eoi`: Examenonderdeel identificatie (eerste jaar aan opleiding)
+- `opleidingsvorm`: "VT", "DT", of "DU"
+- `generate_pdf`: Genereer PDF rapport (standaard: `TRUE`)
+- `cleanup_temp`: Ruim tijdelijke bestanden op na PDF generatie (standaard: `TRUE`)
+- `caption`: Optionele caption voor visualisaties (standaard: automatisch gegenereerd)
+
+**Wil je meer controle?** Zie hieronder voor de stap-voor-stap workflow.
+
+## Stap-voor-stap workflow
+
+Een typische NFWA-analyse bestaat uit vier stappen:
+
+1. **Metadata inlezen** - Definities van variabelen en categorie-levels
+2. **Data transformeren** - Ruwe data omzetten naar analyse-klaar formaat
+3. **Fairness-analyse uitvoeren** - Modellen trainen en fairness evalueren
+4. **PDF rapport genereren** - Optioneel rapport met alle bevindingen
+
+### Stap 1: Metadata inlezen
+
+**Belangrijk:** Het NFWA package bevat standaard metadata! Je hoeft geen eigen bestanden aan te leveren.
+
+```{r metadata}
+library(nfwa)
+
+# Lees de meegeleverde metadata in
+metadata <- read_metadata()
+
+# Metadata bevat automatisch:
+# - variables: Lijst van variabelen voor het model
+# - df_levels: Categorie labels per variabele
+# - sensitive_variables: Variabelen voor fairness-checks (geslacht, vooropleiding, etc.)
+# - dfapcg: APCG-verrijkingsdata (2019)
+# - dfses: SES-verrijkingsdata (2021-2022)
+# - dec_vopl: Decodeertabel vooropleidingen
+# - dec_isat: Decodeertabel ISAT codes
+```
+
+**Meegeleverde bestanden:**
+
+Het package installeert automatisch:
+- ✅ `variabelen.xlsx` - Welke variabelen gebruikt worden
+- ✅ `levels.xlsx` - Labels voor categorische variabelen
+- ✅ `APCG_2019.csv` - Armoede/probleemwijken per postcode
+- ✅ `SES_PC4_2021-2022.csv` - Sociaaleconomische status per postcode
+- ✅ Decodeertabellen voor 1CHO data
+
+Je kunt direct aan de slag zonder eigen metadata bestanden!
+
+### Stap 2: Data transformeren
+
+De ruwe 1CHO-data moet worden getransformeerd naar een analyse-klaar formaat.
+
+**Data formaat:** CSV bestanden met puntkomma (`;`) als separator
+
+```{r transform}
+# Laad je ruwe 1CHO data
+# Pas de paden aan naar waar jouw bestanden staan
+data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
+
+# Transformeer de data
+df <- transform_data(
+  metadata = metadata,
+  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
+  opleidingsvorm = "VT",  # VT = Voltijd, DT = Deeltijd, DU = Duaal
+  eoi = 2020,  # Eerste jaar dat studenten aan deze opleiding/instelling konden starten
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw
+)
+
+# De getransformeerde data bevat:
+# - retentie: Uitkomstvariabele (0/1)
+# - Alle modelvariabelen (numeriek en categorisch)
+# - Gevoelige variabelen voor fairness-analyse
+# - Geimputeerde waarden voor missings
+```
+
+**Wat doet `transform_data()`?**
+
+1. Filtert op opleiding, vorm en instroompjaar
+2. Hercoderen van vooropleiding en aansluitingstype
+3. Aggregeert vakcijfers (HAVW-vakken)
+4. Verrijkt met APCG en SES data
+5. Maakt missing-indicatoren aan
+6. Imputeert numerieke missings met gemiddelde
+
+### Stap 3: Fairness-analyse uitvoeren
+
+De hoofdfunctie `run_nfwa()` voert de complete analyse-pipeline uit.
+
+```{r analyze}
+# Bepaal de cutoff voor fairness-check
+# (vaak het gemiddelde van de retentie)
+cutoff <- sum(df$retentie) / nrow(df)
+
+# Voer de analyse uit
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = nfwa::colors_default,
+  colors_list = nfwa::colors_list,
+  cutoff = cutoff,
+  caption = paste0("Bron: 1CHO data | Analyse: ", format(Sys.Date(), "%B %Y"))
+)
+```
+
+**Wat doet `run_nfwa()`?**
+
+1. **Traint modellen**: Logistische regressie en Random Forest
+2. **Maakt explainer**: DALEX-object voor model-interpretatie
+3. **Fairness-checks**: Per sensitieve variabele (geslacht, vooropleiding, etc.)
+4. **Genereert plots**:
+   - Dichtheidsplots van voorspellingen per groep
+   - Fairness-check plots met metrieken
+5. **Creëert tabel**: Samenvattende resultatentabel met conclusies
+
+### Stap 4: Resultaten bekijken
+
+De analyse slaat resultaten op in `temp/`:
+
+```{r results}
+# Laad de conclusies
+conclusions <- readRDS("temp/conclusions_list.rds")
+
+# Bekijk conclusies per variabele
+print(conclusions$geslacht)
+print(conclusions$vooropleiding)
+
+# Plots zijn opgeslagen als PNG:
+# - fairness_density_geslacht.png
+# - fairness_plot_geslacht.png
+# - result_table.png
+```
+
+### Stap 5: PDF-rapport genereren (Optioneel)
+
+Genereer een professioneel PDF-rapport met alle resultaten:
+
+```{r render_pdf}
+# Genereer PDF rapport (wordt opgeslagen in working directory)
+render_report(
+  opleidingsnaam = "Jouw Opleiding",
+  opleidingsvorm = "VT"
+)
+```
+
+**Vereisten:**
+- Quarto geïnstalleerd op je systeem ([https://quarto.org](https://quarto.org))
+- Het `quarto` R package
+- LaTeX distributie (TinyTeX: `tinytex::install_tinytex()`)
+
+Het PDF-rapport bevat:
+- Inleiding over de onderzoeksmethode
+- Automatisch gegenereerde conclusies per variabele
+- Overzichtstabel met bias-classificaties
+- Kleurgecodeerde legenda
+
+### Stap 6: Tijdelijke bestanden opruimen
+
+Na het genereren van je PDF rapport kun je de tijdelijke bestanden verwijderen:
+
+```{r cleanup}
+# Verwijder tijdelijke bestanden handmatig
+cleanup_temp()
+
+# Of automatisch tijdens PDF generatie:
+render_report(
+  opleidingsnaam = "Jouw Opleiding",
+  opleidingsvorm = "VT",
+  cleanup_temp = TRUE
+)
+```
+
+**Let op:** Zorg dat je het PDF rapport hebt gegenereerd voordat je de tijdelijke bestanden verwijdert!
+
+## Fairness-metrieken
+
+Het package gebruikt de volgende fairness-metrieken (via `fairmodels` package):
+
+- **Equal Opportunity (TPR)**: Gelijke True Positive Rate tussen groepen
+- **Predictive Parity (PPV)**: Gelijke Positive Predictive Value
+- **Accuracy Equality**: Gelijke accuracy tussen groepen
+- **Statistical Parity (STP)**: Gelijke voorspellingsratio
+
+Een model is "fair" als de verhouding tussen groepen binnen een epsilon-range ligt (standaard 0.8-1.25).
+
+## Interpretatie
+
+**Bias-classificatie:**
+
+- **Negatieve Bias**: FRN-score < 0.8 - De groep heeft lagere kansen dan de referentiegroep
+- **Positieve Bias**: FRN-score > 1.25 - De groep heeft hogere kansen dan de referentiegroep
+- **Geen Bias**: FRN-score tussen 0.8 en 1.25 - Geen significant verschil
+
+**Let op:** Bias in het model kan verschillende oorzaken hebben:
+- Historische ongelijkheid in de data
+- Verschillen in onderliggende populaties
+- Meetfouten of missing data
+- Legitieme verschillen (bijv. vooropleiding-niveau)
+
+## Aanpassingen
+
+### Eigen kleuren gebruiken
+
+```{r custom_colors}
+# Definieer je eigen kleurenschema
+mijn_kleuren <- nfwa::colors_default
+mijn_kleuren["positive_color"] <- "#0066CC"
+mijn_kleuren["negative_color"] <- "#CC0000"
+
+# Gebruik ze in de analyse
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = mijn_kleuren,
+  colors_list = nfwa::colors_list,
+  cutoff = cutoff
+)
+```
+
+### Andere cutoff-waarde
+
+```{r custom_cutoff}
+# Gebruik een vaste cutoff in plaats van gemiddelde
+run_nfwa(
+  df = df,
+  df_levels = metadata$df_levels,
+  sensitive_variables = metadata$sensitive_variables,
+  colors_default = nfwa::colors_default,
+  colors_list = nfwa::colors_list,
+  cutoff = 0.3  # 30% cutoff
+)
+```
+
+### Complete workflow met cleanup
+
+```{r complete_workflow}
+# Aanbevolen: Complete analyse met automatische cleanup (standaard gedrag)
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "Jouw Opleiding",
+  eoi = 2020,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE,
+  cleanup_temp = TRUE  # Standaard: tijdelijke bestanden worden opgeruimd
+)
+
+# Of zonder cleanup (als je de tussentijdse bestanden wilt bewaren):
+result <- analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = "Jouw Opleiding",
+  eoi = 2020,
+  opleidingsvorm = "VT",
+  generate_pdf = TRUE,
+  cleanup_temp = FALSE  # Behoud tijdelijke bestanden in temp/
+)
+```
+
+## Meer informatie
+
+Voor meer details over de onderzoeksmethode, zie:
+
+Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs.* Intreerede lectoraat Learning Technology & Analytics. [https://zenodo.org/records/14204674](https://zenodo.org/records/14204674)
+
+## Help en ondersteuning
+
+- GitHub issues: [https://github.com/cedanl/no-fairness-without-awareness/issues](https://github.com/cedanl/no-fairness-without-awareness/issues)
+- Functiedocumentatie: `?analyze_fairness`, `?run_nfwa`, `?transform_data`, `?read_metadata`
+- Package help: `?nfwa`

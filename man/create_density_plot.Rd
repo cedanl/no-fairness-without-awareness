@@ -35,7 +35,7 @@ het berekenen van de plothoogte.}
 }
 \value{
 Onzichtbaar. Het plot wordt opgeslagen als
-  `output/fairness_density_{group}.png`.
+  `temp/fairness_density_\{group\}.png`.
 }
 \description{
 Genereert een dichtheidsplot op basis van een fairness-object dat de

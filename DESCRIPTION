@@ -4,43 +4,52 @@ Title: No Fairness Without Awareness - Kansengelijkheidsanalyse
 Version: 0.1.0
 Authors@R: c(
     person("Aslam", "Tanjung", email = "aslam.tanjung@surf.nl", role = c("aut", "cre")),
-    person("Theo", "Bakker", email = "t.bakker@hhs.nl", role = "auth")
+    person("Theo", "Bakker", email = "t.bakker@hhs.nl", role = "aut"))
 Description: Analyseer de kansengelijkheid van een opleiding aan de hand van
     studiedata. De tool traint prognosemodellen (logistische regressie en random
     forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals
     geslacht en vooropleiding. Resultaten worden gepresenteerd in een
     automatisch gegenereerd PDF-rapport.
-License: file LICENSE
+License: MIT + file LICENSE
+URL: https://github.com/cedanl/no-fairness-without-awareness
+BugReports: https://github.com/cedanl/no-fairness-without-awareness/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends:
     R (>= 4.3)
 Imports:
     DALEX,
     DALEXtra,
+    cli,
     dplyr,
     fairmodels,
     flextable,
     forcats,
-    fs,
     ggplot2,
     ggtext,
     glmnet,
     glue,
     gtsummary,
     janitor,
-    quarto,
+    officer,
+    parsnip,
     ragg,
-    ranger,
-    readxl,
     recipes,
-    rio,
     rsample,
     stringr,
+    tibble,
     tidyr,
-    tidymodels,
-    tune
+    tidyselect,
+    tune,
+    workflows,
+    yardstick,
+    quarto,
+    ranger
 Suggests:
-    renv,
-    testthat (>= 3.0.0)
+    fs,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tidymodels
+VignetteBuilder: knitr

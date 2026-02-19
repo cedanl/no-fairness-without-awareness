@@ -1,0 +1,60 @@
+# Package-level documentatie
+# Dit bestand bevat de package-level documentatie die verschijnt wanneer
+# iemand ?nfwa typt in R. Het is een standaard onderdeel van R packages.
+
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
+NULL
+
+#' nfwa: No Fairness Without Awareness - Kansengelijkheidsanalyse
+#'
+#' Analyseer de kansengelijkheid van een opleiding aan de hand van
+#' studiedata. Het package traint prognosemodellen (logistische regressie en
+#' random forest) en beoordeelt fairness-metriken per gevoelige variabele,
+#' zoals geslacht en vooropleiding.
+#'
+#' @section Belangrijkste functies:
+#' \describe{
+#'   \item{\code{\link{analyze_fairness}}}{Complete analyse in \u00e9\u00e9n functie (AANBEVOLEN)}
+#'   \item{\code{\link{run_nfwa}}}{Voer fairness-analyse uit op getransformeerde data}
+#'   \item{\code{\link{transform_data}}}{Transformeer ruwe 1CHO data}
+#'   \item{\code{\link{render_report}}}{Genereer PDF rapport}
+#'   \item{\code{\link{read_metadata}}}{Laad package metadata}
+#'   \item{\code{\link{cleanup_temp}}}{Ruim tijdelijke bestanden op}
+#' }
+#'
+#' @section Snelstart workflow:
+#' De eenvoudigste manier om een analyse uit te voeren:
+#' \preformatted{
+#' result <- analyze_fairness(
+#'   data_ev = data_ev,
+#'   data_vakhavw = data_vakhavw,
+#'   opleidingsnaam = "Jouw Opleiding",
+#'   eoi = 2020,
+#'   opleidingsvorm = "VT",
+#'   generate_pdf = TRUE
+#' )
+#' }
+#'
+#' @section Stap-voor-stap workflow:
+#' Voor meer controle over elke stap:
+#' 1. Laad metadata met \code{read_metadata()}
+#' 2. Transformeer data met \code{transform_data()}
+#' 3. Voer analyse uit met \code{run_nfwa()}
+#' 4. Genereer rapport met \code{render_report()}
+#'
+#' @section Data voorbereiding:
+#' Gebruik het 1cijferho project (\url{https://github.com/cedanl/1cijferho})
+#' om je 1CHO data voor te bereiden naar het juiste formaat.
+#'
+#' @references
+#' Bakker, T. (2024). No Fairness without Awareness. Toegepast onderzoek naar
+#' kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning
+#' Technology & Analytics. \doi{10.5281/zenodo.14204674}
+#'
+#' @name nfwa-package
+#' @aliases nfwa
+NULL

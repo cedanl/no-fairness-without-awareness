@@ -4,9 +4,13 @@
 .Ruserdata
 .DS_Store
 
-## Ignore output
-output/
-scripts/*.pdf
+## Ignore temporary analysis files
+temp/
+cache/
 
-scripts/dev/*
-scripts/.quarto
+## Claude files
+.claude/
+/doc/
+/Meta/
+
+*.pdf

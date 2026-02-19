@@ -32,8 +32,9 @@
 #'   `"DU"`).
 #' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
 #'   (minimumwaarde).
-#' @param df1cho Data frame met ruwe 1CHO-inschrijvingsgegevens.
-#' @param df1cho_vak Data frame met ruwe 1CHO-vakcijfergegevens.
+#' @param data_ev Data frame met ruwe 1CHO-inschrijvingsgegevens (EV-bestand).
+#' @param data_vakhavw Data frame met ruwe 1CHO-vakcijfergegevens
+#'   (VAKHAVW-bestand).
 #'
 #' @return Een data frame met getransformeerde en geimputeerde data,
 #'   gefilterd op de in metadata gedefinieerde variabelen.
@@ -44,41 +45,36 @@ transform_data <- function(metadata,
                            opleidingsnaam,
                            opleidingsvorm,
                            eoi,
-                           df1cho,
-                           df1cho_vak) {
+                           data_ev,
+                           data_vakhavw) {
   
   dfapcg <- metadata$dfapcg
   dfses <- metadata$dfses
   variables <- metadata$variables
   dec_vopl <- metadata$dec_vopl
   dec_isat <- metadata$dec_isat
-  
-  
+
+
   #-------------------------------------------------------------------
   # Transform
   #-------------------------------------------------------------------
-  source("R/transform_ev_data.R")
-  df1cho2 <- transform_ev_data(
-    df1cho,
+  data_ev <- transform_ev_data(
+    data_ev,
     naam = opleidingsnaam,
     eoi  = eoi,
     vorm = opleidingsvorm,
     dec_vopl = dec_vopl,
     dec_isat = dec_isat
   )
-  
-  source("R/transform_vakhavw.R")
-  df1cho_vak2 <- transform_vakhavw(df1cho_vak)
-  
-  source("R/transform_1cho_data.R")
-  dfcyfer <- transform_1cho_data(df1cho2, df1cho_vak2)
-  
+
+  data_vakhavw <- transform_vakhavw(data_vakhavw)
+
+  dfcyfer <- transform_1cho_data(data_ev, data_vakhavw)
+
   #-------------------------------------------------------------------
   # Add APCG & SES + basic cleaning
   #-------------------------------------------------------------------
-  source("R/add_apcg.R")
-  source("R/add_ses.R")
-  
+
   vars <- c("netl", "entl", "nat", "wis")
   df <- dfcyfer |>
     

@@ -1,132 +1,191 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## main.R ####
+## main.R - Voorbeeld script voor NFWA fairness-analyse ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
 ## Copyright 2025 De HHs
 ## Web Page: http://www.hhs.nl
 ## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
 ##
-## Doel: Doel
+## Dit script demonstreert twee manieren om het NFWA package te gebruiken:
+## 1. SNELSTART: Gebruik analyze_fairness() voor complete analyse in één functie
+## 2. STAP-VOOR-STAP: Handmatige controle over elke stap
 ##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
+## BELANGRIJK: Dit script werkt alleen binnen het development project.
+## Voor package gebruik, zie de vignette: vignette("nfwa-gebruiksvoorbeeld")
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-renv::restore(prompt = FALSE)
-
-config <- config::get()
-
-# Install TinyTeX if not already
-tinytex::install_tinytex()
-
-## Install packages such as nanoparquet
-rio::install_formats(type = "binary")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## INPUT ####
+## Setup ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-opleidingsnaam <- config$params$opleidingsnaam
-eoi <- config$params$eoi
-opleidingsvorm <- config$params$opleidingsvorm
+# Laad het NFWA package
+# Voor development: gebruik devtools::load_all()
+# Na installatie: library(nfwa)
+devtools::install()
 
-## TODO: Pas aan naar waar jouw parquet bestand staat.
-df1cho <- rio::import(
-  fs::path("data",
-    "input",
-    "EV299XX24_DEMO.parquet"
-  )
+# Installeer benodigde dependencies (alleen eerste keer)
+if (!tinytex::is_tinytex()) {
+  message("TinyTeX niet gevonden - installeren...")
+  tinytex::install_tinytex()
+}
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## INPUT - Configuratie ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Opleidingsinformatie
+opleidingsnaam = "B International Business Administration"
+eoi = 2010
+opleidingsvorm = "VT"
+
+# Laad je 1CHO data
+# Pas de paden aan naar waar jouw bestanden staan!
+data_ev <- read.csv(
+  fs::path("data", "input", "EV299XX24_DEMO.csv"), sep = ";"
 )
 
-
-df1cho_vak <- rio::import(
-  fs::path(
-    "data",
-    "input",
-    "VAKHAVW_99XX_DEMO.parquet"
-  )
+data_vakhavw <- read.csv(
+  fs::path("data", "input", "VAKHAVW_99XX_DEMO.csv"), sep = ";"
 )
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Metadata Inlezen ####
+## OPTIE 1: SNELSTART - Complete analyse met één functie ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/read_metadata.R")
-metadata <- read_metadata()
+# Uncomment deze sectie om de snelle 1-functie aanpak te gebruiken:
 
-sensitive_variables <- metadata$sensitive_variables
-mapping_newname <- metadata$mapping_newname
-df_levels <- metadata$df_levels
+result <- nfwa::analyze_fairness(
+  data_ev = data_ev,
+  data_vakhavw = data_vakhavw,
+  opleidingsnaam = opleidingsnaam,
+  eoi = eoi,
+  opleidingsvorm = opleidingsvorm,
+  generate_pdf = TRUE,
+  cleanup_temp = TRUE
+)
 
+# # Klaar! Het PDF rapport staat in je working directory.
+# # Bekijk het getransformeerde dataframe:
+# # head(result$df)
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Transform Data ####
+## OPTIE 2: STAP-VOOR-STAP - Handmatige controle ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/transform_data.R")
-df <- transform_data(metadata,
-                     opleidingsnaam,
-                     opleidingsvorm,
-                     eoi,
-                     df1cho,
-                     df1cho_vak)
-
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Create Data Summary ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## Stap 1: Metadata Inlezen ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 
-# source("R/get_table_summary.R")
-# tbl_summary <- get_table_summary(df, mapping_newname)
-# flextable::save_as_image(x = tbl_summary, path = "output/cache/descriptive_table.png")
+# # Lees de meegeleverde metadata in
+# # Deze zit automatisch in het package - geen eigen bestanden nodig!
+# metadata <- nfwa::read_metadata()
 # 
-# tbl_summary_sensitive <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
-# flextable::save_as_image(x = tbl_summary_sensitive, path = "output/cache/sensitive_variables_descriptive_table.png")
-
-
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## NFWA runnen ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-cutoff <- sum(df$retentie) / nrow(df)
-source("R/run_nfwa.R")
-run_nfwa(df, df_levels, sensitive_variables, colors_default, cutoff = cutoff)
-
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Render ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-output_filename <- paste0(
-  "kansengelijkheidanalysis_",
-  gsub(" ", "_", tolower(opleidingsnaam)),
-  "_",
-  opleidingsvorm,
-  ".pdf"
-)
-
-# Render to scripts/
-quarto::quarto_render(
-  input = "scripts/render_pdf.qmd",
-  output_file = output_filename,
-  execute_params = list(subtitle = paste0(opleidingsnaam, " ", opleidingsvorm))
-)
-
-# Move it
-dir.create(paste0(getwd(), "/output/"), recursive = TRUE, showWarnings = FALSE)
-file.rename(
-  file.path("scripts", output_filename),
-  file.path("output/", output_filename)
-)
+# # Haal belangrijke componenten eruit
+# sensitive_variables <- metadata$sensitive_variables  # Bijv. geslacht, vooropleiding
+# mapping_newname <- metadata$mapping_newname          # Voor hernoeming variabelen
+# df_levels <- metadata$df_levels                      # Labels voor categorieën
+# 
+# message("Metadata ingelezen:")
+# message("  - ", length(metadata$variables), " variabelen")
+# message("  - ", length(sensitive_variables), " sensitieve variabelen: ",
+#         paste(sensitive_variables, collapse = ", "))
+# 
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## Stap 2: Transform Data ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# message("\nData transformeren...")
+# 
+# # Transformeer ruwe 1CHO data naar analyse-klaar formaat
+# df <- nfwa::transform_data(
+#   metadata = metadata,
+#   opleidingsnaam = opleidingsnaam,
+#   opleidingsvorm = opleidingsvorm,
+#   eoi = eoi,
+#   data_ev = data_ev,
+#   data_vakhavw = data_vakhavw
+# )
+# 
+# message("  - ", nrow(df), " studenten in analyse")
+# message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
+# 
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## (Optioneel) Create Data Summary ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# # Maak beschrijvende statistieken tabellen
+# # Uncomment onderstaande regels om deze te genereren:
+# 
+# # tbl_summary <- get_table_summary(df, mapping_newname)
+# # flextable::save_as_image(
+# #   x = tbl_summary,
+# #   path = "temp/descriptive_table.png"
+# # )
+# #
+# # tbl_summary_sensitive <- get_table_summary_fairness(
+# #   df, mapping_newname, sensitive_variables
+# # )
+# # flextable::save_as_image(
+# #   x = tbl_summary_sensitive,
+# #   path = "temp/sensitive_variables_descriptive_table.png"
+# # )
+# 
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## Stap 3: NFWA Fairness-Analyse Uitvoeren ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# message("\nFairness-analyse uitvoeren...")
+# 
+# # Bepaal cutoff (vaak het gemiddelde van retentie)
+# cutoff <- sum(df$retentie) / nrow(df)
+# 
+# # Voer de complete NFWA analyse uit
+# # Dit traint modellen, maakt plots en genereert conclusies
+# nfwa::run_nfwa(
+#   df = df,
+#   df_levels = df_levels,
+#   sensitive_variables = sensitive_variables,
+#   colors_default = nfwa::colors_default,  # Gebruik package kleuren
+#   colors_list = nfwa::colors_list,        # Gebruik package kleurenpaletten
+#   cutoff = cutoff,
+#   caption = paste0(
+#     "Bron: 1CHO data | Analyse: ", format(Sys.Date(), "%B %Y")
+#   )
+# )
+# 
+# message("  - Plots opgeslagen in temp/")
+# message("  - Resultaten tabel opgeslagen")
+# message("  - Conclusies opgeslagen in conclusions_list.rds")
+# 
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## Stap 4: Render PDF Rapport (Optioneel) ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# # Genereer een PDF rapport met Quarto
+# # Dit gebruikt de render_report() functie uit het NFWA package
+# 
+# nfwa::render_report(
+#   opleidingsnaam = opleidingsnaam,
+#   opleidingsvorm = opleidingsvorm,
+#   cleanup_temp = FALSE  # Set to TRUE om tijdelijke bestanden te verwijderen
+# )
+# 
+# 
+# message("\n NFWA analyse compleet!")
+# 
+# ## . ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ## Cleanup Tijdelijke Bestanden (Optioneel) ####
+# ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 
+# # Als je de tijdelijke bestanden wilt verwijderen na het genereren van het rapport:
+# # nfwa::cleanup_temp()

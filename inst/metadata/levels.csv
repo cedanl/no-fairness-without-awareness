@@ -1,0 +1,19 @@
+﻿VAR_Formal_variable;VAR_Simple_variable;VAR_Level_NL;VAR_Level_label_NL;VAR_Level_label_NL_description;VAR_Level_order;VAR_Breakdown_tf
+geslacht;geslacht;M;Man;mannen;1;TRUE
+geslacht;geslacht;V;Vrouw;vrouwen;2;TRUE
+vooropleiding;vooropleiding;MBO;Mbo;mbo-studenten;1;TRUE
+vooropleiding;vooropleiding;HAVO;Havo;havisten;2;TRUE
+vooropleiding;vooropleiding;VWO;Vwo;vwo-studenten;3;TRUE
+vooropleiding;vooropleiding;BD;Buitenlands diploma;studenten met een buitenlands diploma;4;FALSE
+vooropleiding;vooropleiding;CD;Colloquium Doctum / Staatsexamen;studenten die instromen met een 21+ toets of Colloquium Doctum;5;FALSE
+vooropleiding;vooropleiding;HO;Hoger onderwijs;studenten die instromen met een diploma in het hoger onderwijs;6;FALSE
+vooropleiding;vooropleiding;Overig;Overig;studenten met een overige vooropleiding;7;FALSE
+vooropleiding;vooropleiding;Onbekend;Onbekend;studenten met een onbekende vooropleiding;8;FALSE
+aansluiting;aansluiting;Direct;Direct;studenten die direct na hun vooropleiding instromen;1;TRUE
+aansluiting;aansluiting;Tussenjaar;Tussenjaar;studenten met een of meer tussenjaren;2;TRUE
+aansluiting;aansluiting;Switch intern;Switch intern;interne switchers;3;TRUE
+aansluiting;aansluiting;Switch extern;Switch extern;externe switchers;4;TRUE
+aansluiting;aansluiting;2e Studie;2e Studie;studenten die twee of meer studies volgen;5;TRUE
+aansluiting;aansluiting;Na CD;Na CD;studenten die instromen met een 21+ toets of Colloquium Doctum;6;TRUE
+aansluiting;aansluiting;Overig;Overig;studenten met een overige aansluiting;7;TRUE
+aansluiting;aansluiting;Onbekend;Onbekend;studenten met een onbekende aansluiting;8;TRUE

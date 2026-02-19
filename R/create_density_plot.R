@@ -18,9 +18,6 @@
 ## 2) ___
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-source("R/set_theme.R")
-source("R/add_theme_elements.R")
-
 #' Maak een dichtheidsplot voor fairness-analyse
 #'
 #' Genereert een dichtheidsplot op basis van een fairness-object dat de
@@ -40,7 +37,7 @@ source("R/add_theme_elements.R")
 #' @param var Character. Naam van de variabele (voor bestandsnaam).
 #'
 #' @return Onzichtbaar. Het plot wordt opgeslagen als
-#'   `output/fairness_density_{group}.png`.
+#'   `temp/fairness_density_\{group\}.png`.
 #'
 #' @importFrom ggplot2 ggsave scale_fill_manual scale_x_continuous geom_vline
 #'   annotate theme element_blank guides guide_legend
@@ -81,7 +78,7 @@ create_density_plot <- function(fairness_object,
   if (group == "all") {
     .values <- colors_default[["metrics_blue"]]
   } else {
-    .values <- color_list[[group]]
+    .values <- colors_list[[group]]
   }
   
   # Create a density plot
@@ -139,12 +136,12 @@ create_density_plot <- function(fairness_object,
     )
 
   # Add elements.
-  density_plot <- add_theme_elements(density_plot, title_subtitle = TRUE) +
+  density_plot <- add_theme_elements(density_plot, colors_default, title_subtitle = TRUE) +
     ggplot2::theme(legend.position = "bottom", legend.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = 1))
   
   ggplot2::ggsave(
-    filename  = glue::glue("output/cache/fairness_density_{group}.png"),
+    filename  = glue::glue("temp/fairness_density_{group}.png"),
     plot      = density_plot,
     height    = (250 + (50 * n_categories)) / 72,
     width     = 640 / 72,

@@ -4,10 +4,13 @@
 \alias{add_theme_elements}
 \title{Voeg thema-elementen toe aan een ggplot}
 \usage{
-add_theme_elements(p, title_subtitle = TRUE, extended = FALSE)
+add_theme_elements(p, colors_default, title_subtitle = TRUE, extended = FALSE)
 }
 \arguments{
 \item{p}{Een ggplot-object waaraan thema-elementen worden toegevoegd.}
+
+\item{colors_default}{Named list met standaardkleuren. Moet minstens
+`caption_color` bevatten.}
 
 \item{title_subtitle}{Logical. Indien `TRUE` (standaard), worden titel- en
 ondertitel-opmaak toegepast.}

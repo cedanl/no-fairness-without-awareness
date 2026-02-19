@@ -9,6 +9,7 @@ run_nfwa(
   df_levels,
   sensitive_variables,
   colors_default,
+  colors_list = nfwa::colors_list,
   cutoff = 0.2,
   caption = NULL
 )
@@ -26,6 +27,9 @@ variabelen om te analyseren.}
 \item{colors_default}{Named list met kleurdefinities voor plots en
 tabellen.}
 
+\item{colors_list}{Named list met kleurvectoren per groepsvariabele.
+Standaard wordt het package-ingebouwde palet gebruikt.}
+
 \item{cutoff}{Numeriek. Cutoff-waarde voor de fairness-check.
 Standaard `0.2`.}
 
@@ -35,13 +39,13 @@ plots.}
 \value{
 Onzichtbaar. Slaat de volgende bestanden op:
   \describe{
-    \item{output/fairness_density_{var}.png}{Dichtheidsplot per
+    \item{temp/fairness_density_\{var\}.png}{Dichtheidsplot per
       variabele.}
-    \item{output/fairness_plot_{var}.png}{Fairness-check plot per
+    \item{temp/fairness_plot_\{var\}.png}{Fairness-check plot per
       variabele.}
-    \item{output/conclusions_list.rds}{List met tekstuele
+    \item{temp/conclusions_list.rds}{List met tekstuele
       conclusies per variabele.}
-    \item{output/result_table.png}{Afbeelding van de
+    \item{temp/result_table.png}{Afbeelding van de
       fairness-resultatentabel.}
   }
 }
@@ -51,4 +55,9 @@ analyse-pipeline uitvoert: traint classificatiemodellen, maakt een
 DALEX-explainer, voert fairness-checks uit per sensitieve variabele,
 genereert dichtheids- en fairness-plots, en produceert een
 samenvattende flextable met conclusies.
+}
+\details{
+Deze functie schrijft bestanden naar een tijdelijke map (\code{temp/}) in
+de huidige working directory. Gebruik \code{\link{cleanup_temp}} om deze
+bestanden te verwijderen na het genereren van het rapport.
 }

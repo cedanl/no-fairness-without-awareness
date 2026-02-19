@@ -9,8 +9,8 @@ transform_data(
   opleidingsnaam,
   opleidingsvorm,
   eoi,
-  df1cho,
-  df1cho_vak
+  data_ev,
+  data_vakhavw
 )
 }
 \arguments{
@@ -25,9 +25,10 @@ door [read_metadata()].}
 \item{eoi}{Numeriek. Eerste jaar aan deze opleiding/instelling
 (minimumwaarde).}
 
-\item{df1cho}{Data frame met ruwe 1CHO-inschrijvingsgegevens.}
+\item{data_ev}{Data frame met ruwe 1CHO-inschrijvingsgegevens (EV-bestand).}
 
-\item{df1cho_vak}{Data frame met ruwe 1CHO-vakcijfergegevens.}
+\item{data_vakhavw}{Data frame met ruwe 1CHO-vakcijfergegevens
+(VAKHAVW-bestand).}
 }
 \value{
 Een data frame met getransformeerde en geimputeerde data,

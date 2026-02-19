@@ -46,6 +46,25 @@ remotes::install_github("cedanl/no-fairness-without-awareness")
 | **R** | Versie 4.3 of hoger | [Download R](https://cran.r-project.org/) |
 | **RStudio** | Aanbevolen IDE (optioneel maar handig) | [Download RStudio](https://posit.co/download/rstudio-desktop/) |
 | **Rtools** | Alleen voor Windows - nodig voor package compilatie | [Download Rtools](https://cran.r-project.org/bin/windows/Rtools/) |
+| **Quarto** | Vereist voor PDF rapportage | [Download Quarto](https://quarto.org/docs/get-started/) |
+| **TinyTeX** | LaTeX distributie voor PDF compilatie | Automatisch via `tinytex::install_tinytex()` |
+
+#### ⚠️ Quarto Installatie
+
+Als je **PDF rapporten** wilt genereren, moet je Quarto installeren:
+
+1. **Download en installeer Quarto** van https://quarto.org/docs/get-started/
+2. **Herstart R/RStudio volledig** na installatie
+3. **Verificatie:**
+   ```r
+   quarto::quarto_path()  # Moet een pad naar Quarto returneren, niet NULL
+   ```
+
+**Troubleshooting:**
+- Als `quarto::quarto_path()` `NULL` returnt, is Quarto niet in je PATH
+- Herstart R/RStudio na Quarto installatie
+- Op Windows: Zorg dat je account admin rechten had bij de installatie
+- Geen Quarto? Zet `generate_pdf = FALSE` in `analyze_fairness()` en voer alleen analyses uit
 
 ### Snelstart: Complete analyse in één functie
 

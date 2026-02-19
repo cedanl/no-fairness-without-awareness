@@ -97,6 +97,17 @@ analyze_fairness <- function(data_ev,
                               cleanup_temp = TRUE,
                               caption = NULL) {
 
+  # Controleer Quarto installatie (vereist voor PDF generatie)
+  if (generate_pdf && !check_quarto_installed()) {
+    stop(
+      "Quarto CLI is niet geïnstalleerd of niet gevonden in het systeem.\n",
+      "\n",
+      "Alternatieven:\n",
+      "1. Gebruik: install_quarto() voor installatie-instructies\n",
+      "2. Zet 'generate_pdf = FALSE' om alleen analyses uit te voeren zonder PDF"
+    )
+  }
+
   # Validate inputs
   if (!is.data.frame(data_ev)) {
     stop("data_ev moet een data frame zijn")

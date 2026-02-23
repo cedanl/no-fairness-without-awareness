@@ -53,6 +53,12 @@
 #' }
 render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) {
 
+  # Installeer benodigde dependencies (alleen eerste keer)
+  if (!tinytex::is_tinytex()) {
+    message("TinyTeX niet gevonden - installeren... Dit gebeurt eenmalig")
+    tinytex::install_tinytex()
+  }
+  
   # Controleer Quarto installatie
   if (!check_quarto_installed()) {
     stop(

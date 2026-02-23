@@ -115,7 +115,7 @@ install_quarto <- function() {
       "  1. Download het .msi installatieprogramma van bovenstaande link\n",
       "  2. Voer het installatieprogramma uit\n",
       "  3. Start R/RStudio opnieuw op\n",
-      "  4. Voer uit: check_quarto_installed()\n\n"
+      "  4. Voer uit: nfwa::check_quarto_installed()\n\n"
     )
   } else if (Sys.info()["sysname"] == "Darwin") {
     msg <- paste0(
@@ -124,7 +124,7 @@ install_quarto <- function() {
       "  1. Installeer via Homebrew: brew install quarto\n",
       "  2. Of download van de bovenstaande link\n",
       "  3. Start R/RStudio opnieuw op\n",
-      "  4. Voer uit: check_quarto_installed()\n\n"
+      "  4. Voer uit: nfwa::check_quarto_installed()\n\n"
     )
   } else if (.Platform$OS.type == "unix") {
     msg <- paste0(
@@ -133,7 +133,7 @@ install_quarto <- function() {
       "  1. Voer uit: sudo apt-get install quarto\n",
       "  2. Of download van de bovenstaande link\n",
       "  3. Start R/RStudio opnieuw op\n",
-      "  4. Voer uit: check_quarto_installed()\n\n"
+      "  4. Voer uit: nfwa::check_quarto_installed()\n\n"
     )
   }
 

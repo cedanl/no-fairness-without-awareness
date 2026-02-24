@@ -63,7 +63,7 @@ Deze functie voert de volgende stappen uit:
 
 Vereisten:
 \itemize{
-  \item Quarto geïnstalleerd (voor PDF generatie)
+  \item Quarto geinstalleerd (voor PDF generatie)
   \item Het \code{quarto} R package
   \item TinyTeX (voor LaTeX compilatie)
 }

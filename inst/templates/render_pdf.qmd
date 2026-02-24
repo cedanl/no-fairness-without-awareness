@@ -1,18 +1,15 @@
 ---
 title: "Transparante Kansengelijkheidsanalyse"
 subtitle: "`r params$subtitle`"
-
 params:
   subtitle: "Opleiding Onbekend"
   temp_dir: "temp"
   work_dir: "."
-
-
 format:
   pdf:
     documentclass: article
     geometry: margin=0.75in
-    fontsize: 10pt
+    fontsize: 11pt
     papersize: A4
     toc: false
     toc-depth: 2
@@ -21,14 +18,29 @@ format:
     include-in-header:
       text: |
         \usepackage{setspace}
-        \setstretch{1.0}
+        \setstretch{1.05}
         \usepackage{parskip}
-        \setlength{\parskip}{0.3em}
+        \setlength{\parskip}{0.6em}
+        \usepackage{titlesec}
+        \usepackage{xcolor}
+        % Section formatting
+        \titleformat{\section}
+          {\Large\bfseries\color[gray]{0.2}}
+          {\thesection}{1em}{}
+          [\vspace{0.3em}\hrule\vspace{0.3em}]
+        \titlespacing*{\section}{0pt}{1.2em}{0.8em}
+        % Subsection formatting
+        \titleformat{\subsection}
+          {\large\bfseries}
+          {\thesubsection}{0.8em}{}
+        \titlespacing*{\subsection}{0pt}{0.9em}{0.5em}
+        % Subsubsection formatting
+        \titleformat{\subsubsection}
+          {\normalsize\bfseries}
+          {\thesubsubsection}{0.6em}{}
+        \titlespacing*{\subsubsection}{0pt}{0.6em}{0.3em}
 execute:
   cache: false
-
-
-
 ---
 
 ```{r}
@@ -44,8 +56,6 @@ library(nfwa)
 knitr::opts_knit$set(root.dir = params$work_dir)
 ```
 
-\newpage
-
 # Hoofdbevindingen
 
 ```{r}
@@ -60,7 +70,7 @@ conclusions_list <- readRDS(file.path(temp_path, "conclusions_list.rds"))
 has_bias <- any(sapply(conclusions_list, function(x) !grepl("geen sprake van bias", tolower(x))))
 
 if (has_bias) {
-  cat("!!! **Er is bias geconstateerd** in één of meer onderzochte variabelen.\n\n")
+  cat("**Er is bias geconstateerd** in één of meer onderzochte variabelen.\n\n")
   cat("Dit rapport identificeert verschillen in studiesucces tussen groepen studenten op basis van persoonskenmerken. Deze bevindingen vereisen nadere analyse en mogelijke interventies om kansengelijkheid te bevorderen.\n")
 } else {
   cat("**Geen significante bias geconstateerd** in de onderzochte variabelen.\n\n")
@@ -77,6 +87,21 @@ Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of 
 Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede].
 
 Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+
+# Kansengelijkheid per variabele
+
+```{r}
+#| echo: false
+#| results: asis
+
+temp_dir <- params$temp_dir
+
+for (var_name in names(conclusions_list)) {
+  var_title <- stringr::str_to_title(var_name)
+  cat("### ", var_title, "\n\n")
+  cat(conclusions_list[[var_name]], "\n\n")
+}
+```
 
 \newpage
 
@@ -122,18 +147,18 @@ if (file.exists(metadata_file)) {
 
 Voor elke gevoelige variabele meten we vier fairness-metrieken:
 
-- **Equal Opportunity**: Voorspelt het model even goed voor succesvolle studenten uit alle groepen?
-- **Predictive Parity**: Is de voorspellende waarde gelijk over alle groepen?
-- **Accuracy Equality**: Is de algemene nauwkeurigheid gelijk?
-- **Statistical Parity**: Zijn de voorspelde uitkomsten evenredig verdeeld?
+-   **Equal Opportunity**: Voorspelt het model even goed voor succesvolle studenten uit alle groepen?
+-   **Predictive Parity**: Is de voorspellende waarde gelijk over alle groepen?
+-   **Accuracy Equality**: Is de algemene nauwkeurigheid gelijk?
+-   **Statistical Parity**: Zijn de voorspelde uitkomsten evenredig verdeeld?
 
 **Stap 4: Bias classificatie**
 
 We classificeren groepen als:
 
-- **Negatieve bias**: FRN score < 0.8 (model presteert slechter voor deze groep)
-- **Positieve bias**: FRN score > 1.25 (model presteert beter voor deze groep)
-- **Geen bias**: FRN score tussen 0.8 en 1.25
+-   **Negatieve bias**: FRN score \< 0.8 (model presteert slechter voor deze groep)
+-   **Positieve bias**: FRN score \> 1.25 (model presteert beter voor deze groep)
+-   **Geen bias**: FRN score tussen 0.8 en 1.25
 
 ## Belangrijke overwegingen
 
@@ -141,9 +166,9 @@ We classificeren groepen als:
 
 De betrouwbaarheid van deze analyse is afhankelijk van:
 
-- Volledigheid van de studentgegevens
-- Correcte registratie van persoonskenmerken
-- Representatieve steekproef van de studentpopulatie
+-   Volledigheid van de studentgegevens
+-   Correcte registratie van persoonskenmerken
+-   Representatieve steekproef van de studentpopulatie
 
 ### Minimale groepsgrootte
 
@@ -153,74 +178,82 @@ We hanteren een **minimum van 15 studenten per categorie** om conclusies te trek
 
 # Resultaten
 
-## Overzicht van bevindingen
-
-```{r}
-#| echo: false
-#| results: asis
-
-# params$temp_dir is a relative path (e.g., "temp")
-# Already loaded above, so just display
-wrapped <- mapply(
-  function(title, text, i) {
-    wrapped_text <- paste(strwrap(text, width = 80), collapse = "\n")
-
-    # Add visual indicator
-    has_bias <- !grepl("geen sprake van bias", tolower(text))
-
-    glue::glue("### {stringr::str_to_title(title)}\n\n{wrapped_text}\n\n")
-  },
-  names(conclusions_list),
-  conclusions_list,
-  seq_along(conclusions_list),
-  SIMPLIFY = FALSE
-)
-
-cat(paste(wrapped, collapse = "\n"))
-
-
-```
-
-## Gedetailleerde resultatentabel
-
 ```{r}
 #| echo: false
 #| fig-align: center
-#| out.width: "70%"
+#| out.width: "85%"
+#| fig-height: 3.5
 
 # Since root.dir is set to work_dir, we can use the relative path
 img_path <- file.path(params$temp_dir, "result_table.png")
 knitr::include_graphics(img_path)
 ```
 
+**Legenda:** N = aantal studenten \| % = percentage \| Bias = Ja/Nee/NTB (Nader Te Bepalen)
+
 ### Kleurcodes
 
-$\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder1}{sqfill1}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Negatieve bias | $\providecolor{sqfill2}{HTML}{9DBF9E}\providecolor{sqborder2}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder2}{sqfill2}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Positieve bias | $\providecolor{sqfill3}{HTML}{FCB97D}\providecolor{sqborder3}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder3}{sqfill3}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Data laag | $\providecolor{sqfill4}{HTML}{E5E5E5}\providecolor{sqborder4}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder4}{sqfill4}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Referentie
+$\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder1}{sqfill1}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Negatieve bias \| $\providecolor{sqfill2}{HTML}{9DBF9E}\providecolor{sqborder2}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder2}{sqfill2}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Positieve bias \| $\providecolor{sqfill3}{HTML}{FCB97D}\providecolor{sqborder3}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder3}{sqfill3}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Data laag \| $\providecolor{sqfill4}{HTML}{E5E5E5}\providecolor{sqborder4}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder4}{sqfill4}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Referentie
 
 \newpage
 
-## Gedetailleerde analyse per variabele
+
+## Bijlage A: Gedetailleerde visualisaties
+
+Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke onderzochte variabele.
+
+
+1.  **Fairness-metrieken (staafdiagram)**
+
+Dit diagram toont vier fairness-dimensies voor elke groep:
+
+-   **Y-as**: Fairness Ratio vergeleken met de referentiegroep
+
+    -    1.0 = gelijk aan referentiegroep (eerlijk)
+
+    -   \<0.8 = negatieve bias (model presteert slechter)
+
+    -   \>1.25 = positieve bias (model presteert beter)
+
+-   Hogere staven = betere modelprestatie
+
+-   Grote verschillen tussen groepen wijzen op potentiële bias
+
+2.  **Model-voorspellingen (dichtheidsgrafiek)**
+
+Dit diagram toont hoe het model voorspellingen maakt per groep:
+
+-   **X-as**: Voorspelde kans op studiesucces (0-100%)
+
+-   **Y-as**: Dichtheid (hoe veel studenten bij die voorspelling)
+
+-   Wanneer krommen sterk uit elkaar liggen = model behandelt groepen verschillend
+
+-   Overlappende krommen = eerlijk model
+
+-   Verschuiving naar links = lagere voorspelde kansen
+
+\newpage
 
 ```{r}
 #| echo: false
 #| results: asis
 
 temp_dir <- params$temp_dir
+conclusions_list <- readRDS(file.path(temp_dir, "conclusions_list.rds"))
 
 for (var_name in names(conclusions_list)) {
   var_title <- stringr::str_to_title(var_name)
-  cat("### ", var_title, "\n\n")
-  cat(conclusions_list[[var_name]], "\n\n")
+  cat("\n## ", var_title, "\n\n")
 
-  # Display fairness plot side by side with density plot
   fairness_file <- file.path(temp_dir, paste0("fairness_plot_", var_name, ".png"))
   density_file <- file.path(temp_dir, paste0("fairness_density_", var_name, ".png"))
 
   if (file.exists(fairness_file)) {
-    cat("![Fairness-metrieken](", fairness_file, "){ width=96% } \n\n")
+    cat("![](", fairness_file, "){ width=90% }\n\n")
   }
   if (file.exists(density_file)) {
-    cat("![Model-voorspellingen](", density_file, "){ width=96% }\n\n")
+    cat("![](", density_file, "){ width=90% }\n\n")
   }
   cat("\\newpage\n\n")
 }
@@ -228,23 +261,23 @@ for (var_name in names(conclusions_list)) {
 
 \newpage
 
-# Bijlagen
+## Bijlage B: Glossarium
 
-## Bijlage A: Glossarium
 
 | Term | Omschrijving |
-|------|---|
-| **AUC** | Model prestatie (1.0 = perfect, 0.5 = gokken, >0.7 = acceptabel) |
+|------------------------------------------------|-------------------------|
+| **AUC** | Model prestatie (1.0 = perfect, 0.5 = gokken, \>0.7 = acceptabel) |
 | **Bias** | Systematische verschillen in model-voorspellingen tussen groepen |
 | **Equal Opportunity** | Model voorspelt even goed voor succesvolle studenten uit alle groepen |
 | **Predictive Parity** | Positieve voorspellingen zijn even betrouwbaar over alle groepen |
 | **Accuracy Equality** | Algemene nauwkeurigheid model gelijk over alle groepen |
 | **Statistical Parity** | Proportie positieve voorspellingen gelijk over alle groepen |
-| **FRN Score** | Fairness verhouding: 1.0 = gelijk, <0.8 = negatieve bias, >1.25 = positieve bias |
+| **FRN Score** | Fairness verhouding: 1.0 = gelijk, \<0.8 = negatieve bias, \>1.25 = positieve bias |
 | **Retentie** | Student gaat door naar tweede studiejaar |
 | **Sensitieve variabele** | Persoonskenmerken waarvoor discriminatie ongewenst is |
 
-## Bijlage B: Referenties en bronnen
+## Bijlage C: Referenties en bronnen
+
 
 **Wetenschappelijke basis:**
 
@@ -252,18 +285,18 @@ Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kans
 
 **Meer informatie:**
 
-- Lectoraat Learning Technology & Analytics: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
-- NFWA R package repository: https://github.com/cedanl/no-fairness-without-awareness
+-   Lectoraat Learning Technology & Analytics: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
+-   NFWA R package repository: https://github.com/cedanl/no-fairness-without-awareness
 
 **Contact:**
 
 Voor vragen over deze analyse kunt u contact opnemen met:
 
-Lectoraat Learning Technology & Analytics
-De Haagse Hogeschool
-Web: http://www.hhs.nl
+Lectoraat Learning Technology & Analytics De Haagse Hogeschool Web: http://www.hhs.nl
 
-## Bijlage C: Technische details
+
+## Bijlage D: Technische details
+
 
 ```{r}
 #| echo: false
@@ -289,4 +322,3 @@ if (file.exists(metadata_file)) {
   cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
 }
 ```
-

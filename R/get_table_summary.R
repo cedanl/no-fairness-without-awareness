@@ -18,7 +18,7 @@
 #' @importFrom forcats fct_recode fct_relevel
 #' @importFrom dplyr select mutate across rename rename_with where
 #' @importFrom stringr str_replace_all str_to_title
-#' @export
+#' @keywords internal
 get_table_summary <- function(df, mapping) {
   df2 <- df |>
 
@@ -96,7 +96,7 @@ get_table_summary <- function(df, mapping) {
 #'   as_flex_table style_pvalue
 #' @importFrom flextable border set_table_properties
 #' @importFrom dplyr select rename rename_with mutate all_of
-#' @export
+#' @keywords internal
 get_table_summary_fairness <- function(df, mapping, sensitive_variables) {
   df |>
     dplyr::rename(!!!setNames(mapping$Variable, mapping$Newname)) |>

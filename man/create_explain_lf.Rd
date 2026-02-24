@@ -24,3 +24,4 @@ Extraheert het getrainde model en de workflow uit een `last_fit`-object
 en maakt een DALEX-explainer aan waarmee fairness-analyses kunnen worden
 uitgevoerd.
 }
+\keyword{internal}

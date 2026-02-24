@@ -40,3 +40,4 @@ fairness-object. Het plot toont de verhouding van metrieken per subgroep
 ten opzichte van de geprivilegieerde groep. Het plot wordt opgeslagen als
 PNG-bestand in de `output/` map.
 }
+\keyword{internal}

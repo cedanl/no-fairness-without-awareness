@@ -23,3 +23,4 @@ Koppelt Armoede en Probleemwijk per 4-cijferig Postcodegebied (APCG) data
 aan het 1CHO-studentbestand op basis van postcode. Mist een student een
 APCG-waarde, dan wordt deze op 0 gezet.
 }
+\keyword{internal}

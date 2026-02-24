@@ -25,4 +25,4 @@ colors_default
 Een named vector met standaardkleuren voor titels, tekst, achtergronden,
 gridlijnen, en fairness-indicatoren.
 }
-\keyword{datasets}
+\keyword{internal}

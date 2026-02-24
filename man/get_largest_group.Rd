@@ -20,3 +20,4 @@ Identificeert de meest voorkomende subgroep binnen een variabele.
 Deze groep wordt gebruikt als referentie (geprivilegieerde groep) in
 fairness-analyses. Bij gelijke aantallen wordt de eerste gekozen.
 }
+\keyword{internal}

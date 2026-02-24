@@ -42,3 +42,4 @@ Genereert een dichtheidsplot op basis van een fairness-object dat de
 verdeling van retentie-voorspellingen toont, opgesplitst per groep.
 Het plot wordt opgeslagen als PNG-bestand in de `output/` map.
 }
+\keyword{internal}

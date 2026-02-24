@@ -27,3 +27,4 @@ Past conditionele opmaak toe op een flextable met fairness-resultaten,
 inclusief kleuring op basis van bias (negatief, positief, neutraal),
 verticale samenvoeging van variabelen en uitlijning.
 }
+\keyword{internal}

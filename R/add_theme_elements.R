@@ -38,7 +38,7 @@
 #'
 #' @importFrom ggplot2 theme element_text element_blank margin
 #' @importFrom ggtext element_markdown element_textbox_simple
-#' @export
+#' @keywords internal
 add_theme_elements <- function(p,
                                colors_default,
                                title_subtitle = TRUE,

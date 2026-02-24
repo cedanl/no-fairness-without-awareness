@@ -38,7 +38,7 @@
 #' @importFrom dplyr select group_by summarize ungroup mutate across
 #'   starts_with
 #' @importFrom tidyr pivot_wider
-#' @export
+#' @keywords internal
 transform_vakhavw <- function(df) {
 
   df |>

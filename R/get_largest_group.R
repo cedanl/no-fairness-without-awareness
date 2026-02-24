@@ -10,7 +10,7 @@
 #'
 #' @return Character. Naam van de meest voorkomende subgroep.
 #'
-#' @export
+#' @keywords internal
 get_largest_group <- function(df, var) {
   # Calculate the frequencies of each subgroup
   df_tally <- table(df[[var]])

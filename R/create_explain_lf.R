@@ -38,7 +38,7 @@
 #' @importFrom DALEXtra explain_tidymodels
 #' @importFrom DALEX explain
 #' @importFrom tune extract_fit_parsnip extract_workflow
-#' @export
+#' @keywords internal
 create_explain_lf <- function(df, last_fit, best_model) {
 
   # Extract the fitted model

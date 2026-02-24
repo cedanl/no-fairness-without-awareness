@@ -19,7 +19,7 @@
 #' @importFrom flextable merge_v fix_border_issues theme_vanilla
 #'   set_header_labels autofit italic color bg bold valign align_text_col
 #'   align_nottext_col align delete_columns
-#' @export
+#' @keywords internal
 get_ft_fairness <- function(ft, colors_default, with_extra = FALSE) {
   color_bias_positive <- colors_default[["color_bias_positive"]] # "#9DBF9E"
   color_bias_negative <- colors_default[["color_bias_negative"]] # "#A84268"

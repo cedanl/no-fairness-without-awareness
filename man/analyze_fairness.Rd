@@ -48,7 +48,7 @@ Een invisible list met:
 \description{
 Deze functie voert de volledige No Fairness Without Awareness (NFWA)
 analyse uit op 1CHO studiedata. Het combineert data transformatie,
-model training, fairness-analyse en optionele PDF rapportage in één functie.
+model training, fairness-analyse en optionele PDF rapportage in \u00e9\u00e9n functie.
 }
 \details{
 Deze functie voert de volgende stappen uit:

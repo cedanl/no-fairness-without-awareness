@@ -38,7 +38,7 @@
 #'
 #' Vereisten:
 #' \itemize{
-#'   \item Quarto geïnstalleerd (voor PDF generatie)
+#'   \item Quarto geinstalleerd (voor PDF generatie)
 #'   \item Het \code{quarto} R package
 #'   \item TinyTeX (voor LaTeX compilatie)
 #' }
@@ -100,7 +100,7 @@ analyze_fairness <- function(data_ev,
   # Controleer Quarto installatie (vereist voor PDF generatie)
   if (generate_pdf && !check_quarto_installed()) {
     stop(
-      "Quarto CLI is niet geïnstalleerd of niet gevonden in het systeem.\n",
+      "Quarto CLI is niet geinstalleerd of niet gevonden in het systeem.\n",
       "\n",
       "Alternatieven:\n",
       "1. Gebruik: install_quarto() voor installatie-instructies\n",

@@ -177,7 +177,7 @@ if (file.exists(metadata_file)) {
   cat("**Model prestatie (AUC)**: ", round(metadata$model_auc, 3), "\n\n")
   cat("- AUC loopt van 0 tot 1 (hoger = beter)\n")
   cat("- 0.5 = volledig gokken\n")
-  cat("- \> 0.7 = acceptabel prestatief\n")
+  cat("- \\> 0.7 = acceptabel prestatief\n")
   cat("- 0.8+ = goed prestatief\n\n")
 } else {
   cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
@@ -188,6 +188,14 @@ if (file.exists(metadata_file)) {
 ```
 
 ### Stap 3: Fairness evaluatie (controleren op eerlijkheid)
+
+**Wat is de referentiegroep?**
+
+Voor elke analyse wordt één groep als referentie (vergelijkingspunt) gekozen. De referentiegroep is **gekozen als de grootste groep** binnen die variabele. Bijvoorbeeld: als er meer mannen dan vrouwen zijn, worden mannen de referentiegroep.
+
+**Waarom een referentiegroep?** Om bias te kunnen meten, hebben we een vergelijkingspunt nodig. We kunnen niet zeggen of een model "eerlijk" is in absolute zin. We kunnen alleen zeggen of het even goed werkt voor verschillende groepen. Daarom vergelijken we alle andere groepen met de referentiegroep om te zien of het model even goed werkt.
+
+**Let op:** In de resultaten tabel wordt de referentiegroep weergegeven als "NTB" (Nader Te Bepalen), omdat deze groep zelf niet op bias kan worden beoordeeld. Het is immers het vergelijkingspunt zelf.
 
 Voor elke gevoelige variabele meten we vier fairness-metrieken. Dit zijn manieren om te controleren of ons model eerlijk werkt:
 
@@ -264,19 +272,23 @@ Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke o
 
 1.  **Fairness-metrieken (staafdiagram)**
 
-Dit diagram toont vier fairness-dimensies voor elke groep:
+Dit diagram vergelijkt hoe het model presteert voor verschillende groepen:
 
--   **Y-as**: Fairness Ratio vergeleken met de referentiegroep
+-   **Referentiegroep**: De grootste groep binnen de variabele (bijv. mannen bij geslacht). Deze groep staat op de verticale zwarte lijn bij 0.0.
 
-    -    1.0 = gelijk aan referentiegroep (eerlijk)
+-   **X-as**: Verschil ten opzichte van de referentiegroep
 
-    -   \<0.8 = negatieve bias (model presteert slechter)
+    -   Staven naar links (negatief) = model presteert slechter dan voor referentiegroep
 
-    -   \>1.25 = positieve bias (model presteert beter)
+    -   Staven naar rechts (positief) = model presteert beter dan voor referentiegroep
 
--   Hogere staven = betere modelprestatie
+    -   Op de zwarte lijn (0.0) = gelijk aan referentiegroep
 
--   Grote verschillen tussen groepen wijzen op potentiële bias
+-   **Y-as**: Vijf verschillende fairness-metrieken
+
+-   **Gekleurde zones**: Rood = negatieve bias, Groen = positieve bias, Wit = acceptabel bereik
+
+-   Hoe verder de staaf van 0.0 afligt, hoe groter het verschil met de referentiegroep
 
 2.  **Model-voorspellingen (dichtheidsgrafiek)**
 

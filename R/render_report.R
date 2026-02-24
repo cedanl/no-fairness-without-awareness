@@ -62,7 +62,7 @@ render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) 
   # Controleer Quarto installatie
   if (!check_quarto_installed()) {
     stop(
-      "Quarto CLI is niet ge\u00efdnstalleerd of niet gevonden in het systeem.\n",
+      "Quarto CLI is niet geinstalleerd of niet gevonden in het systeem.\n",
       "\n",
       "Gebruik: install_quarto() voor gedetailleerde installatie-instructies"
     )

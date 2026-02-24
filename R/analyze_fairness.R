@@ -2,7 +2,7 @@
 #'
 #' Deze functie voert de volledige No Fairness Without Awareness (NFWA)
 #' analyse uit op 1CHO studiedata. Het combineert data transformatie,
-#' model training, fairness-analyse en optionele PDF rapportage in \u00e9\u00e9n functie.
+#' model training, fairness-analyse en optionele PDF rapportage in een functie.
 #'
 #' @param data_ev Data frame met 1CHO inschrijvingsdata (EV-bestand).
 #'   Bevat studentgegevens zoals geslacht, vooropleiding, en retentie.

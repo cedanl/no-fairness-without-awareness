@@ -2,23 +2,23 @@
 % Please edit documentation in R/check_quarto.R
 \name{check_quarto_installed}
 \alias{check_quarto_installed}
-\title{Controleer of Quarto CLI is geïnstalleerd}
+\title{Controleer of Quarto CLI is geinstalleerd}
 \usage{
 check_quarto_installed()
 }
 \value{
-Logisch. `TRUE` als Quarto CLI is geïnstalleerd, `FALSE` anders.
+Logisch. `TRUE` als Quarto CLI is geinstalleerd, `FALSE` anders.
 }
 \description{
-Verifieert of de Quarto command-line interface (CLI) is geïnstalleerd en
+Verifieert of de Quarto command-line interface (CLI) is geinstalleerd en
 beschikbaar is op het systeem. Het `quarto` R package (in nfwa Imports)
 is slechts een wrapper rond de Quarto CLI, dus de CLI moet apart
-worden geïnstalleerd.
+worden geinstalleerd.
 }
 \details{
 Deze functie controleert:
 \itemize{
-  \item Of het `quarto` R package is geïnstalleerd
+  \item Of het `quarto` R package is geinstalleerd
   \item Of Quarto CLI beschikbaar is (via `quarto::quarto_path()`)
 }
 }

@@ -16,7 +16,7 @@ zoals geslacht en vooropleiding.
 \section{Belangrijkste functies}{
 
 \describe{
-  \item{\code{\link{analyze_fairness}}}{Complete analyse in \u00e9\u00e9n functie (AANBEVOLEN)}
+  \item{\code{\link{analyze_fairness}}}{Complete analyse in een functie (AANBEVOLEN)}
   \item{\code{\link{run_nfwa}}}{Voer fairness-analyse uit op getransformeerde data}
   \item{\code{\link{transform_data}}}{Transformeer ruwe 1CHO data}
   \item{\code{\link{render_report}}}{Genereer PDF rapport}

@@ -12,12 +12,12 @@ Tekenreeks met installatie-instructies (onzichtbaar).
 \description{
 Verschaft instructies voor het installeren van de Quarto command-line
 interface (CLI). Het `quarto` R package (al in nfwa Imports) vereist dat
-Quarto CLI apart op uw systeem wordt geïnstalleerd.
+Quarto CLI apart op uw systeem wordt geinstalleerd.
 }
 \details{
 # Installatiestappen
 
-De Quarto CLI moet worden geïnstalleerd voordat u PDF-rapporten kunt
+De Quarto CLI moet worden geinstalleerd voordat u PDF-rapporten kunt
 genereren met `render_report()`. Het is gescheiden van het R package.
 
 ## Windows

@@ -4,19 +4,19 @@
 ## Helper functions for checking and installing Quarto CLI
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#' Controleer of Quarto CLI is geïnstalleerd
+#' Controleer of Quarto CLI is geinstalleerd
 #'
-#' Verifieert of de Quarto command-line interface (CLI) is geïnstalleerd en
+#' Verifieert of de Quarto command-line interface (CLI) is geinstalleerd en
 #' beschikbaar is op het systeem. Het `quarto` R package (in nfwa Imports)
 #' is slechts een wrapper rond de Quarto CLI, dus de CLI moet apart
-#' worden geïnstalleerd.
+#' worden geinstalleerd.
 #'
-#' @return Logisch. `TRUE` als Quarto CLI is geïnstalleerd, `FALSE` anders.
+#' @return Logisch. `TRUE` als Quarto CLI is geinstalleerd, `FALSE` anders.
 #'
 #' @details
 #' Deze functie controleert:
 #' \itemize{
-#'   \item Of het `quarto` R package is geïnstalleerd
+#'   \item Of het `quarto` R package is geinstalleerd
 #'   \item Of Quarto CLI beschikbaar is (via `quarto::quarto_path()`)
 #' }
 #'
@@ -50,14 +50,14 @@ check_quarto_installed <- function() {
 #'
 #' Verschaft instructies voor het installeren van de Quarto command-line
 #' interface (CLI). Het `quarto` R package (al in nfwa Imports) vereist dat
-#' Quarto CLI apart op uw systeem wordt geïnstalleerd.
+#' Quarto CLI apart op uw systeem wordt geinstalleerd.
 #'
 #' @return Tekenreeks met installatie-instructies (onzichtbaar).
 #'
 #' @details
 #' # Installatiestappen
 #'
-#' De Quarto CLI moet worden geïnstalleerd voordat u PDF-rapporten kunt
+#' De Quarto CLI moet worden geinstalleerd voordat u PDF-rapporten kunt
 #' genereren met `render_report()`. Het is gescheiden van het R package.
 #'
 #' ## Windows

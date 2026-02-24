@@ -184,7 +184,8 @@ transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
         is_na_cd ~ "Na CD",
         
         # 3) Directe instroom:
-        # diplomajaar = inschrijvingsjaar - 1 (diploma-jaar (T) â†’ instroomjaar T+1)!is.na(diplomajaar_hoogste_vooropleiding) &
+        # diplomajaar = inschrijvingsjaar - 1 (diploma-jaar (T) -> instroomjaar T+1)
+        !is.na(diplomajaar_hoogste_vooropleiding) &
         indicatie_eerstejaars_type & diplomajaar_hoogste_vooropleiding == (inschrijvingsjaar - 1L) ~ "Direct",
         
         # 4) Tussenjaar:

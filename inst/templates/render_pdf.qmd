@@ -46,9 +46,7 @@ knitr::opts_knit$set(root.dir = params$work_dir)
 
 \newpage
 
-# Samenvatting
-
-## Hoofdbevindingen
+# Hoofdbevindingen
 
 ```{r}
 #| echo: false
@@ -70,11 +68,7 @@ if (has_bias) {
 }
 ```
 
-\newpage
-
 # Inleiding
-
-## Context en doel van het onderzoek
 
 Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
 
@@ -223,23 +217,14 @@ for (var_name in names(conclusions_list)) {
   density_file <- file.path(temp_dir, paste0("fairness_density_", var_name, ".png"))
 
   if (file.exists(fairness_file)) {
-    cat("![Fairness-metrieken](", fairness_file, "){ width=48% }")
+    cat("![Fairness-metrieken](", fairness_file, "){ width=96% } \n\n")
   }
   if (file.exists(density_file)) {
-    cat("![Model-voorspellingen](", density_file, "){ width=48% }\n\n")
+    cat("![Model-voorspellingen](", density_file, "){ width=96% }\n\n")
   }
   cat("\\newpage\n\n")
 }
 ```
-
-\newpage
-
-# Beperkingen
-
-- **Causaliteit**: Deze analyse identificeert associaties, niet oorzaken.
-- **Beschikbare variabelen**: Alleen geregistreerde gegevens kunnen worden geanalyseerd; belangrijke factoren zoals motivatie en thuissituatie zijn niet opgenomen.
-- **Modelperformance**: Machine learning modellen zijn afhankelijk van datakwaliteit en kunnen subtiele patronen missen.
-- **Groepsgrootte**: Groepen kleiner dan 15 studenten geven statistisch onbetrouwbare resultaten.
 
 \newpage
 

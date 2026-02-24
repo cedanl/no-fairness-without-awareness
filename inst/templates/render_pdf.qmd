@@ -78,6 +78,23 @@ if (has_bias) {
 }
 ```
 
+## Kansengelijkheid per variabele
+
+```{r}
+#| echo: false
+#| results: asis
+
+temp_dir <- params$temp_dir
+
+for (var_name in names(conclusions_list)) {
+  var_title <- stringr::str_to_title(var_name)
+  cat("**", var_title, "**", ":", sep = "")
+  cat(conclusions_list[[var_name]], "\n\n")
+}
+```
+
+\newpage 
+
 # Inleiding
 
 Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
@@ -88,28 +105,33 @@ Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken
 
 Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
 
-# Kansengelijkheid per variabele
+## Wat is een kansengelijkheidsanalyse?
 
-```{r}
-#| echo: false
-#| results: asis
+Kansengelijkheid betekent dat alle studenten gelijke kansen hebben om succesvol te zijn, ongeacht hun achtergrond, geslacht, vooropleiding of andere kenmerken. In dit rapport onderzoeken we of ons voorspellingsmodel, dat schat hoe waarschijnlijk het is dat een student naar het volgende jaar doorgaat, eerlijk werkt voor alle groepen studenten.
 
-temp_dir <- params$temp_dir
+**Bias** ontstaat wanneer een systeem of model systematisch minder goed werkt voor bepaalde groepen. Dit kan onopzettelijk gebeuren, zelfs wanneer iedereen het beste voorheeft. Denk aan een arts die verschillende diagnoses stelt op basis van dezelfde symptomen, afhankelijk van het geslacht van de patiënt, dat zou medisch bezien oneerlijk zijn. Net zo onderzoeken we of ons model eerlijk is.
 
-for (var_name in names(conclusions_list)) {
-  var_title <- stringr::str_to_title(var_name)
-  cat("### ", var_title, "\n\n")
-  cat(conclusions_list[[var_name]], "\n\n")
-}
-```
+## Hoe werkt deze analyse?
+
+Deze analyse bestaat uit drie stappen:
+
+1. **We verzamelen historische data**: We kijken naar gegevens van studenten uit voorgaande jaren (geslacht, vooropleiding, behaalde cijfers, en of ze met succes naar het volgende jaar doorgingen).
+
+2. **Een computerprogramma leert patronen**: We trainen een machine learning model (een soort statistische leermeester) die leert welke factoren samenhangen met studiesucces. Het model leert patronen uit de data.
+
+3. **We controleren eerlijkheid**: We vergelijken hoe goed het model voorspelt voor verschillende groepen studenten. Werkt het even goed voor mannen en vrouwen? Voor studenten met verschillende vooropleidingen? Of voorspelt het model voor sommige groepen beter of slechter?
+
+Dit proces is vergelijkbaar met het testen van een thermometer: je wilt niet alleen weten of deze nauwkeurig is, maar ook of deze even nauwkeurig temperatuur meet voor iedereen.
 
 \newpage
 
 # Methodologie
 
-De NFWA methode gebruikt machine learning als diagnostisch instrument om bias in studiedata te identificeren. We controleren of de voorspellingen van het model systematisch verschillen tussen groepen op basis van gevoelige kenmerken (geslacht, vooropleiding, etc.).
+De NFWA methode gebruikt machine learning als diagnostisch instrument om bias in studiedata te identificeren. We controleren of de voorspellingen van het model systematisch verschillen tussen groepen op basis van gevoelige kenmerken (geslacht, vooropleiding, aansluiting). Dit helpt ons bij het begrijpen van potentiële ongelijkheden in onderwijs en hoe we die kunnen aanpakken.
 
 ## Analysestappen
+
+### Stap 1: Data voorbereiding en kenmerken
 
 ```{r}
 #| echo: false
@@ -120,59 +142,97 @@ metadata_file <- file.path(temp_path, "analysis_metadata.rds")
 if (file.exists(metadata_file)) {
   metadata <- readRDS(metadata_file)
 
-  cat("**Stap 1: Data voorbereiding**\n\n")
-  cat("- Aantal studenten in analyse:", metadata$n_students, "\n")
-  cat("- Onderzochte uitkomstvariabele: Retentie (doorgaan naar jaar 2)\n")
-  cat("- Gevoelige variabelen:", paste(names(conclusions_list), collapse = ", "), "\n\n")
-
-  cat("**Stap 2: Model training**\n\n")
-  cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
-  cat("- Logistische Regressie (met LASSO regularisatie)\n")
-  cat("- Random Forest (1000 bomen)\n\n")
-  cat("Gekozen model:", metadata$best_model, "\n")
-  cat("Model prestatie (AUC):", round(metadata$model_auc, 3), "\n\n")
+  cat("- **Aantal studenten**: ", metadata$n_students, "\n")
+  cat("- **Onderzochte uitkomst**: Retentie, ofwel 'doorgaan naar jaar 2'\n")
+  cat("  - Dit betekent: Is de student succesvol geweest in het eerste jaar en gaat door naar het tweede jaar?\n")
+  cat("- **Gevoelige variabelen**: ", paste(names(conclusions_list), collapse = ", "), "\n")
+  cat("  - Dit zijn kenmerken waarvoor we **geen kansenongelijkheid willen** (geen ongelijke behandeling gebaseerd op deze factoren)\n\n")
 } else {
-  cat("**Stap 1: Data voorbereiding**\n\n")
-  cat("- Studentgegevens worden getransformeerd naar een analyse-klaar formaat\n")
-  cat("- Gevoelige variabelen worden geïdentificeerd\n\n")
-
-  cat("**Stap 2: Model training**\n\n")
-  cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
-  cat("- Logistische Regressie (met LASSO regularisatie)\n")
-  cat("- Random Forest (1000 bomen)\n\n")
+  cat("- **Onderzochte uitkomst**: Retentie, ofwel 'doorgaan naar jaar 2'\n")
+  cat("  - Dit betekent: Is de student succesvol geweest in het eerste jaar en gaat door naar het tweede jaar?\n")
+  cat("- **Gevoelige variabelen**: De kenmerken waarvoor we **geen kansenongelijkheid willen**\n\n")
 }
 ```
 
-**Stap 3: Fairness evaluatie**
+### Stap 2: Model training (het leren van patronen)
 
-Voor elke gevoelige variabele meten we vier fairness-metrieken:
+```{r}
+#| echo: false
+#| results: asis
 
--   **Equal Opportunity**: Voorspelt het model even goed voor succesvolle studenten uit alle groepen?
--   **Predictive Parity**: Is de voorspellende waarde gelijk over alle groepen?
--   **Accuracy Equality**: Is de algemene nauwkeurigheid gelijk?
--   **Statistical Parity**: Zijn de voorspelde uitkomsten evenredig verdeeld?
+metadata_file <- file.path(temp_path, "analysis_metadata.rds")
+if (file.exists(metadata_file)) {
+  metadata <- readRDS(metadata_file)
 
-**Stap 4: Bias classificatie**
+  cat("We trainen twee verschillende typen modellen:\n\n")
+  cat("**1. Logistische Regressie (met LASSO regularisatie)**\n\n")
+  cat("- Dit is een statistische methode die naar verbanden kijkt. Het zoekt uit welke factoren het meest belangrijk zijn voor studiesucces.\n")
+  cat("- LASSO betekent dat het alleen de belangrijkste factoren behoudt (rest verwijdert)\n\n")
+  cat("**2. Random Forest (1000 kleine beslisbomen)**\n\n")
+  cat("- Dit model werkt als volgt: Het combineert veel kleine 'Ja/Nee'-vragen.\n")
+  cat("- Iedere boom maakt zijn eigen voorspelling, dan wordt de meerderheid gekozen.\n")
+  cat("- Het is vergelijkbaar met een team van experts die gezamenlijk een diagnose stellen.\n\n")
+  cat("**Waarom twee modellen?** Om zeker te weten welke het meest betrouwbaar is voor uw studenten.\n\n")
+  cat("**Gekozen model voor deze analyse**: ", metadata$best_model, "\n\n")
+  cat("**Model prestatie (AUC)**: ", round(metadata$model_auc, 3), "\n\n")
+  cat("- AUC loopt van 0 tot 1 (hoger = beter)\n")
+  cat("- 0.5 = volledig gokken\n")
+  cat("- \> 0.7 = acceptabel prestatief\n")
+  cat("- 0.8+ = goed prestatief\n\n")
+} else {
+  cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
+  cat("- **Logistische Regressie**: Statistische methode, makkelijk uit te leggen\n")
+  cat("- **Random Forest**: Machine learning methode, vaak nauwkeuriger\n")
+  cat("Daarna kiezen we het meest betrouwbare model.\n\n")
+}
+```
 
-We classificeren groepen als:
+### Stap 3: Fairness evaluatie (controleren op eerlijkheid)
 
--   **Negatieve bias**: FRN score \< 0.8 (model presteert slechter voor deze groep)
--   **Positieve bias**: FRN score \> 1.25 (model presteert beter voor deze groep)
--   **Geen bias**: FRN score tussen 0.8 en 1.25
+Voor elke gevoelige variabele meten we vier fairness-metrieken. Dit zijn manieren om te controleren of ons model eerlijk werkt:
 
-## Belangrijke overwegingen
+-   **Equal Opportunity**:
+    - Vraag: "Geeft het model even veel goede voorspellingen voor succesvolle studenten uit alle groepen?"
+    - Voorbeeld: Voorspelt het model even goed voor mannen als voor vrouwen die daadwerkelijk doorgaan naar jaar 2?
 
-### Data-kwaliteit
+-   **Predictive Parity**:
+    - Vraag: "Zijn de voorspellingen even betrouwbaar voor alle groepen?"
+    - Voorbeeld: Klopt het voorspeld succes even goed voor alle vooropleidingen?
 
-De betrouwbaarheid van deze analyse is afhankelijk van:
+-   **Accuracy Equality**:
+    - Vraag: "Is het model even nauwkeurig voor iedereen?"
+    - Voorbeeld: Maakt het model evenveel fouten bij alle groepen?
 
--   Volledigheid van de studentgegevens
--   Correcte registratie van persoonskenmerken
--   Representatieve steekproef van de studentpopulatie
+-   **Statistical Parity**:
+    - Vraag: "Krijgen alle groepen gelijk veel positieve voorspellingen?"
+    - Voorbeeld: Voorspelt het model succes voor dezelfde procentuele hoeveelheid van iedere groep?
 
-### Minimale groepsgrootte
+### Stap 4: Bias classificatie (beoordeling)
 
-We hanteren een **minimum van 15 studenten per categorie** om conclusies te trekken. Kleinere groepen worden wel geanalyseerd maar krijgen het label "bias, maar aantallen te laag" omdat statistische conclusies onbetrouwbaar zijn.
+Na het meten van deze eerlijkheidsmetrieken classificeren we met een score (FRN):
+
+-   **Negatieve bias** (FRN score < 0.8):
+    - Het model presteert slechter voor deze groep
+    - Bijvoorbeeld: het model voorspelt succes minder goed voor vrouwen
+    - Dit kan duiden op kansenongelijkheid in de data of het model
+
+-   **Positieve bias** (FRN score > 1.25):
+    - Het model presteert beter voor deze groep
+    - Bijvoorbeeld: het model voorspelt succes beter voor mannen
+    - Dit kan ook kansenongelijkheid zijn.
+
+-   **Geen bias** (FRN score tussen 0.8 en 1.25):
+    - Het model werkt redelijk eerlijk voor deze groep
+    - Geen significante kansenongelijkheid gedetecteerd
+    
+### Belangrijke overwegingen: Minimale groepsgrootte
+
+We hanteren een **minimum van 15 studenten per categorie** om betrouwbare conclusies te kunnen trekken:
+
+-   Met minder dan 15 studenten is het statistisch onbetrouwbaar (net zoals een enquête onder slechts 5 mensen niet representatief is)
+-   Kleinere groepen worden wel in het rapport opgenomen, maar krijgen het label "Data laag".
+-   Dit betekent niet dat er geen bias is, maar dat we het niet zeker kunnen zeggen vanwege te weinig data
+
 
 \newpage
 
@@ -196,7 +256,6 @@ knitr::include_graphics(img_path)
 $\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder1}{sqfill1}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Negatieve bias \| $\providecolor{sqfill2}{HTML}{9DBF9E}\providecolor{sqborder2}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder2}{sqfill2}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Positieve bias \| $\providecolor{sqfill3}{HTML}{FCB97D}\providecolor{sqborder3}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder3}{sqfill3}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Data laag \| $\providecolor{sqfill4}{HTML}{E5E5E5}\providecolor{sqborder4}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder4}{sqfill4}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Referentie
 
 \newpage
-
 
 ## Bijlage A: Gedetailleerde visualisaties
 
@@ -263,18 +322,28 @@ for (var_name in names(conclusions_list)) {
 
 ## Bijlage B: Glossarium
 
-
 | Term | Omschrijving |
-|------------------------------------------------|-------------------------|
-| **AUC** | Model prestatie (1.0 = perfect, 0.5 = gokken, \>0.7 = acceptabel) |
-| **Bias** | Systematische verschillen in model-voorspellingen tussen groepen |
+|---|---|
+| **AUC** | Area Under the Curve - model prestatie (1.0 = perfect, 0.5 = gokken, \>0.7 = acceptabel) |
+| **Bias** | Systematische verschillen in model-voorspellingen tussen groepen; wanneer een systeem bepaalde groepen benadeelt |
 | **Equal Opportunity** | Model voorspelt even goed voor succesvolle studenten uit alle groepen |
 | **Predictive Parity** | Positieve voorspellingen zijn even betrouwbaar over alle groepen |
 | **Accuracy Equality** | Algemene nauwkeurigheid model gelijk over alle groepen |
 | **Statistical Parity** | Proportie positieve voorspellingen gelijk over alle groepen |
-| **FRN Score** | Fairness verhouding: 1.0 = gelijk, \<0.8 = negatieve bias, \>1.25 = positieve bias |
-| **Retentie** | Student gaat door naar tweede studiejaar |
-| **Sensitieve variabele** | Persoonskenmerken waarvoor discriminatie ongewenst is |
+| **FRN Score** | Fairness Ratio Number - eerlijkheidsmaatstaf: 1.0 = gelijk, \<0.8 = negatieve bias, \>1.25 = positieve bias |
+| **Retentie** | Student gaat door naar tweede studiejaar; maatstaf van studiesucces |
+| **Sensitieve variabele** | Persoonskenmerken waarvoor kansenongelijkheid ongewenst is (geslacht, vooropleiding, etniciteit, etc.) |
+| **Machine Learning** | Computertechniek waarbij systemen automatisch patronen leren uit data zonder expliciet geprogrammeerd te worden |
+| **Model** | Een wiskundige representatie van patronen in data; een "recept" om voorspellingen te maken |
+| **Training** | Het proces waarbij een machine learning model leert van historische data |
+| **Voorspelling** | Een schatting van toekomstige uitkomsten gebaseerd op het getrainde model |
+| **Logistische Regressie** | Een statistische methode die binaire uitkomsten voorspelt (ja/nee); makkelijk uit te leggen |
+| **Random Forest** | Een machine learning methode die veel kleine beslisbomen combineert; meestal nauwkeuriger maar moeilijker uit te leggen |
+| **LASSO Regularisatie** | Een techniek die alleen de belangrijkste factoren behoudt en onbelangrijke verwijdert |
+| **Fairness** | Kansengelijkheid; het principe dat systemen iedereen eerlijk behandelen ongeacht hun achtergrond |
+| **Interpretabiliteit** | Hoe goed we kunnen begrijpen waarom een model bepaalde voorspellingen doet |
+| **Cohort** | Een groep studenten die in dezelfde periode aan een opleiding zijn begonnen |
+| **N** | Aantal; in dit rapport: aantal studenten in een groep |
 
 ## Bijlage C: Referenties en bronnen
 
@@ -315,6 +384,11 @@ if (file.exists(metadata_file)) {
   cat("- Fairness cutoff (FRN):", metadata$cutoff, "\n")
   cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
   cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
+
+  # Display EOI if available from metadata
+  if (!is.null(metadata$eoi)) {
+    cat("- Eerste jaar aan deze opleiding/instelling (EOI):", metadata$eoi, "\n")
+  }
 } else {
   cat("**Analyse-parameters:**\n\n")
   cat("- Datum analyse:", format(Sys.Date(), "%d-%m-%Y"), "\n")

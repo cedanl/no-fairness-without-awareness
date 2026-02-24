@@ -44,6 +44,8 @@
 #'   Standaard `0.2`.
 #' @param caption Character of `NULL`. Optioneel onderschrift voor
 #'   plots.
+#' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
+#'   Optioneel.
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
@@ -66,7 +68,8 @@ run_nfwa <- function(df,
                      colors_default,
                      colors_list = nfwa::colors_list,
                      cutoff = 0.2,
-                     caption = NULL) {
+                     caption = NULL,
+                     eoi = NULL) {
 
 
   ## . ####
@@ -192,7 +195,8 @@ run_nfwa <- function(df,
       dplyr::pull(.estimate)
     ),
     cutoff = cutoff,
-    analysis_date = Sys.Date()
+    analysis_date = Sys.Date(),
+    eoi = eoi
   )
 
   saveRDS(analysis_metadata, file = "temp/analysis_metadata.rds")

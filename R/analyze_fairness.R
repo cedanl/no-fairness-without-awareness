@@ -166,7 +166,8 @@ analyze_fairness <- function(data_ev,
     colors_default = colors_default,
     colors_list = colors_list,
     cutoff = cutoff,
-    caption = caption
+    caption = caption,
+    eoi = eoi
   )
 
   message("  - Plots opgeslagen in temp/")

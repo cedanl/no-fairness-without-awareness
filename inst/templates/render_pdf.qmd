@@ -1,5 +1,5 @@
 ---
-title: "De uitkomsten van de kansengelijkheidanalysis"
+title: "Transparante Kansengelijkheidsanalyse"
 subtitle: "`r params$subtitle`"
 
 params:
@@ -11,13 +11,22 @@ params:
 format:
   pdf:
     documentclass: article
-    geometry: margin=1in
-    fontsize: 11pt
+    geometry: margin=0.75in
+    fontsize: 10pt
     papersize: A4
     toc: false
+    toc-depth: 2
+    number-sections: false
+    keep-tex: false
+    include-in-header:
+      text: |
+        \usepackage{setspace}
+        \setstretch{1.0}
+        \usepackage{parskip}
+        \setlength{\parskip}{0.3em}
 execute:
   cache: false
-    
+
 
 
 ---
@@ -35,29 +44,137 @@ library(nfwa)
 knitr::opts_knit$set(root.dir = params$work_dir)
 ```
 
+\newpage
 
-## Onderzoek naar kansengelijkheid
+# Samenvatting
+
+## Hoofdbevindingen
+
+```{r}
+#| echo: false
+#| results: asis
+
+# Load conclusions
+temp_path <- params$temp_dir
+conclusions_list <- readRDS(file.path(temp_path, "conclusions_list.rds"))
+
+# Create executive summary
+has_bias <- any(sapply(conclusions_list, function(x) !grepl("geen sprake van bias", tolower(x))))
+
+if (has_bias) {
+  cat("!!! **Er is bias geconstateerd** in één of meer onderzochte variabelen.\n\n")
+  cat("Dit rapport identificeert verschillen in studiesucces tussen groepen studenten op basis van persoonskenmerken. Deze bevindingen vereisen nadere analyse en mogelijke interventies om kansengelijkheid te bevorderen.\n")
+} else {
+  cat("**Geen significante bias geconstateerd** in de onderzochte variabelen.\n\n")
+  cat("De analyse toont geen substantiële verschillen in studiesucces tussen groepen op basis van de onderzochte persoonskenmerken.\n")
+}
+```
+
+\newpage
+
+# Inleiding
+
+## Context en doel van het onderzoek
 
 Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
 
 Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd.
 
-Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede].
 
-## Conclusies
+Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+
+\newpage
+
+# Methodologie
+
+De NFWA methode gebruikt machine learning als diagnostisch instrument om bias in studiedata te identificeren. We controleren of de voorspellingen van het model systematisch verschillen tussen groepen op basis van gevoelige kenmerken (geslacht, vooropleiding, etc.).
+
+## Analysestappen
+
+```{r}
+#| echo: false
+#| results: asis
+
+# Load metadata if available
+metadata_file <- file.path(temp_path, "analysis_metadata.rds")
+if (file.exists(metadata_file)) {
+  metadata <- readRDS(metadata_file)
+
+  cat("**Stap 1: Data voorbereiding**\n\n")
+  cat("- Aantal studenten in analyse:", metadata$n_students, "\n")
+  cat("- Onderzochte uitkomstvariabele: Retentie (doorgaan naar jaar 2)\n")
+  cat("- Gevoelige variabelen:", paste(names(conclusions_list), collapse = ", "), "\n\n")
+
+  cat("**Stap 2: Model training**\n\n")
+  cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
+  cat("- Logistische Regressie (met LASSO regularisatie)\n")
+  cat("- Random Forest (1000 bomen)\n\n")
+  cat("Gekozen model:", metadata$best_model, "\n")
+  cat("Model prestatie (AUC):", round(metadata$model_auc, 3), "\n\n")
+} else {
+  cat("**Stap 1: Data voorbereiding**\n\n")
+  cat("- Studentgegevens worden getransformeerd naar een analyse-klaar formaat\n")
+  cat("- Gevoelige variabelen worden geïdentificeerd\n\n")
+
+  cat("**Stap 2: Model training**\n\n")
+  cat("We trainen twee verschillende modellen en selecteren het beste:\n\n")
+  cat("- Logistische Regressie (met LASSO regularisatie)\n")
+  cat("- Random Forest (1000 bomen)\n\n")
+}
+```
+
+**Stap 3: Fairness evaluatie**
+
+Voor elke gevoelige variabele meten we vier fairness-metrieken:
+
+- **Equal Opportunity**: Voorspelt het model even goed voor succesvolle studenten uit alle groepen?
+- **Predictive Parity**: Is de voorspellende waarde gelijk over alle groepen?
+- **Accuracy Equality**: Is de algemene nauwkeurigheid gelijk?
+- **Statistical Parity**: Zijn de voorspelde uitkomsten evenredig verdeeld?
+
+**Stap 4: Bias classificatie**
+
+We classificeren groepen als:
+
+- **Negatieve bias**: FRN score < 0.8 (model presteert slechter voor deze groep)
+- **Positieve bias**: FRN score > 1.25 (model presteert beter voor deze groep)
+- **Geen bias**: FRN score tussen 0.8 en 1.25
+
+## Belangrijke overwegingen
+
+### Data-kwaliteit
+
+De betrouwbaarheid van deze analyse is afhankelijk van:
+
+- Volledigheid van de studentgegevens
+- Correcte registratie van persoonskenmerken
+- Representatieve steekproef van de studentpopulatie
+
+### Minimale groepsgrootte
+
+We hanteren een **minimum van 15 studenten per categorie** om conclusies te trekken. Kleinere groepen worden wel geanalyseerd maar krijgen het label "bias, maar aantallen te laag" omdat statistische conclusies onbetrouwbaar zijn.
+
+\newpage
+
+# Resultaten
+
+## Overzicht van bevindingen
 
 ```{r}
 #| echo: false
 #| results: asis
 
 # params$temp_dir is a relative path (e.g., "temp")
-temp_path <- params$temp_dir
-conclusions_list <- readRDS(file.path(temp_path, "conclusions_list.rds"))
-
+# Already loaded above, so just display
 wrapped <- mapply(
   function(title, text, i) {
     wrapped_text <- paste(strwrap(text, width = 80), collapse = "\n")
-    glue::glue("{i}. **{title}**:\n{wrapped_text}\n")
+
+    # Add visual indicator
+    has_bias <- !grepl("geen sprake van bias", tolower(text))
+
+    glue::glue("### {stringr::str_to_title(title)}\n\n{wrapped_text}\n\n")
   },
   names(conclusions_list),
   conclusions_list,
@@ -70,7 +187,7 @@ cat(paste(wrapped, collapse = "\n"))
 
 ```
 
-\newpage
+## Gedetailleerde resultatentabel
 
 ```{r}
 #| echo: false
@@ -82,12 +199,109 @@ img_path <- file.path(params$temp_dir, "result_table.png")
 knitr::include_graphics(img_path)
 ```
 
-**Toelichting:**
+### Kleurcodes
 
+$\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder1}{sqfill1}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Negatieve bias | $\providecolor{sqfill2}{HTML}{9DBF9E}\providecolor{sqborder2}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder2}{sqfill2}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Positieve bias | $\providecolor{sqfill3}{HTML}{FCB97D}\providecolor{sqborder3}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder3}{sqfill3}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Data laag | $\providecolor{sqfill4}{HTML}{E5E5E5}\providecolor{sqborder4}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder4}{sqfill4}{\rule{0pt}{6pt}\rule{6pt}{0pt}}\endgroup$ Referentie
 
--   `r get_colored_square(color = colors_default[["color_bias_negative"]])`  Negatieve bias.
--   `r get_colored_square(color = colors_default[["color_bias_positive"]])`  Positieve bias.
--   `r get_colored_square(color = colors_default[["color_bias_neutral"]])`  Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
--   `r get_colored_square(color = colors_default[["color_bias_none"]])`  De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
--   We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.
+\newpage
+
+## Gedetailleerde analyse per variabele
+
+```{r}
+#| echo: false
+#| results: asis
+
+temp_dir <- params$temp_dir
+
+for (var_name in names(conclusions_list)) {
+  var_title <- stringr::str_to_title(var_name)
+  cat("### ", var_title, "\n\n")
+  cat(conclusions_list[[var_name]], "\n\n")
+
+  # Display fairness plot side by side with density plot
+  fairness_file <- file.path(temp_dir, paste0("fairness_plot_", var_name, ".png"))
+  density_file <- file.path(temp_dir, paste0("fairness_density_", var_name, ".png"))
+
+  if (file.exists(fairness_file)) {
+    cat("![Fairness-metrieken](", fairness_file, "){ width=48% }")
+  }
+  if (file.exists(density_file)) {
+    cat("![Model-voorspellingen](", density_file, "){ width=48% }\n\n")
+  }
+  cat("\\newpage\n\n")
+}
+```
+
+\newpage
+
+# Beperkingen
+
+- **Causaliteit**: Deze analyse identificeert associaties, niet oorzaken.
+- **Beschikbare variabelen**: Alleen geregistreerde gegevens kunnen worden geanalyseerd; belangrijke factoren zoals motivatie en thuissituatie zijn niet opgenomen.
+- **Modelperformance**: Machine learning modellen zijn afhankelijk van datakwaliteit en kunnen subtiele patronen missen.
+- **Groepsgrootte**: Groepen kleiner dan 15 studenten geven statistisch onbetrouwbare resultaten.
+
+\newpage
+
+# Bijlagen
+
+## Bijlage A: Glossarium
+
+| Term | Omschrijving |
+|------|---|
+| **AUC** | Model prestatie (1.0 = perfect, 0.5 = gokken, >0.7 = acceptabel) |
+| **Bias** | Systematische verschillen in model-voorspellingen tussen groepen |
+| **Equal Opportunity** | Model voorspelt even goed voor succesvolle studenten uit alle groepen |
+| **Predictive Parity** | Positieve voorspellingen zijn even betrouwbaar over alle groepen |
+| **Accuracy Equality** | Algemene nauwkeurigheid model gelijk over alle groepen |
+| **Statistical Parity** | Proportie positieve voorspellingen gelijk over alle groepen |
+| **FRN Score** | Fairness verhouding: 1.0 = gelijk, <0.8 = negatieve bias, >1.25 = positieve bias |
+| **Retentie** | Student gaat door naar tweede studiejaar |
+| **Sensitieve variabele** | Persoonskenmerken waarvoor discriminatie ongewenst is |
+
+## Bijlage B: Referenties en bronnen
+
+**Wetenschappelijke basis:**
+
+Bakker, T. (2024). *No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs.* Intreerede lectoraat Learning Technology & Analytics. https://doi.org/10.5281/zenodo.14204674
+
+**Meer informatie:**
+
+- Lectoraat Learning Technology & Analytics: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
+- NFWA R package repository: https://github.com/cedanl/no-fairness-without-awareness
+
+**Contact:**
+
+Voor vragen over deze analyse kunt u contact opnemen met:
+
+Lectoraat Learning Technology & Analytics
+De Haagse Hogeschool
+Web: http://www.hhs.nl
+
+## Bijlage C: Technische details
+
+```{r}
+#| echo: false
+#| results: asis
+
+# Load and display technical metadata if available
+metadata_file <- file.path(temp_path, "analysis_metadata.rds")
+if (file.exists(metadata_file)) {
+  metadata <- readRDS(metadata_file)
+
+  cat("**Analyse-parameters:**\n\n")
+  cat("- Datum analyse:", format(Sys.Date(), "%d-%m-%Y"), "\n")
+  cat("- Aantal studenten:", metadata$n_students, "\n")
+  cat("- Gekozen model:", metadata$best_model, "\n")
+  cat("- Model AUC:", round(metadata$model_auc, 4), "\n")
+  cat("- Fairness cutoff (FRN):", metadata$cutoff, "\n")
+  cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
+  cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
+} else {
+  cat("**Analyse-parameters:**\n\n")
+  cat("- Datum analyse:", format(Sys.Date(), "%d-%m-%Y"), "\n")
+  cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
+  cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
+}
+```
 

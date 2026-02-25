@@ -27,9 +27,6 @@ execute:
 #| echo: false
 #| include: false
 
-# Load nfwa package or source files in development
-library(nfwa)
-
 # Set knitr's root directory to the user's working directory
 # This ensures all paths are resolved relative to where the user is working
 knitr::opts_knit$set(root.dir = params$work_dir)
@@ -84,10 +81,9 @@ knitr::include_graphics(img_path)
 
 **Toelichting:**
 
-
--   `r get_colored_square(color = colors_default[["color_bias_negative"]])`  Negatieve bias.
--   `r get_colored_square(color = colors_default[["color_bias_positive"]])`  Positieve bias.
--   `r get_colored_square(color = colors_default[["color_bias_neutral"]])`  Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
--   `r get_colored_square(color = colors_default[["color_bias_none"]])`  De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+-   $\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder1}{sqfill1}{\rule{0pt}{12pt}\rule{12pt}{0pt}}\endgroup$  Negatieve bias.
+-   $\providecolor{sqfill2}{HTML}{9DBF9E}\providecolor{sqborder2}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder2}{sqfill2}{\rule{0pt}{12pt}\rule{12pt}{0pt}}\endgroup$  Positieve bias.
+-   $\providecolor{sqfill3}{HTML}{FCB97D}\providecolor{sqborder3}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder3}{sqfill3}{\rule{0pt}{12pt}\rule{12pt}{0pt}}\endgroup$  Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden.
+-   $\providecolor{sqfill4}{HTML}{E5E5E5}\providecolor{sqborder4}{HTML}{A9A9A9}\begingroup\setlength{\fboxsep}{1pt}\fcolorbox{sqborder4}{sqfill4}{\rule{0pt}{12pt}\rule{12pt}{0pt}}\endgroup$  De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
 -   We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.
 

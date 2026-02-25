@@ -26,3 +26,4 @@ Verwerkt de ruwe fairness-checkdata uit een fairness-object tot een
 gestandaardiseerd data frame met herbenoemde kolommen, fairness-metrieken
 en groepsgroottes.
 }
+\keyword{internal}

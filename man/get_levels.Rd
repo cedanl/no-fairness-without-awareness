@@ -23,3 +23,4 @@ Extraheert de niveaus (levels) per variabele uit een dataframe met
 variabele-informatie. Kan werken met zowel formele als eenvoudige
 variabelenamen.
 }
+\keyword{internal}

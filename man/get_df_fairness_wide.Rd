@@ -32,3 +32,4 @@ tot een breed data frame met bias-tellingen, groepsgroottes, percentages
 en tekstuele samenvattingen. Het resultaat is geschikt voor weergave in
 een flextable of rapport.
 }
+\keyword{internal}

@@ -33,3 +33,4 @@ basis van een DALEX-explainer en een opgegeven sensitieve variabele.
 Het object bevat fairness-metrieken per subgroep ten opzichte van de
 geprivilegieerde groep.
 }
+\keyword{internal}

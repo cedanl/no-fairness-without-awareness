@@ -28,7 +28,7 @@
 #'   \item{color_bias_none}{Kleur voor geen bias (grijs)}
 #' }
 #'
-#' @export
+#' @keywords internal
 colors_default <- c(
 
   # Colors of title, subject, subtitle, caption, background
@@ -104,7 +104,7 @@ colors_default <- c(
 #'   \item{roc_plots}{Kleuren voor ROC-curve plots}
 #' }
 #'
-#' @export
+#' @keywords internal
 colors_list <- list()
 
 colors_list[["geslacht"]] <- c("M" = "#1170AA",

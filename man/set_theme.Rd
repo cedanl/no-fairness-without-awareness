@@ -23,3 +23,4 @@ kleuren en opmaak. Stelt `theme_minimal()` in als basis en past
 vervolgens uitgebreide aanpassingen toe voor titels, assen, legenda
 en achtergrond.
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ Genereert een opgemaakte flextable met descriptieve statistieken per
 variabele, uitgesplitst naar retentie (Ja/Nee). Bevat p-waarden,
 Bonferroni-gecorrigeerde q-waarden en significantiesterren.
 }
+\keyword{internal}

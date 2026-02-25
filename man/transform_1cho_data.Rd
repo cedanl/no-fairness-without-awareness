@@ -24,3 +24,4 @@ persoonsgebonden nummer. Converteert datumvelden naar Date-objecten,
 character-variabelen naar factors, logische variabelen naar integers
 en berekent het aantal dagen tussen inschrijving en 1 september.
 }
+\keyword{internal}

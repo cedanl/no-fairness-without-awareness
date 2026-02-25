@@ -16,7 +16,7 @@
 #' @importFrom ggplot2 theme_set theme_minimal theme_update element_text
 #'   element_blank element_rect margin unit
 #' @importFrom ggtext element_textbox_simple
-#' @export
+#' @keywords internal
 set_theme <- function(title_font = c("sans"),
                       type = "plot") {
   ggplot2::theme_set(ggplot2::theme_minimal())

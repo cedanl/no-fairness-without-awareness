@@ -17,7 +17,7 @@
 #' @return Een `glue`-object met de samengevoegde tekst.
 #'
 #' @importFrom glue glue_collapse
-#' @export
+#' @keywords internal
 concatenate_list <- function(l,
                              lang = "nl",
                              extend = TRUE,
@@ -68,7 +68,7 @@ concatenate_list <- function(l,
 #' @importFrom dplyr filter pull
 #' @importFrom glue glue
 #' @importFrom stringr str_to_title
-#' @export
+#' @keywords internal
 get_fairness_conclusions <- function(df, variabele, succes = "retentie") {
   
   text <- ""

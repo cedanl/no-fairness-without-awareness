@@ -44,7 +44,7 @@
 #' @importFrom glue glue
 #' @importFrom fairmodels plot_density
 #' @importFrom ragg agg_png
-#' @export
+#' @keywords internal
 create_density_plot <- function(fairness_object,
                                 group,
                                 caption,

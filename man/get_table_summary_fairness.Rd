@@ -23,3 +23,4 @@ Een [flextable::flextable()]-object met de samenvattingstabel.
 Genereert een opgemaakte flextable met descriptieve statistieken voor
 enkel de sensitieve variabelen, uitgesplitst naar retentie na 1 jaar.
 }
+\keyword{internal}

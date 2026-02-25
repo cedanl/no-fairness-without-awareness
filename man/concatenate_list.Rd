@@ -35,3 +35,4 @@ Concateneert elementen van een character vector tot een leesbare tekst
 met komma's en een taalspecifieke verbinding voor het laatste element
 (bijv. "en" in het Nederlands, "and" in het Engels).
 }
+\keyword{internal}

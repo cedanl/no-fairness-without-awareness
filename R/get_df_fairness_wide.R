@@ -13,7 +13,7 @@
 #' @return Een named list met per variabele een character vector van
 #'   niveaus (in het Nederlands).
 #'
-#' @export
+#' @keywords internal
 get_levels <- function(df, formal = FALSE) {
   ## Set levels
   levels <- list()
@@ -56,7 +56,7 @@ get_levels <- function(df, formal = FALSE) {
 #' @importFrom tidyr pivot_wider replace_na pivot_longer crossing
 #' @importFrom glue glue
 #' @importFrom stringr str_to_title
-#' @export
+#' @keywords internal
 get_df_fairness_wide <- function(df_list,
                                  df_data,
                                  df_levels,

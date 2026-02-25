@@ -20,4 +20,4 @@ colors_list
 Een named list met kleurvectoren voor verschillende categorische variabelen
 zoals geslacht, vooropleiding en aansluiting.
 }
-\keyword{datasets}
+\keyword{internal}

@@ -37,7 +37,7 @@
 #'   }
 #'
 #' @importFrom glmnet glmnet
-#' @export
+#' @keywords internal
 run_models <- function(df) {
   df_model_results <- data.frame(model = character(), auc = numeric())
 

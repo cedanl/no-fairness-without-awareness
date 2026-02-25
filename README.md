@@ -113,8 +113,6 @@ run_nfwa(
   df = df,
   df_levels = metadata$df_levels,
   sensitive_variables = metadata$sensitive_variables,
-  colors_default = nfwa::colors_default,
-  colors_list = nfwa::colors_list,
   cutoff = cutoff
 )
 

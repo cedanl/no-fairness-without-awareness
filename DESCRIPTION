@@ -45,6 +45,7 @@ Imports:
     tidyselect,
     tune,
     workflows,
+    workflowsets,
     yardstick,
     quarto,
     ranger

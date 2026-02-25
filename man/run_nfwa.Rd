@@ -11,7 +11,8 @@ run_nfwa(
   colors_default,
   colors_list = nfwa::colors_list,
   cutoff = 0.2,
-  caption = NULL
+  caption = NULL,
+  eoi = NULL
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ Standaard `0.2`.}
 
 \item{caption}{Character of `NULL`. Optioneel onderschrift voor
 plots.}
+
+\item{eoi}{Numeric. Examenonderdeel identificatie nummer van de opleiding.
+Optioneel.}
 }
 \value{
 Onzichtbaar. Slaat de volgende bestanden op:

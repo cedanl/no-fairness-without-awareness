@@ -2,7 +2,7 @@
 #'
 #' Deze functie voert de volledige No Fairness Without Awareness (NFWA)
 #' analyse uit op 1CHO studiedata. Het combineert data transformatie,
-#' model training, fairness-analyse en optionele PDF rapportage in één functie.
+#' model training, fairness-analyse en optionele PDF rapportage in een functie.
 #'
 #' @param data_ev Data frame met 1CHO inschrijvingsdata (EV-bestand).
 #'   Bevat studentgegevens zoals geslacht, vooropleiding, en retentie.
@@ -38,7 +38,7 @@
 #'
 #' Vereisten:
 #' \itemize{
-#'   \item Quarto geïnstalleerd (voor PDF generatie)
+#'   \item Quarto geinstalleerd (voor PDF generatie)
 #'   \item Het \code{quarto} R package
 #'   \item TinyTeX (voor LaTeX compilatie)
 #' }
@@ -96,6 +96,17 @@ analyze_fairness <- function(data_ev,
                               generate_pdf = TRUE,
                               cleanup_temp = TRUE,
                               caption = NULL) {
+
+  # Controleer Quarto installatie (vereist voor PDF generatie)
+  if (generate_pdf && !check_quarto_installed()) {
+    stop(
+      "Quarto CLI is niet geinstalleerd of niet gevonden in het systeem.\n",
+      "\n",
+      "Alternatieven:\n",
+      "1. Gebruik: install_quarto() voor installatie-instructies\n",
+      "2. Zet 'generate_pdf = FALSE' om alleen analyses uit te voeren zonder PDF"
+    )
+  }
 
   # Validate inputs
   if (!is.data.frame(data_ev)) {

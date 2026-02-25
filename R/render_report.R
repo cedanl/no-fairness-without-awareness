@@ -19,12 +19,12 @@
 #' @details
 #' Deze functie vereist:
 #' \itemize{
-#'   \item Quarto ge\u00efnstalleerd op het systeem (https://quarto.org)
+#'   \item Quarto geinstalleerd op het systeem (https://quarto.org)
 #'   \item Het \code{quarto} R package
 #'   \item Output van \code{\link{run_nfwa}} in de temp/ directory
 #' }
 #'
-#' Als Quarto niet ge\u00efnstalleerd is, krijgt de gebruiker een waarschuwing
+#' Als Quarto niet geinstalleerd is, krijgt de gebruiker een waarschuwing
 #' en wordt er geen PDF gegenereerd.
 #'
 #' Na het genereren van het PDF rapport, kun je de tijdelijke bestanden
@@ -53,6 +53,21 @@
 #' }
 render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) {
 
+  # Installeer benodigde dependencies (alleen eerste keer)
+  if (!tinytex::is_tinytex()) {
+    message("TinyTeX niet gevonden - installeren... Dit gebeurt eenmalig")
+    tinytex::install_tinytex()
+  }
+  
+  # Controleer Quarto installatie
+  if (!check_quarto_installed()) {
+    stop(
+      "Quarto CLI is niet geinstalleerd of niet gevonden in het systeem.\n",
+      "\n",
+      "Gebruik: install_quarto() voor gedetailleerde installatie-instructies"
+    )
+  }
+
   # Determine template path (use package template)
   qmd_template <- system.file("templates", "render_pdf.qmd", package = "nfwa")
   
@@ -64,16 +79,6 @@ render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) 
   # Check if template exists
   if (!file.exists(qmd_template)) {
     stop("Quarto template niet gevonden: ", qmd_template)
-  }
-
-  # Check if Quarto is available
-  quarto_available <- requireNamespace("quarto", quietly = TRUE) &&
-    !is.null(tryCatch(quarto::quarto_path(), error = function(e) NULL))
-
-  if (!quarto_available) {
-    message("\nLet op: Quarto niet ge\u00efnstalleerd - PDF generatie overgeslagen")
-    message("  Installeer Quarto vanaf https://quarto.org voor PDF rapporten")
-    return(invisible(NULL))
   }
 
   # Check if required temp files exist (use relative path for Quarto/LaTeX)

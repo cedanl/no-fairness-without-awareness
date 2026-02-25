@@ -48,7 +48,7 @@ Een invisible list met:
 \description{
 Deze functie voert de volledige No Fairness Without Awareness (NFWA)
 analyse uit op 1CHO studiedata. Het combineert data transformatie,
-model training, fairness-analyse en optionele PDF rapportage in één functie.
+model training, fairness-analyse en optionele PDF rapportage in een functie.
 }
 \details{
 Deze functie voert de volgende stappen uit:
@@ -63,7 +63,7 @@ Deze functie voert de volgende stappen uit:
 
 Vereisten:
 \itemize{
-  \item Quarto geïnstalleerd (voor PDF generatie)
+  \item Quarto geinstalleerd (voor PDF generatie)
   \item Het \code{quarto} R package
   \item TinyTeX (voor LaTeX compilatie)
 }

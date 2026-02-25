@@ -30,7 +30,7 @@ sensitieve variabelen, naamgeving-mapping, level-definities en
 decodeertabellen voor vooropleidingen en ISAT-codes.
 }
 \details{
-De metadata wordt automatisch geïnstalleerd met het package in
+De metadata wordt automatisch geinstalleerd met het package in
 `inst/metadata/`. Je hoeft geen eigen metadata-bestanden aan te
 leveren - `read_metadata()` vindt de bestanden automatisch.
 

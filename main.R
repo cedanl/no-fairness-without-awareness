@@ -22,12 +22,6 @@
 # Laad het NFWA package
 devtools::load_all()
 
-# Installeer benodigde dependencies (alleen eerste keer)
-if (!tinytex::is_tinytex()) {
-  message("TinyTeX niet gevonden - installeren...")
-  tinytex::install_tinytex()
-}
-
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## INPUT - Configuratie ####

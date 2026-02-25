@@ -48,9 +48,6 @@ execute:
 #| echo: false
 #| include: false
 
-# Load nfwa package or source files in development
-library(nfwa)
-
 # Set knitr's root directory to the user's working directory
 # This ensures all paths are resolved relative to where the user is working
 knitr::opts_knit$set(root.dir = params$work_dir)
@@ -122,6 +119,8 @@ Deze analyse bestaat uit drie stappen:
 3. **We controleren eerlijkheid**: We vergelijken hoe goed het model voorspelt voor verschillende groepen studenten. Werkt het even goed voor mannen en vrouwen? Voor studenten met verschillende vooropleidingen? Of voorspelt het model voor sommige groepen beter of slechter?
 
 Dit proces is vergelijkbaar met het testen van een thermometer: je wilt niet alleen weten of deze nauwkeurig is, maar ook of deze even nauwkeurig temperatuur meet voor iedereen.
+
+Voor een gedetailleerde uitleg van de methodologie, zie [Methodologie](#methodologie). Voor uitleg van technische termen, zie [Bijlage B: Glossarium](#bijlage-b-glossarium).
 
 \newpage
 
@@ -195,7 +194,7 @@ Voor elke analyse wordt één groep als referentie (vergelijkingspunt) gekozen. 
 
 **Waarom een referentiegroep?** Om bias te kunnen meten, hebben we een vergelijkingspunt nodig. We kunnen niet zeggen of een model "eerlijk" is in absolute zin. We kunnen alleen zeggen of het even goed werkt voor verschillende groepen. Daarom vergelijken we alle andere groepen met de referentiegroep om te zien of het model even goed werkt.
 
-**Let op:** In de resultaten tabel wordt de referentiegroep weergegeven als "NTB" (Nader Te Bepalen), omdat deze groep zelf niet op bias kan worden beoordeeld. Het is immers het vergelijkingspunt zelf.
+**Let op:** In de resultaten tabel wordt de referentiegroep weergegeven als "NTB" (Nader Te Bepalen), omdat deze groep zelf niet op bias kan worden beoordeeld. Het is immers het vergelijkingspunt zelf. Zie ook [Bijlage A: Gedetailleerde visualisaties](#bijlage-a-gedetailleerde-visualisaties) voor een visuele weergave van hoe groepen worden vergeleken met de referentiegroep.
 
 Voor elke gevoelige variabele meten we vier fairness-metrieken. Dit zijn manieren om te controleren of ons model eerlijk werkt:
 
@@ -232,7 +231,9 @@ Na het meten van deze eerlijkheidsmetrieken classificeren we met een score (FRN)
 -   **Geen bias** (FRN score tussen 0.8 en 1.25):
     - Het model werkt redelijk eerlijk voor deze groep
     - Geen significante kansenongelijkheid gedetecteerd
-    
+
+Voor meer uitleg over deze termen, zie [Bijlage B: Glossarium](#bijlage-b-glossarium).
+
 ### Belangrijke overwegingen: Minimale groepsgrootte
 
 We hanteren een **minimum van 15 studenten per categorie** om betrouwbare conclusies te kunnen trekken:
@@ -267,8 +268,7 @@ $\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begi
 
 ## Bijlage A: Gedetailleerde visualisaties
 
-Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke onderzochte variabele.
-
+Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke onderzochte variabele. Voor uitleg van de fairness-metrieken, zie [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-eerlijkheid) in de Methodologie sectie.
 
 1.  **Fairness-metrieken (staafdiagram)**
 
@@ -289,6 +289,8 @@ Dit diagram vergelijkt hoe het model presteert voor verschillende groepen:
 -   **Gekleurde zones**: Rood = Bias, Wit = acceptabel bereik
 
 -   Hoe verder de staaf van 0.0 afligt, hoe groter het verschil met de referentiegroep
+
+Zie ook de uitleg van de referentiegroep in [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-eerlijkheid).
 
 2.  **Model-voorspellingen (dichtheidsgrafiek)**
 

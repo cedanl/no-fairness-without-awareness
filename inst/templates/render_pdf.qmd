@@ -286,7 +286,7 @@ Dit diagram vergelijkt hoe het model presteert voor verschillende groepen:
 
 -   **Y-as**: Vijf verschillende fairness-metrieken
 
--   **Gekleurde zones**: Rood = negatieve bias, Groen = positieve bias, Wit = acceptabel bereik
+-   **Gekleurde zones**: Rood = Bias, Wit = acceptabel bereik
 
 -   Hoe verder de staaf van 0.0 afligt, hoe groter het verschil met de referentiegroep
 
@@ -296,7 +296,7 @@ Dit diagram toont hoe het model voorspellingen maakt per groep:
 
 -   **X-as**: Voorspelde kans op studiesucces (0-100%)
 
--   **Y-as**: Dichtheid (hoe veel studenten bij die voorspelling)
+-   **Y-as**: Dichtheid (hoeveel studenten bij die voorspelling)
 
 -   Wanneer krommen sterk uit elkaar liggen = model behandelt groepen verschillend
 

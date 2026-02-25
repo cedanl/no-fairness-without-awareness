@@ -25,3 +25,4 @@ random forest-model op de data, evalueert beide op AUC/ROC en geeft
 het beste model terug. De data wordt gesplitst in 60% training, 20%
 validatie en 20% test.
 }
+\keyword{internal}

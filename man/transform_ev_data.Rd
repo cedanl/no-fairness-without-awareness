@@ -34,3 +34,4 @@ opleiding, vorm en startjaar, bepaalt retentie, telt inschrijvingen,
 herkodeert vooropleidingen en classificeert het type aansluiting
 (Direct, Tussenjaar, Switch, etc.).
 }
+\keyword{internal}

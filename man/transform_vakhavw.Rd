@@ -22,3 +22,4 @@ Verwerkt ruwe vakcijferdata: selecteert relevante kolommen, berekent
 de hoogste cijfers per student en vak, pivotteert naar breed formaat
 (vakken als kolommen) en berekent een gemiddeld wiskundecijfer.
 }
+\keyword{internal}

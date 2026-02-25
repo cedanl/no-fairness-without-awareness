@@ -22,3 +22,4 @@ Koppelt sociaaleconomische status (SES) gegevens van het CBS aan een
 studentdataset op basis van 4-cijferig postcodegebied. Per postcode wordt
 het meest recente verslagjaar geselecteerd.
 }
+\keyword{internal}

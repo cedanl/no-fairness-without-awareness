@@ -174,8 +174,6 @@ analyze_fairness <- function(data_ev,
     df = df,
     df_levels = df_levels,
     sensitive_variables = sensitive_variables,
-    colors_default = colors_default,
-    colors_list = colors_list,
     cutoff = cutoff,
     caption = caption,
     eoi = eoi

@@ -14,7 +14,7 @@
 #'
 #' @importFrom janitor clean_names
 #' @importFrom dplyr left_join mutate across group_by slice_max ungroup
-#' @export
+#' @keywords internal
 add_ses <- function(df, dfses) {
   
   dfses <- dfses |>

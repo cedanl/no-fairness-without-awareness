@@ -4,16 +4,7 @@
 \alias{run_nfwa}
 \title{Voer de volledige NFWA fairness-analyse uit}
 \usage{
-run_nfwa(
-  df,
-  df_levels,
-  sensitive_variables,
-  colors_default,
-  colors_list = nfwa::colors_list,
-  cutoff = 0.2,
-  caption = NULL,
-  eoi = NULL
-)
+run_nfwa(df, df_levels, sensitive_variables, cutoff = 0.2, caption = NULL, eoi = NULL)
 }
 \arguments{
 \item{df}{Data frame met de analyse-data. Moet de kolom `retentie`
@@ -24,12 +15,6 @@ zoals geretourneerd in `metadata$df_levels`.}
 
 \item{sensitive_variables}{Character vector met namen van sensitieve
 variabelen om te analyseren.}
-
-\item{colors_default}{Named list met kleurdefinities voor plots en
-tabellen.}
-
-\item{colors_list}{Named list met kleurvectoren per groepsvariabele.
-Standaard wordt het package-ingebouwde palet gebruikt.}
 
 \item{cutoff}{Numeriek. Cutoff-waarde voor de fairness-check.
 Standaard `0.2`.}

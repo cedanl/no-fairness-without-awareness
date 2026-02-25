@@ -15,7 +15,7 @@
 #'
 #' @importFrom janitor clean_names
 #' @importFrom dplyr left_join mutate across coalesce
-#' @export
+#' @keywords internal
 add_apcg <- function(df1cho, dfapcg) {
 
   dfapcg <- janitor::clean_names(dfapcg)

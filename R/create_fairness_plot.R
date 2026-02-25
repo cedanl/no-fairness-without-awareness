@@ -43,7 +43,7 @@
 #'   scale_y_continuous theme element_blank element_text element_rect
 #' @importFrom glue glue
 #' @importFrom ragg agg_png
-#' @export
+#' @keywords internal
 create_fairness_plot <- function(fairness_object,
                                  group,
                                  privileged,

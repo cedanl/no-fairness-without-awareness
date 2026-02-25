@@ -25,3 +25,4 @@ Analyseert een breed fairness data frame en genereert Nederlandstalige
 conclusies over bias per variabele. Groepen met N <= 14 worden
 uitgesloten. De functie rapporteert over negatieve en positieve bias.
 }
+\keyword{internal}

@@ -21,7 +21,7 @@
 #'
 #' @importFrom dplyr select pull all_of
 #' @importFrom fairmodels fairness_check
-#' @export
+#' @keywords internal
 get_obj_fairness <- function(df, explainer, var, privileged, verbose = FALSE, cutoff = 0.2) {
   # Define the protected variable
   protected <- df |>

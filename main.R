@@ -145,8 +145,6 @@ nfwa::run_nfwa(
   df = df,
   df_levels = df_levels,
   sensitive_variables = sensitive_variables,
-  colors_default = nfwa::colors_default,  # Gebruik package kleuren
-  colors_list = nfwa::colors_list,        # Gebruik package kleurenpaletten
   cutoff = cutoff,
   eoi = eoi,
   caption = paste0(

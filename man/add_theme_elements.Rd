@@ -28,3 +28,4 @@ waaronder opmaak van titel, ondertitel, caption en as-tekst. Optioneel
 kunnen uitgebreide elementen worden toegevoegd zoals legenda-positie,
 facet-opmaak en x-as marge.
 }
+\keyword{internal}

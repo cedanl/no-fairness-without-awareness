@@ -43,7 +43,7 @@
 #' @importFrom janitor clean_names
 #' @importFrom dplyr left_join filter group_by mutate ungroup inner_join
 #'   summarize across case_when pull
-#' @export
+#' @keywords internal
 transform_ev_data <- function(df, naam, eoi, vorm, dec_vopl, dec_isat) {
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {

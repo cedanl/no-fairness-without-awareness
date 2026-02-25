@@ -17,7 +17,7 @@
 #'
 #' @importFrom dplyr mutate rename select left_join case_when
 #' @importFrom tidyr pivot_longer replace_na
-#' @export
+#' @keywords internal
 get_df_fairness_check_data <- function(df, fairness_object, var) {
   fairness_object <- fairness_object |>
     dplyr::mutate(

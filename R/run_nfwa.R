@@ -36,10 +36,6 @@
 #'   zoals geretourneerd in `metadata$df_levels`.
 #' @param sensitive_variables Character vector met namen van sensitieve
 #'   variabelen om te analyseren.
-#' @param colors_default Named list met kleurdefinities voor plots en
-#'   tabellen.
-#' @param colors_list Named list met kleurvectoren per groepsvariabele.
-#'   Standaard wordt het package-ingebouwde palet gebruikt.
 #' @param cutoff Numeriek. Cutoff-waarde voor de fairness-check.
 #'   Standaard `0.2`.
 #' @param caption Character of `NULL`. Optioneel onderschrift voor
@@ -65,8 +61,6 @@
 run_nfwa <- function(df,
                      df_levels,
                      sensitive_variables,
-                     colors_default,
-                     colors_list = nfwa::colors_list,
                      cutoff = 0.2,
                      caption = NULL,
                      eoi = NULL) {

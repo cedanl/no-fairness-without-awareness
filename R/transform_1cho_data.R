@@ -15,7 +15,7 @@
 #'   inclusief de nieuwe kolom `dagen_tussen_inschrijving_1_september`.
 #'
 #' @importFrom dplyr left_join mutate across starts_with where
-#' @export
+#' @keywords internal
 transform_1cho_data <- function(df, df_vak) {
 
 

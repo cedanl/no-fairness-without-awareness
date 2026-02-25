@@ -45,7 +45,6 @@
 
 ## Documentation
 
-* Nieuwe `PDF_IMPROVEMENTS.md` met volledige uitleg van alle verbeteringen
 * Mapping van GitHub Issue #7 requirements naar implementatie
 * Roxygen documentatie bijgewerkt voor nieuwe `eoi` parameter in `run_nfwa()`
 

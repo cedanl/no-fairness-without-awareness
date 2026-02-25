@@ -116,7 +116,7 @@ Deze analyse bestaat uit drie stappen:
 
 2. **Een computerprogramma leert patronen**: We trainen een machine learning model (een soort statistische leermeester) die leert welke factoren samenhangen met studiesucces. Het model leert patronen uit de data.
 
-3. **We controleren eerlijkheid**: We vergelijken hoe goed het model voorspelt voor verschillende groepen studenten. Werkt het even goed voor mannen en vrouwen? Voor studenten met verschillende vooropleidingen? Of voorspelt het model voor sommige groepen beter of slechter?
+3. **We controleren kansengelijkheid**: We vergelijken hoe goed het model voorspelt voor verschillende groepen studenten. Werkt het even goed voor mannen en vrouwen? Voor studenten met verschillende vooropleidingen? Of voorspelt het model voor sommige groepen beter of slechter?
 
 Dit proces is vergelijkbaar met het testen van een thermometer: je wilt niet alleen weten of deze nauwkeurig is, maar ook of deze even nauwkeurig temperatuur meet voor iedereen.
 
@@ -163,7 +163,7 @@ metadata_file <- file.path(temp_path, "analysis_metadata.rds")
 if (file.exists(metadata_file)) {
   metadata <- readRDS(metadata_file)
 
-  cat("We trainen twee verschillende typen modellen:\n\n")
+  cat("We trainen twee verschillende typen modellen. Om zeker te weten welke het meest betrouwbaar is voor uw studenten.:\n\n")
   cat("**1. Logistische Regressie (met LASSO regularisatie)**\n\n")
   cat("- Dit is een statistische methode die naar verbanden kijkt. Het zoekt uit welke factoren het meest belangrijk zijn voor studiesucces.\n")
   cat("- LASSO betekent dat het alleen de belangrijkste factoren behoudt (rest verwijdert)\n\n")
@@ -171,7 +171,6 @@ if (file.exists(metadata_file)) {
   cat("- Dit model werkt als volgt: Het combineert veel kleine 'Ja/Nee'-vragen.\n")
   cat("- Iedere boom maakt zijn eigen voorspelling, dan wordt de meerderheid gekozen.\n")
   cat("- Het is vergelijkbaar met een team van experts die gezamenlijk een diagnose stellen.\n\n")
-  cat("**Waarom twee modellen?** Om zeker te weten welke het meest betrouwbaar is voor uw studenten.\n\n")
   cat("**Gekozen model voor deze analyse**: ", metadata$best_model, "\n\n")
   cat("**Model prestatie (AUC)**: ", round(metadata$model_auc, 3), "\n\n")
   cat("- AUC loopt van 0 tot 1 (hoger = beter)\n")
@@ -186,17 +185,16 @@ if (file.exists(metadata_file)) {
 }
 ```
 
-### Stap 3: Fairness evaluatie (controleren op eerlijkheid)
+### Stap 3: Fairness evaluatie (controleren op kansengelijkheid)
 
-**Wat is de referentiegroep?**
 
-Voor elke analyse wordt één groep als referentie (vergelijkingspunt) gekozen. De referentiegroep is **gekozen als de grootste groep** binnen die variabele. Bijvoorbeeld: als er meer mannen dan vrouwen zijn, worden mannen de referentiegroep.
+Voor elke analyse wordt één groep als referentie (vergelijkingspunt) gekozen. De referentiegroep is gekozen als de grootste groep binnen die variabele. Bijvoorbeeld: als er meer mannen dan vrouwen zijn, worden mannen de referentiegroep.
 
-**Waarom een referentiegroep?** Om bias te kunnen meten, hebben we een vergelijkingspunt nodig. We kunnen niet zeggen of een model "eerlijk" is in absolute zin. We kunnen alleen zeggen of het even goed werkt voor verschillende groepen. Daarom vergelijken we alle andere groepen met de referentiegroep om te zien of het model even goed werkt.
+Om bias te kunnen meten, hebben we een vergelijkingspunt nodig. We kunnen niet zeggen of een model "kansengelijk" is in absolute zin. We kunnen alleen zeggen of het even goed werkt voor verschillende groepen. Daarom vergelijken we alle andere groepen met de referentiegroep om te zien of het model even goed werkt.
 
 **Let op:** In de resultaten tabel wordt de referentiegroep weergegeven als "NTB" (Nader Te Bepalen), omdat deze groep zelf niet op bias kan worden beoordeeld. Het is immers het vergelijkingspunt zelf. Zie ook [Bijlage A: Gedetailleerde visualisaties](#bijlage-a-gedetailleerde-visualisaties) voor een visuele weergave van hoe groepen worden vergeleken met de referentiegroep.
 
-Voor elke gevoelige variabele meten we vier fairness-metrieken. Dit zijn manieren om te controleren of ons model eerlijk werkt:
+Voor elke gevoelige variabele meten we vier verschillende fairness-metrieken. Deze vier metrieken bieden verschillende perspectieven op kansengelijkheid We gebruiken meerdere metrieken omdat geen enkele metriek alles kan meten - samen geven zij een completer beeld:
 
 -   **Equal Opportunity**:
     - Vraag: "Geeft het model even veel goede voorspellingen voor succesvolle studenten uit alle groepen?"
@@ -214,29 +212,27 @@ Voor elke gevoelige variabele meten we vier fairness-metrieken. Dit zijn maniere
     - Vraag: "Krijgen alle groepen gelijk veel positieve voorspellingen?"
     - Voorbeeld: Voorspelt het model succes voor dezelfde procentuele hoeveelheid van iedere groep?
 
-### Stap 4: Bias classificatie (beoordeling)
+Elk van deze vier metrieken wordt afzonderlijk beoordeeld tegen het 0.8-1.25 bereik. Deze range is een standaard in fairness research. Het komt voort uit gelijkheidsonderzoeken in arbeid, waar verhoudingen buiten 0.8-1.25 als aanwijzing voor ongelijke behandeling worden beschouwd.
 
-Na het meten van deze eerlijkheidsmetrieken classificeren we met een score (FRN):
+### Stap 4: Bias beoordeling
 
--   **Negatieve bias** (FRN score < 0.8):
-    - Het model presteert slechter voor deze groep
-    - Bijvoorbeeld: het model voorspelt succes minder goed voor vrouwen
-    - Dit kan duiden op kansenongelijkheid in de data of het model
+Voor elke kansengelijkheid-metriek berekenen we een verhouding (ratio) ten opzichte van de referentiegroep:
 
--   **Positieve bias** (FRN score > 1.25):
-    - Het model presteert beter voor deze groep
-    - Bijvoorbeeld: het model voorspelt succes beter voor mannen
-    - Dit kan ook kansenongelijkheid zijn.
+-   Verhouding = 1.0: Model presteert gelijk voor beide groepen (kansengelijk)
+-   Verhouding < 0.8: Model presteert slechter voor deze groep (negatieve bias)
+    - Bijvoorbeeld: verhouding 0.8 betekent dat het model 20% slechter voorspelt voor vrouwen dan voor mannen
+-   Verhouding > 1.25: Model presteert beter voor deze groep (positieve bias)
+    - Bijvoorbeeld: verhouding 1.3 betekent dat het model 30% beter voorspelt voor mannen dan voor vrouwen
+-   Verhouding tussen 0.8 en 1.25: Acceptabel verschil, geen significant verschil gedetecteerd
 
--   **Geen bias** (FRN score tussen 0.8 en 1.25):
-    - Het model werkt redelijk eerlijk voor deze groep
-    - Geen significante kansenongelijkheid gedetecteerd
+
+Om te bepalen of er kansongelijkheid is gebruiken we in deze analyse gebruiken een conservatieve aanpak: alleen als twee of meer van de vier kansengelijkheidsmetrieken een verhouding < 0.8 of > 1.25 hebben, bepalen we dat deze groep te maken heeft met bias ("Ja" in het resultaatoverzicht). Dit minimaliseert vals-positieve bevindingen.
 
 Voor meer uitleg over deze termen, zie [Bijlage B: Glossarium](#bijlage-b-glossarium).
 
 ### Belangrijke overwegingen: Minimale groepsgrootte
 
-We hanteren een **minimum van 15 studenten per categorie** om betrouwbare conclusies te kunnen trekken:
+We hanteren een minimum van 15 studenten per categorie om betrouwbare conclusies te kunnen trekken:
 
 -   Met minder dan 15 studenten is het statistisch onbetrouwbaar (net zoals een enquête onder slechts 5 mensen niet representatief is)
 -   Kleinere groepen worden wel in het rapport opgenomen, maar krijgen het label "Data laag".
@@ -268,29 +264,31 @@ $\providecolor{sqfill1}{HTML}{A84268}\providecolor{sqborder1}{HTML}{A9A9A9}\begi
 
 ## Bijlage A: Gedetailleerde visualisaties
 
-Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke onderzochte variabele. Voor uitleg van de fairness-metrieken, zie [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-eerlijkheid) in de Methodologie sectie.
+Deze bijlage bevat de fairness-metrieken en model-voorspellingsplots voor elke onderzochte variabele. Voor uitleg van de fairness-metrieken, zie [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-kansengelijkheid) in de Methodologie sectie.
 
 1.  **Fairness-metrieken (staafdiagram)**
 
-Dit diagram vergelijkt hoe het model presteert voor verschillende groepen:
+Dit diagram toont de verhoudingswaarden (ratio's) voor elke fairness-metriek per groep, ten opzichte van de referentiegroep:
 
--   **Referentiegroep**: De grootste groep binnen de variabele (bijv. mannen bij geslacht). Deze groep staat op de verticale zwarte lijn bij 0.0.
+-   **Referentiegroep**: De grootste groep binnen de variabele (bijv. mannen bij geslacht). Deze staat op de verticale zwarte lijn bij 0.0 (gelijk).
 
--   **X-as**: Verschil ten opzichte van de referentiegroep
+-   **X-as**: De verhouding (ratio) van de metriek voor deze groep ten opzichte van de referentiegroep
 
-    -   Staven naar links (negatief) = model presteert slechter dan voor referentiegroep
+    -   Staven naar links (negatief) = model presteert slechter voor deze groep
+        - Bijv. -0.2 betekent dat deze groep 20% slechter scoort (ratio 0.8)
 
-    -   Staven naar rechts (positief) = model presteert beter dan voor referentiegroep
+    -   Staven naar rechts (positief) = model presteert beter voor deze groep
+        - Bijv. +0.3 betekent dat deze groep 30% beter scoort (ratio 1.3)
 
-    -   Op de zwarte lijn (0.0) = gelijk aan referentiegroep
+    -   Op de zwarte lijn (0.0) = gelijk aan referentiegroep (ratio 1.0)
 
--   **Y-as**: Vijf verschillende fairness-metrieken
+-   **Y-as**: De vier verschillende fairness-metrieken
 
--   **Gekleurde zones**: Rood = Bias, Wit = acceptabel bereik
+-   **Gekleurde zones**: Rood (buiten ±20-25%) = Bias detected, Grijs (±20-25% bereik) = acceptabel
 
--   Hoe verder de staaf van 0.0 afligt, hoe groter het verschil met de referentiegroep
+Opmerking: Hoewel we intern met ratio's werken (1.0 = gelijk), toont dit diagram de verschillen als percentages (0.0 = gelijk) voor betere leesbaarheid.
 
-Zie ook de uitleg van de referentiegroep in [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-eerlijkheid).
+Zie ook de uitleg van de referentiegroep in [Stap 3: Fairness evaluatie](#stap-3-fairness-evaluatie-controleren-op-kansengelijkheid).
 
 2.  **Model-voorspellingen (dichtheidsgrafiek)**
 
@@ -302,7 +300,7 @@ Dit diagram toont hoe het model voorspellingen maakt per groep:
 
 -   Wanneer krommen sterk uit elkaar liggen = model behandelt groepen verschillend
 
--   Overlappende krommen = eerlijk model
+-   Overlappende krommen = kansengelijk model
 
 -   Verschuiving naar links = lagere voorspelde kansen
 
@@ -344,7 +342,7 @@ for (var_name in names(conclusions_list)) {
 | **Predictive Parity** | Positieve voorspellingen zijn even betrouwbaar over alle groepen |
 | **Accuracy Equality** | Algemene nauwkeurigheid model gelijk over alle groepen |
 | **Statistical Parity** | Proportie positieve voorspellingen gelijk over alle groepen |
-| **FRN Score** | Fairness Ratio Number - eerlijkheidsmaatstaf: 1.0 = gelijk, \<0.8 = negatieve bias, \>1.25 = positieve bias |
+| **Kansengelijkheidsmetriekwaarde (ratio)** | De verhouding van de metriek voor een groep ten opzichte van de referentiegroep: 1.0 = gelijk, 0.8 = 20% lager, 1.25 = 25% hoger. Waarden buiten 0.8-1.25 duiden op bias. |
 | **Retentie** | Student gaat door naar tweede studiejaar; maatstaf van studiesucces |
 | **Sensitieve variabele** | Persoonskenmerken waarvoor kansenongelijkheid ongewenst is (geslacht, vooropleiding, etniciteit, etc.) |
 | **Machine Learning** | Computertechniek waarbij systemen automatisch patronen leren uit data zonder expliciet geprogrammeerd te worden |
@@ -395,7 +393,7 @@ if (file.exists(metadata_file)) {
   cat("- Aantal studenten:", metadata$n_students, "\n")
   cat("- Gekozen model:", metadata$best_model, "\n")
   cat("- Model AUC:", round(metadata$model_auc, 4), "\n")
-  cat("- Fairness cutoff (FRN):", metadata$cutoff, "\n")
+  cat("- Bias detectie-bereik: ratio < 0.8 of > 1.25\n")
   cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
   cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
 

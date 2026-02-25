@@ -1,15 +1,17 @@
 Package: nfwa
 Type: Package
 Title: No Fairness Without Awareness - Kansengelijkheidsanalyse
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Aslam", "Tanjung", email = "aslam.tanjung@surf.nl", role = c("aut", "cre")),
     person("Theo", "Bakker", email = "t.bakker@hhs.nl", role = "aut"))
 Description: Analyseer de kansengelijkheid van een opleiding aan de hand van
     studiedata. De tool traint prognosemodellen (logistische regressie en random
     forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals
-    geslacht en vooropleiding. Resultaten worden gepresenteerd in een
-    automatisch gegenereerd PDF-rapport.
+    geslacht en vooropleiding. Resultaten worden gepresenteerd in toegankelijke,
+    begrijpelijke PDF-rapporten met uitgebreide toelichting voor niet-technische
+    lezers, inclusief methodologie-uitleg, interpretatierichtlijnen en uitgebreid
+    glossarium.
 License: MIT + file LICENSE
 URL: https://github.com/cedanl/no-fairness-without-awareness
 BugReports: https://github.com/cedanl/no-fairness-without-awareness/issues
@@ -44,6 +46,7 @@ Imports:
     tinytex,
     tune,
     workflows,
+    workflowsets,
     yardstick,
     quarto,
     ranger

@@ -88,7 +88,7 @@ get_fairness_conclusions <- function(df, variabele, succes = "retentie") {
   if (any(df_variables$`Negatieve Bias` > 1)) {
     negative_bias_list <- df_variables |>
       dplyr::filter(`Negatieve Bias` > 1) |> 
-      dplyr::pull(Text) |>
+      dplyr::pull(Groep_label) |>
       paste(collapse = ", ")
     
     # Replace the final comma by 'en'
@@ -102,7 +102,7 @@ get_fairness_conclusions <- function(df, variabele, succes = "retentie") {
   if (any(df_variables$`Positieve Bias` > 1)) {
     positive_bias_list <- df_variables |>
       dplyr::filter(`Positieve Bias` > 1) |> 
-      dplyr::pull(Text) |>
+      dplyr::pull(Groep_label) |>
       paste(collapse = ", ")
     
     # Replace the final comma by 'en'

@@ -40,6 +40,8 @@
 #'   Standaard `0.2`.
 #' @param caption Character of `NULL`. Optioneel onderschrift voor
 #'   plots.
+#' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
+#'   Optioneel.
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
@@ -60,7 +62,8 @@ run_nfwa <- function(df,
                      df_levels,
                      sensitive_variables,
                      cutoff = 0.2,
-                     caption = NULL) {
+                     caption = NULL,
+                     eoi = NULL) {
 
 
   ## . ####
@@ -173,8 +176,24 @@ run_nfwa <- function(df,
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>
                                                         dplyr::select(-c(Groep_label, Text))),
                                  colors_default = colors_default)
-  
+
   flextable::save_as_image(x= ft_fairness, path = "temp/result_table.png")
-  
-  
+
+  # Save analysis metadata for enhanced PDF reporting
+  analysis_metadata <- list(
+    n_students = nrow(df),
+    best_model = best_model,
+    model_auc = as.numeric(
+      workflowsets::collect_metrics(last_fit) |>
+      dplyr::filter(.metric == "roc_auc") |>
+      dplyr::pull(.estimate)
+    ),
+    cutoff = cutoff,
+    analysis_date = Sys.Date(),
+    eoi = eoi
+  )
+
+  saveRDS(analysis_metadata, file = "temp/analysis_metadata.rds")
+
+
 }

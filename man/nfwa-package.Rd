@@ -6,7 +6,7 @@
 \alias{nfwa}
 \title{nfwa: No Fairness Without Awareness - Kansengelijkheidsanalyse}
 \description{
-Analyseer de kansengelijkheid van een opleiding aan de hand van studiedata. De tool traint prognosemodellen (logistische regressie en random forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals geslacht en vooropleiding. Resultaten worden gepresenteerd in een automatisch gegenereerd PDF-rapport.
+Analyseer de kansengelijkheid van een opleiding aan de hand van studiedata. De tool traint prognosemodellen (logistische regressie en random forest) en beoordeelt fairness-metriken per gevoelige variabele, zoals geslacht en vooropleiding. Resultaten worden gepresenteerd in toegankelijke, begrijpelijke PDF-rapporten met uitgebreide toelichting voor niet-technische lezers, inclusief methodologie-uitleg, interpretatierichtlijnen en uitgebreid glossarium.
 
 Analyseer de kansengelijkheid van een opleiding aan de hand van
 studiedata. Het package traint prognosemodellen (logistische regressie en

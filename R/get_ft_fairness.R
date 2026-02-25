@@ -44,46 +44,39 @@ get_ft_fairness <- function(ft, colors_default, with_extra = FALSE) {
     ) |>
     flextable::autofit() |>
     flextable::italic(j = 1, italic = TRUE, part = "body") |>
+    # Color only the Bias column
     flextable::color(
-      i = ~ `Negatieve Bias` > 1,
-      j = c("Groep", "Bias", "Negatieve Bias"),
-      color = "white"
-    ) |>
-    flextable::color(
-      i = ~ `Positieve Bias` > 1,
-      j = c("Groep", "Bias", "Positieve Bias"),
+      i = ~ `Negatieve Bias` > 1 | `Positieve Bias` > 1 | (`Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0),
+      j = "Bias",
       color = "white"
     ) |>
     flextable::bg(
       i = ~ `Negatieve Bias` > 1,
-      j = c("Groep", "Bias", "Negatieve Bias"),
+      j = "Bias",
       bg = color_bias_negative
     ) |>
     flextable::bg(
       i = ~ `Positieve Bias` > 1,
-      j = c("Groep", "Bias", "Positieve Bias"),
+      j = "Bias",
       bg = color_bias_positive
     ) |>
     flextable::bg(
       i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1,
-      j = c("Groep", "Bias"),
+      j = "Bias",
       bg = color_bias_neutral
     ) |>
     flextable::bg(
       i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1),
-      j = c("Groep", "Bias"),
+      j = "Bias",
       bg = color_bias_neutral
     ) |>
     flextable::bg(
-      i = ~ `Geen Bias` == 0 &
-        `Positieve Bias` == 0 & `Negatieve Bias` == 0,
-      j = 2:8,
+      i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
+      j = "Bias",
       bg = color_bias_none
     ) |>
-    flextable::bold(i = ~ `Negatieve Bias` > 1,
-         j = c("Groep", "Bias", "Negatieve Bias")) |>
-    flextable::bold(i = ~ `Positieve Bias` > 1,
-         j = c("Groep", "Bias", "Positieve Bias")) |>
+    flextable::bold(i = ~ `Negatieve Bias` > 1 | `Positieve Bias` > 1,
+         j = "Bias") |>
     flextable::valign(j = 1, valign = "top", part = "all") |>
     flextable::align_text_col(align = "left") |>
     flextable::align_nottext_col(align = "center") |>
@@ -94,7 +87,7 @@ get_ft_fairness <- function(ft, colors_default, with_extra = FALSE) {
     flextable::align(j = 4:5, align = "center")
   
   if(with_extra == FALSE) {
-    ft <- flextable::delete_columns(ft, c("Geen Bias", "Negatieve Bias", "Positieve Bias", "Perc", "N")) |>
+    ft <- flextable::delete_columns(ft, c("Geen Bias", "Negatieve Bias", "Positieve Bias")) |>
       # 3. Only now do vertical merge + valign on Variabele
       flextable::merge_v(j = "Variabele") |>
       flextable::valign(j = "Variabele", valign = "top", part = "all")

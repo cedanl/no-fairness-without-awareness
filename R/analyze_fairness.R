@@ -175,7 +175,8 @@ analyze_fairness <- function(data_ev,
     df_levels = df_levels,
     sensitive_variables = sensitive_variables,
     cutoff = cutoff,
-    caption = caption
+    caption = caption,
+    eoi = eoi
   )
 
   message("  - Plots opgeslagen in temp/")

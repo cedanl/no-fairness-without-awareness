@@ -18,13 +18,12 @@ ui <- page_sidebar(
     selectInput("naam", "Opleidingsnaam",
                 choices = c("Upload eerst een EV bestand" = "")),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
-    selectInput("eoi", "Eerste instroombeoordeling jaar (EOI)",
+    selectInput("eoi", "Instroomcohort (EOI)",
                 choices = c("Selecteer eerst een opleiding" = "")),
     hr(),
     actionButton("run", "Analyseer", class = "btn-primary w-100",
                  icon = icon("play")),
     br(), br(),
-    uiOutput("status_ui"),
     uiOutput("download_ui")
   ),
   card(
@@ -35,12 +34,11 @@ ui <- page_sidebar(
 
 server <- function(input, output, session) {
 
-  log_text   <- reactiveVal("")
-  pdf_path   <- reactiveVal(NULL)
-  ev_clean   <- reactiveVal(NULL)
-  is_running <- reactiveVal(FALSE)
+  log_text    <- reactiveVal("")
+  pdf_path    <- reactiveVal(NULL)
+  ev_clean    <- reactiveVal(NULL)
   session_dir <- file.path(tempdir(), paste0("nfwa_", session$token))
-  metadata  <- nfwa::read_metadata()
+  metadata    <- nfwa::read_metadata()
 
   session$onSessionEnded(function() {
     if (dir.exists(session_dir)) unlink(session_dir, recursive = TRUE)
@@ -50,7 +48,7 @@ server <- function(input, output, session) {
   observeEvent(input$ev, {
     req(input$ev)
     tryCatch({
-      raw <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
+      raw   <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
       clean <- janitor::clean_names(raw)
       ev_clean(clean)
 
@@ -92,7 +90,7 @@ server <- function(input, output, session) {
                           choices = c("Geen data gevonden voor deze combinatie" = ""))
       } else {
         updateSelectInput(session, "eoi", choices = as.character(jaren),
-                          selected = as.character(min(jaren)))
+                          selected = as.character(max(jaren)))
       }
     }, error = function(e) {
       showNotification(
@@ -109,56 +107,58 @@ server <- function(input, output, session) {
 
     log_text("")
     pdf_path(NULL)
-    is_running(TRUE)
 
-    withCallingHandlers(
-      tryCatch({
-        dir.create(session_dir, showWarnings = FALSE, recursive = TRUE)
+    # withProgress writes directly to the WebSocket before R blocks,
+    # so the user sees feedback immediately during the long computation.
+    withProgress(
+      message = paste0("Analyseren: ", input$naam, " (", input$vorm, ")"),
+      detail  = "Dit kan enkele minuten duren...",
+      value   = 0,
+      {
+        withCallingHandlers(
+          tryCatch({
+            dir.create(session_dir, showWarnings = FALSE, recursive = TRUE)
 
-        data_ev <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
-        data_vakhavw <- read.csv(input$vakhavw$datapath, sep = ";",
-                                 stringsAsFactors = FALSE)
+            incProgress(0.05, detail = "Bestanden inlezen...")
+            data_ev <- read.csv(input$ev$datapath, sep = ";",
+                                stringsAsFactors = FALSE)
+            data_vakhavw <- read.csv(input$vakhavw$datapath, sep = ";",
+                                     stringsAsFactors = FALSE)
 
-        old_wd <- setwd(session_dir)
-        on.exit(setwd(old_wd), add = TRUE)
+            old_wd <- setwd(session_dir)
+            on.exit(setwd(old_wd), add = TRUE)
 
-        result <- nfwa::analyze_fairness(
-          data_ev        = data_ev,
-          data_vakhavw   = data_vakhavw,
-          opleidingsnaam = input$naam,
-          eoi            = as.integer(input$eoi),
-          opleidingsvorm = input$vorm,
-          generate_pdf   = TRUE,
-          cleanup_temp   = FALSE
+            incProgress(0.10, detail = "Data transformeren...")
+
+            result <- nfwa::analyze_fairness(
+              data_ev        = data_ev,
+              data_vakhavw   = data_vakhavw,
+              opleidingsnaam = input$naam,
+              eoi            = as.integer(input$eoi),
+              opleidingsvorm = input$vorm,
+              generate_pdf   = TRUE,
+              cleanup_temp   = FALSE
+            )
+
+            incProgress(0.85, detail = "Klaar!")
+
+            if (!is.null(result$pdf_path) && file.exists(result$pdf_path)) {
+              pdf_path(result$pdf_path)
+            }
+
+          }, error = function(e) {
+            showNotification(
+              paste("Fout:", strip_ansi(conditionMessage(e))),
+              type = "error", duration = NULL
+            )
+          }),
+          message = function(m) {
+            log_text(paste0(log_text(), conditionMessage(m)))
+            invokeRestart("muffleMessage")
+          }
         )
-
-        is_running(FALSE)
-
-        if (!is.null(result$pdf_path) && file.exists(result$pdf_path)) {
-          pdf_path(result$pdf_path)
-        }
-
-      }, error = function(e) {
-        is_running(FALSE)
-        showNotification(
-          paste("Fout:", strip_ansi(conditionMessage(e))),
-          type = "error", duration = NULL
-        )
-      }),
-      message = function(m) {
-        log_text(paste0(log_text(), conditionMessage(m)))
-        invokeRestart("muffleMessage")
       }
     )
-  })
-
-  output$status_ui <- renderUI({
-    if (is_running()) {
-      div(
-        class = "alert alert-info p-2 mb-0",
-        icon("spinner", class = "fa-spin"), " Analyse bezig, even geduld..."
-      )
-    }
   })
 
   output$log <- renderText({ log_text() })

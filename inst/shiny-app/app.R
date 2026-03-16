@@ -3,6 +3,8 @@ library(bslib)
 
 options(shiny.maxRequestSize = 500 * 1024^2)
 
+strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
+
 ui <- page_sidebar(
   title = "NFWA - Kansengelijkheidsanalyse",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
@@ -13,14 +15,16 @@ ui <- page_sidebar(
     fileInput("vakhavw", "VAKHAVW bestand (.csv)", accept = ".csv"),
     hr(),
     h6("Opleidingsgegevens", class = "text-muted fw-bold"),
-    selectInput("naam", "Opleidingsnaam", choices = c("Upload eerst een EV bestand" = "")),
+    selectInput("naam", "Opleidingsnaam",
+                choices = c("Upload eerst een EV bestand" = "")),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
-    numericInput("eoi", "EOI (cohort jaar)", value = 2020, min = 2000, max = 2030,
-                 step = 1),
+    selectInput("eoi", "Eerste instroombeoordeling jaar (EOI)",
+                choices = c("Selecteer eerst een opleiding" = "")),
     hr(),
     actionButton("run", "Analyseer", class = "btn-primary w-100",
                  icon = icon("play")),
     br(), br(),
+    uiOutput("status_ui"),
     uiOutput("download_ui")
   ),
   card(
@@ -31,24 +35,26 @@ ui <- page_sidebar(
 
 server <- function(input, output, session) {
 
-  pdf_path <- reactiveVal(NULL)
+  log_text   <- reactiveVal("")
+  pdf_path   <- reactiveVal(NULL)
+  ev_clean   <- reactiveVal(NULL)
+  is_running <- reactiveVal(FALSE)
   session_dir <- file.path(tempdir(), paste0("nfwa_", session$token))
-  metadata <- nfwa::read_metadata()
+  metadata  <- nfwa::read_metadata()
 
   session$onSessionEnded(function() {
-    if (dir.exists(session_dir)) {
-      unlink(session_dir, recursive = TRUE)
-    }
+    if (dir.exists(session_dir)) unlink(session_dir, recursive = TRUE)
   })
 
-  # Populate opleiding dropdown from uploaded EV file
+  # Step 1: EV uploaded -> populate opleiding dropdown
   observeEvent(input$ev, {
     req(input$ev)
     tryCatch({
-      ev_raw <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
-      ev_clean <- janitor::clean_names(ev_raw)
+      raw <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
+      clean <- janitor::clean_names(raw)
+      ev_clean(clean)
 
-      opleidingen <- ev_clean |>
+      opleidingen <- clean |>
         dplyr::left_join(metadata$dec_isat, by = "opleidingscode") |>
         dplyr::pull(naam_opleiding) |>
         unique() |>
@@ -58,21 +64,52 @@ server <- function(input, output, session) {
       updateSelectInput(session, "naam", choices = opleidingen)
     }, error = function(e) {
       showNotification(
-        paste("Kon opleidingen niet laden uit EV bestand:", conditionMessage(e)),
+        paste("Kon opleidingen niet laden:", strip_ansi(conditionMessage(e))),
         type = "warning"
       )
     })
   })
 
+  # Step 2: Opleiding or vorm changes -> populate EOI dropdown
+  observeEvent(list(input$naam, input$vorm), {
+    req(ev_clean(), input$naam, input$vorm, nchar(input$naam) > 0)
+    tryCatch({
+      jaren <- ev_clean() |>
+        dplyr::left_join(metadata$dec_isat, by = "opleidingscode") |>
+        dplyr::mutate(dplyr::across(opleidingsvorm, ~ dplyr::case_when(
+          . == 1 ~ "VT", . == 2 ~ "DT", . == 3 ~ "DU", TRUE ~ as.character(.)
+        ))) |>
+        dplyr::filter(
+          naam_opleiding == input$naam,
+          opleidingsvorm == input$vorm
+        ) |>
+        dplyr::pull(eerste_jaar_aan_deze_opleiding_instelling) |>
+        unique() |>
+        sort()
+
+      if (length(jaren) == 0) {
+        updateSelectInput(session, "eoi",
+                          choices = c("Geen data gevonden voor deze combinatie" = ""))
+      } else {
+        updateSelectInput(session, "eoi", choices = as.character(jaren),
+                          selected = as.character(min(jaren)))
+      }
+    }, error = function(e) {
+      showNotification(
+        paste("Kon jaren niet laden:", strip_ansi(conditionMessage(e))),
+        type = "warning"
+      )
+    })
+  })
+
+  # Step 3: Run analysis
   observeEvent(input$run, {
-    req(input$ev, input$vakhavw, input$naam, input$vorm, input$eoi)
+    req(input$ev, input$vakhavw, input$naam, input$vorm, input$eoi,
+        nchar(input$naam) > 0, nchar(input$eoi) > 0)
 
-    if (nchar(trimws(input$naam)) == 0) {
-      showNotification("Selecteer een opleidingsnaam.", type = "warning")
-      return()
-    }
-
+    log_text("")
     pdf_path(NULL)
+    is_running(TRUE)
 
     withCallingHandlers(
       tryCatch({
@@ -89,32 +126,42 @@ server <- function(input, output, session) {
           data_ev        = data_ev,
           data_vakhavw   = data_vakhavw,
           opleidingsnaam = input$naam,
-          eoi            = input$eoi,
+          eoi            = as.integer(input$eoi),
           opleidingsvorm = input$vorm,
           generate_pdf   = TRUE,
           cleanup_temp   = FALSE
         )
+
+        is_running(FALSE)
 
         if (!is.null(result$pdf_path) && file.exists(result$pdf_path)) {
           pdf_path(result$pdf_path)
         }
 
       }, error = function(e) {
-        showNotification(paste("Fout:", conditionMessage(e)), type = "error",
-                         duration = NULL)
+        is_running(FALSE)
+        showNotification(
+          paste("Fout:", strip_ansi(conditionMessage(e))),
+          type = "error", duration = NULL
+        )
       }),
       message = function(m) {
-        shiny::updateTextAreaInput(session, "log",
-          value = paste0(isolate(input$log), conditionMessage(m)))
+        log_text(paste0(log_text(), conditionMessage(m)))
         invokeRestart("muffleMessage")
       }
     )
   })
 
-  output$log <- renderText({
-    input$run
-    ""
+  output$status_ui <- renderUI({
+    if (is_running()) {
+      div(
+        class = "alert alert-info p-2 mb-0",
+        icon("spinner", class = "fa-spin"), " Analyse bezig, even geduld..."
+      )
+    }
   })
+
+  output$log <- renderText({ log_text() })
 
   output$download_ui <- renderUI({
     if (!is.null(pdf_path())) {

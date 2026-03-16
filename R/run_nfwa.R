@@ -184,7 +184,7 @@ run_nfwa <- function(df,
     n_students = nrow(df),
     best_model = best_model,
     model_auc = as.numeric(
-      workflowsets::collect_metrics(last_fit) |>
+      tune::collect_metrics(last_fit) |>
       dplyr::filter(.metric == "roc_auc") |>
       dplyr::pull(.estimate)
     ),

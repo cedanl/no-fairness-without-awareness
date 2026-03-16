@@ -15,6 +15,7 @@ Over deze methode heeft lector, Dr. Theo Bakker, zijn intreerede uitgesproken op
 ## Features
 
 - **Complete analyse in één functie** - `analyze_fairness()` voert alle stappen automatisch uit
+- **Interactieve webinterface** - `run_app()` opent een Shiny app voor gebruik zonder R-kennis
 - **Automatische data transformatie** - Van 1CHO data naar analyse-klaar formaat
 - **Machine learning modellen** - Logistic Regression en Random Forest voor prognoses
 - **Fairness-metrieken** - Equal Opportunity, Predictive Parity, Accuracy Equality, Statistical Parity
@@ -65,6 +66,22 @@ Als je **PDF rapporten** wilt genereren, moet je Quarto installeren:
 - Herstart R/RStudio na Quarto installatie
 - Op Windows: Zorg dat je account admin rechten had bij de installatie
 - Geen Quarto? Zet `generate_pdf = FALSE` in `analyze_fairness()` en voer alleen analyses uit
+
+### Snelstart: Shiny app (geen R-kennis vereist)
+
+Voor beleidsmakers en bestuurders die de analyse willen uitvoeren zonder R te leren:
+
+```r
+library(nfwa)
+
+# Installeer de Shiny dependencies indien nodig
+install.packages(c("shiny", "bslib"))
+
+# Open de webinterface
+run_app()
+```
+
+De app opent in je browser. Upload je EV en VAKHAVW bestanden, selecteer de opleiding en het instroomcohort, en download het PDF rapport.
 
 ### Snelstart: Complete analyse in één functie
 
@@ -209,6 +226,7 @@ browseVignettes("nfwa")
 
 | Functie | Beschrijving |
 |---------|--------------|
+| `run_app()` | Open de Shiny webinterface (geen R-kennis vereist) |
 | `analyze_fairness()` | Complete analyse in één functie (AANBEVOLEN) |
 | `read_metadata()` | Laad package metadata |
 | `transform_data()` | Transformeer ruwe 1CHO data |

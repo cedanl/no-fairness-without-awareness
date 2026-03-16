@@ -1,6 +1,8 @@
 library(shiny)
 library(bslib)
 
+options(shiny.maxRequestSize = 500 * 1024^2)
+
 ui <- page_sidebar(
   title = "NFWA - Kansengelijkheidsanalyse",
   theme = bs_theme(version = 5, bootswatch = "flatly"),
@@ -11,8 +13,7 @@ ui <- page_sidebar(
     fileInput("vakhavw", "VAKHAVW bestand (.csv)", accept = ".csv"),
     hr(),
     h6("Opleidingsgegevens", class = "text-muted fw-bold"),
-    textInput("naam", "Opleidingsnaam",
-              placeholder = "bijv. International Business Administration"),
+    selectInput("naam", "Opleidingsnaam", choices = c("Upload eerst een EV bestand" = "")),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
     numericInput("eoi", "EOI (cohort jaar)", value = 2020, min = 2000, max = 2030,
                  step = 1),
@@ -32,6 +33,7 @@ server <- function(input, output, session) {
 
   pdf_path <- reactiveVal(NULL)
   session_dir <- file.path(tempdir(), paste0("nfwa_", session$token))
+  metadata <- nfwa::read_metadata()
 
   session$onSessionEnded(function() {
     if (dir.exists(session_dir)) {
@@ -39,11 +41,34 @@ server <- function(input, output, session) {
     }
   })
 
+  # Populate opleiding dropdown from uploaded EV file
+  observeEvent(input$ev, {
+    req(input$ev)
+    tryCatch({
+      ev_raw <- read.csv(input$ev$datapath, sep = ";", stringsAsFactors = FALSE)
+      ev_clean <- janitor::clean_names(ev_raw)
+
+      opleidingen <- ev_clean |>
+        dplyr::left_join(metadata$dec_isat, by = "opleidingscode") |>
+        dplyr::pull(naam_opleiding) |>
+        unique() |>
+        sort() |>
+        (\(x) x[!is.na(x)])()
+
+      updateSelectInput(session, "naam", choices = opleidingen)
+    }, error = function(e) {
+      showNotification(
+        paste("Kon opleidingen niet laden uit EV bestand:", conditionMessage(e)),
+        type = "warning"
+      )
+    })
+  })
+
   observeEvent(input$run, {
     req(input$ev, input$vakhavw, input$naam, input$vorm, input$eoi)
 
     if (nchar(trimws(input$naam)) == 0) {
-      showNotification("Vul een opleidingsnaam in.", type = "warning")
+      showNotification("Selecteer een opleidingsnaam.", type = "warning")
       return()
     }
 
@@ -61,13 +86,13 @@ server <- function(input, output, session) {
         on.exit(setwd(old_wd), add = TRUE)
 
         result <- nfwa::analyze_fairness(
-          data_ev       = data_ev,
-          data_vakhavw  = data_vakhavw,
-          opleidingsnaam = trimws(input$naam),
-          eoi           = input$eoi,
+          data_ev        = data_ev,
+          data_vakhavw   = data_vakhavw,
+          opleidingsnaam = input$naam,
+          eoi            = input$eoi,
           opleidingsvorm = input$vorm,
-          generate_pdf  = TRUE,
-          cleanup_temp  = FALSE
+          generate_pdf   = TRUE,
+          cleanup_temp   = FALSE
         )
 
         if (!is.null(result$pdf_path) && file.exists(result$pdf_path)) {
@@ -102,7 +127,7 @@ server <- function(input, output, session) {
     filename = function() {
       paste0(
         "kansengelijkheidanalysis_",
-        gsub(" ", "_", tolower(trimws(input$naam))),
+        gsub(" ", "_", tolower(input$naam)),
         "_", input$vorm, ".pdf"
       )
     },

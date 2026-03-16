@@ -50,9 +50,12 @@ Imports:
     quarto,
     ranger
 Suggests:
+    bslib,
     fs,
     knitr,
     rmarkdown,
+    shiny,
+    shinyFiles,
     testthat (>= 3.0.0),
     tidymodels
 VignetteBuilder: knitr

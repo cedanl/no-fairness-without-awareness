@@ -95,20 +95,44 @@ run_nfwa <- function(df,
   
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
-    
-    # Privileged group = most common subgroup
-    privileged <- get_largest_group(df, var)
-    
+
+    # Exclude subgroups that would produce NA fairness metrics:
+    # - fewer than 10 observations, or
+    # - no variance in retentie (all retained or all not retained)
+    # fairmodels skips NA values in the protected column automatically.
+    degenerate <- df |>
+      dplyr::group_by(.data[[var]]) |>
+      dplyr::summarise(
+        n        = dplyr::n(),
+        all_same = dplyr::n_distinct(retentie) == 1,
+        .groups  = "drop"
+      ) |>
+      dplyr::filter(n < 10 | all_same) |>
+      dplyr::pull(.data[[var]]) |>
+      as.character()
+
+    df_fair <- df
+    if (length(degenerate) > 0) {
+      df_fair[[var]] <- ifelse(
+        as.character(df_fair[[var]]) %in% degenerate,
+        NA_character_,
+        as.character(df_fair[[var]])
+      )
+    }
+
+    # Privileged group = most common non-degenerate subgroup
+    privileged <- get_largest_group(df_fair[!is.na(df_fair[[var]]), ], var)
+
     # Fairness object
     fairness_object <- get_obj_fairness(
-      df          = df,
+      df          = df_fair,
       explainer   = explainer,
-      var   = var,
+      var         = var,
       privileged  = privileged,
       cutoff      = cutoff
     )
-    
-    n_categories <- length(unique(df[[var]])) - 1
+
+    n_categories <- length(unique(stats::na.omit(df_fair[[var]]))) - 1
     
     ## . ####
     ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -145,7 +169,7 @@ run_nfwa <- function(df,
         )
     
     # Fairness check data
-    df_fairness_check_data <- get_df_fairness_check_data(df, fairness_object[["fairness_check_data"]], var)
+    df_fairness_check_data <- get_df_fairness_check_data(df_fair, fairness_object[["fairness_check_data"]], var)
     
     df_fairness_list[[i]] <- df_fairness_check_data |>
       dplyr::mutate(

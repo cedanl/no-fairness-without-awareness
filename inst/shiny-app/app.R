@@ -1,7 +1,7 @@
 library(shiny)
 library(bslib)
 
-options(shiny.maxRequestSize = 500 * 1024^2)
+options(shiny.maxRequestSize = 50 * 1024^2)
 
 strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
 
@@ -110,6 +110,10 @@ server <- function(input, output, session) {
 
     # withProgress writes directly to the WebSocket before R blocks,
     # so the user sees feedback immediately during the long computation.
+    dir.create(session_dir, showWarnings = FALSE, recursive = TRUE)
+    old_wd <- setwd(session_dir)
+    on.exit(setwd(old_wd), add = TRUE)
+
     withProgress(
       message = paste0("Analyseren: ", input$naam, " (", input$vorm, ")"),
       detail  = "Dit kan enkele minuten duren...",
@@ -117,16 +121,11 @@ server <- function(input, output, session) {
       {
         withCallingHandlers(
           tryCatch({
-            dir.create(session_dir, showWarnings = FALSE, recursive = TRUE)
-
             incProgress(0.05, detail = "Bestanden inlezen...")
             data_ev <- read.csv(input$ev$datapath, sep = ";",
                                 stringsAsFactors = FALSE)
             data_vakhavw <- read.csv(input$vakhavw$datapath, sep = ";",
                                      stringsAsFactors = FALSE)
-
-            old_wd <- setwd(session_dir)
-            on.exit(setwd(old_wd), add = TRUE)
 
             incProgress(0.10, detail = "Data transformeren...")
 
@@ -173,7 +172,7 @@ server <- function(input, output, session) {
   output$download <- downloadHandler(
     filename = function() {
       paste0(
-        "kansengelijkheidanalysis_",
+        "kansengelijkheidsanalyse_",
         gsub(" ", "_", tolower(input$naam)),
         "_", input$vorm, ".pdf"
       )

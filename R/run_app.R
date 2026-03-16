@@ -20,7 +20,7 @@
 #' Installeer ze indien nodig met:
 #' \code{install.packages(c("shiny", "bslib"))}
 #'
-#' @seealso \code{\link{analyze_fairness}} voor directe gebruik vanuit R.
+#' @seealso \code{\link{analyze_fairness}} voor direct gebruik vanuit R.
 #'
 #' @export
 #'

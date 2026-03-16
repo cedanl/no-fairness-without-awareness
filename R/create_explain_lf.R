@@ -49,15 +49,15 @@ create_explain_lf <- function(df, last_fit, best_model) {
   workflow <- last_fit |>
     tune::extract_workflow()
 
-  # Create an explainer
-  DALEX::explain(
-    model = fitted_model,
+  # Create an explainer using the full workflow (includes preprocessing recipe)
+  # so predictions are correct for models that need dummy encoding / normalization
+  DALEXtra::explain_tidymodels(
+    workflow,
     data = df |> dplyr::select(-retentie),
     y = as.numeric(df$retentie),
     colorize = FALSE,
     verbose = FALSE,
-    label = best_model,
-    type = "classification"
+    label = best_model
   )
 
 }

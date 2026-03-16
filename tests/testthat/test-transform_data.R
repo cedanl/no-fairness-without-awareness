@@ -1,14 +1,12 @@
-test_that("transform_data retourneert geldig data frame met demo data", {
-  skip_if_not(
-    file.exists("data/input/EV299XX24_DEMO.csv"),
-    "Demo data niet beschikbaar"
-  )
+ev_path      <- testthat::test_path("../../data/input/EV299XX24_DEMO.csv")
+vakhavw_path <- testthat::test_path("../../data/input/VAKHAVW_99XX_DEMO.csv")
 
-  data_ev      <- read.csv("data/input/EV299XX24_DEMO.csv", sep = ";")
-  data_vakhavw <- read.csv("data/input/VAKHAVW_99XX_DEMO.csv", sep = ";")
+transform_result <- function() {
+  data_ev      <- read.csv(ev_path, sep = ";")
+  data_vakhavw <- read.csv(vakhavw_path, sep = ";")
   metadata     <- read_metadata()
 
-  result <- transform_data(
+  transform_data(
     metadata       = metadata,
     opleidingsnaam = "B Bedrijfskunde",
     opleidingsvorm = "VT",
@@ -16,6 +14,12 @@ test_that("transform_data retourneert geldig data frame met demo data", {
     data_ev        = data_ev,
     data_vakhavw   = data_vakhavw
   )
+}
+
+test_that("transform_data retourneert geldig data frame met demo data", {
+  skip_if_not(file.exists(ev_path), "Demo data niet beschikbaar")
+
+  result <- transform_result()
 
   expect_true(is.data.frame(result))
   expect_gt(nrow(result), 0)
@@ -24,23 +28,9 @@ test_that("transform_data retourneert geldig data frame met demo data", {
 })
 
 test_that("transform_data bevat alle verwachte modelvariabelen", {
-  skip_if_not(
-    file.exists("data/input/EV299XX24_DEMO.csv"),
-    "Demo data niet beschikbaar"
-  )
+  skip_if_not(file.exists(ev_path), "Demo data niet beschikbaar")
 
-  data_ev      <- read.csv("data/input/EV299XX24_DEMO.csv", sep = ";")
-  data_vakhavw <- read.csv("data/input/VAKHAVW_99XX_DEMO.csv", sep = ";")
-  metadata     <- read_metadata()
-
-  result <- transform_data(
-    metadata       = metadata,
-    opleidingsnaam = "B Bedrijfskunde",
-    opleidingsvorm = "VT",
-    eoi            = 2010,
-    data_ev        = data_ev,
-    data_vakhavw   = data_vakhavw
-  )
+  result <- transform_result()
 
   verwachte_vars <- c(
     "persoonsgebonden_nummer", "inschrijvingsjaar", "geslacht",
@@ -56,23 +46,9 @@ test_that("transform_data bevat alle verwachte modelvariabelen", {
 })
 
 test_that("transform_data bevat geen ontbrekende waarden in numerieke variabelen", {
-  skip_if_not(
-    file.exists("data/input/EV299XX24_DEMO.csv"),
-    "Demo data niet beschikbaar"
-  )
+  skip_if_not(file.exists(ev_path), "Demo data niet beschikbaar")
 
-  data_ev      <- read.csv("data/input/EV299XX24_DEMO.csv", sep = ";")
-  data_vakhavw <- read.csv("data/input/VAKHAVW_99XX_DEMO.csv", sep = ";")
-  metadata     <- read_metadata()
-
-  result <- transform_data(
-    metadata       = metadata,
-    opleidingsnaam = "B Bedrijfskunde",
-    opleidingsvorm = "VT",
-    eoi            = 2010,
-    data_ev        = data_ev,
-    data_vakhavw   = data_vakhavw
-  )
+  result <- transform_result()
 
   numerieke_vars <- names(result)[sapply(result, is.numeric)]
   expect_false(anyNA(result[, numerieke_vars]))

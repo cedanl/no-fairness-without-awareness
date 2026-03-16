@@ -54,8 +54,8 @@ Suggests:
     fs,
     knitr,
     rmarkdown,
+    mockery,
     shiny,
-    shinyFiles,
     testthat (>= 3.0.0),
     tidymodels
 VignetteBuilder: knitr

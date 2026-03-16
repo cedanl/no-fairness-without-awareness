@@ -35,5 +35,5 @@ nfwa::run_app()
 }
 }
 \seealso{
-\code{\link{analyze_fairness}} voor directe gebruik vanuit R.
+\code{\link{analyze_fairness}} voor direct gebruik vanuit R.
 }

@@ -117,7 +117,8 @@ server <- function(input, output, session) {
     on.exit(setwd(old_wd), add = TRUE)
 
     withProgress(
-      message = paste0("Analyseren: ", input$naam, " (", input$vorm, ")"),      detail  = "Dit kan enkele minuten duren...",
+      message = paste0("Analyseren: ", input$naam, " (", input$vorm, ")"),
+      detail  = "Dit kan enkele minuten duren...",
       value   = 0,
       {
         withCallingHandlers(

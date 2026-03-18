@@ -96,10 +96,12 @@ run_nfwa <- function(df,
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
 
-    # Merge subgroups that would produce unreliable fairness metrics into "Overig":
-    # - fewer than 10 observations, or
+    # Remove subgroups that would produce unreliable fairness metrics:
+    # - fewer than 15 observations, or
     # - no variance in retentie (all retained or all not retained)
-    # Using "Overig" instead of NA so they don't appear as "NA" in plots.
+    # Rows are filtered out entirely so they don't appear in fairness plots
+    # at all. Their original labels are preserved in the summary table, which
+    # uses the unmodified df.
     degenerate <- df |>
       dplyr::group_by(.data[[var]]) |>
       dplyr::summarise(
@@ -107,21 +109,17 @@ run_nfwa <- function(df,
         all_same = dplyr::n_distinct(retentie) == 1,
         .groups  = "drop"
       ) |>
-      dplyr::filter(n < 10 | all_same) |>
+      dplyr::filter(n < 15 | all_same) |>
       dplyr::pull(.data[[var]]) |>
       as.character()
 
     df_fair <- df
     if (length(degenerate) > 0) {
-      df_fair[[var]] <- ifelse(
-        as.character(df_fair[[var]]) %in% degenerate,
-        "Overig",
-        as.character(df_fair[[var]])
-      )
+      df_fair <- df_fair[!as.character(df_fair[[var]]) %in% degenerate, ]
     }
 
-    # Privileged group = most common subgroup
-    privileged <- get_largest_group(df_fair[!is.na(df_fair[[var]]), ], var)
+    # Privileged group = most common subgroup among those retained
+    privileged <- get_largest_group(df_fair, var)
 
     # Fairness object
     fairness_object <- get_obj_fairness(

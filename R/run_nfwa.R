@@ -114,6 +114,14 @@ run_nfwa <- function(df,
     df_fair <- df
     if (length(degenerate) > 0) {
       df_fair <- df_fair[!as.character(df_fair[[var]]) %in% degenerate, ]
+      # Drop unused factor levels so fairmodels doesn't include empty groups
+      if (is.factor(df_fair[[var]])) {
+        df_fair[[var]] <- droplevels(df_fair[[var]])
+      }
+      message(
+        "Subgroepen van '", var, "' met minder dan 15 observaties zijn weggelaten ",
+        "uit de fairness analyse: ", paste(sort(degenerate), collapse = ", ")
+      )
     }
 
     # Rebuild the explainer on df_fair so its length matches the protected
@@ -187,7 +195,8 @@ run_nfwa <- function(df,
   ## Create Flextable ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
+  df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables,
+                                           min_group_size = 15)
 
   # Now create a text per variable from the table
   conclusions_list <- list()

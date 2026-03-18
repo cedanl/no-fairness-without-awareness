@@ -96,10 +96,10 @@ run_nfwa <- function(df,
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
 
-    # Exclude subgroups that would produce NA fairness metrics:
+    # Merge subgroups that would produce unreliable fairness metrics into "Overig":
     # - fewer than 10 observations, or
     # - no variance in retentie (all retained or all not retained)
-    # fairmodels skips NA values in the protected column automatically.
+    # Using "Overig" instead of NA so they don't appear as "NA" in plots.
     degenerate <- df |>
       dplyr::group_by(.data[[var]]) |>
       dplyr::summarise(
@@ -115,12 +115,12 @@ run_nfwa <- function(df,
     if (length(degenerate) > 0) {
       df_fair[[var]] <- ifelse(
         as.character(df_fair[[var]]) %in% degenerate,
-        NA_character_,
+        "Overig",
         as.character(df_fair[[var]])
       )
     }
 
-    # Privileged group = most common non-degenerate subgroup
+    # Privileged group = most common subgroup
     privileged <- get_largest_group(df_fair[!is.na(df_fair[[var]]), ], var)
 
     # Fairness object

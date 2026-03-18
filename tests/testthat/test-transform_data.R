@@ -92,3 +92,17 @@ test_that("read_metadata geeft geen dec_vopl of dec_isat meer terug", {
   expect_true("sensitive_variables" %in% names(metadata))
   expect_true("mapping_newname"    %in% names(metadata))
 })
+
+test_that("sensitieve variabelen bevatten geen NA na transformatie", {
+  skip_if_not(file.exists(ev_path), "Enriched demo data niet beschikbaar")
+
+  result   <- transform_result()
+  metadata <- read_metadata()
+
+  for (var in metadata$sensitive_variables) {
+    expect_false(
+      anyNA(result[[var]]),
+      info = paste("NA gevonden in", var)
+    )
+  }
+})

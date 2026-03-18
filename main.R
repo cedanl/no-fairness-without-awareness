@@ -28,18 +28,20 @@ devtools::load_all()
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Opleidingsinformatie
-opleidingsnaam = "B International Business Administration"
+# Gebruik de ISAT-opleidingscode (te vinden in de opleidingscode kolom van je EV-bestand)
+opleidingscode = 56560
+opleidingsnaam = "B Tandheelkunde"
 eoi = 2010
 opleidingsvorm = "VT"
 
-# Laad je 1CHO data
+# Laad je 1CHO enriched data (gegenereerd door het 1cijferho project)
 # Pas de paden aan naar waar jouw bestanden staan!
 data_ev <- read.csv(
-  fs::path("data", "input", "EV299XX24_DEMO.csv"), sep = ";"
+  fs::path("data", "input", "EV299XX24_DEMO_enriched.csv"), sep = ";"
 )
 
 data_vakhavw <- read.csv(
-  fs::path("data", "input", "VAKHAVW_99XX_DEMO.csv"), sep = ";"
+  fs::path("data", "input", "VAKHAVW_99XX_DEMO_enriched.csv"), sep = ";"
 )
 
 ## . ####
@@ -52,6 +54,7 @@ data_vakhavw <- read.csv(
 result <- nfwa::analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
+  opleidingscode = opleidingscode,
   opleidingsnaam = opleidingsnaam,
   eoi = eoi,
   opleidingsvorm = opleidingsvorm,
@@ -94,10 +97,10 @@ result <- nfwa::analyze_fairness(
 # 
 # message("\nData transformeren...")
 # 
-# # Transformeer ruwe 1CHO data naar analyse-klaar formaat
+# # Transformeer 1CHO enriched data naar analyse-klaar formaat
 # df <- nfwa::transform_data(
 #   metadata = metadata,
-#   opleidingsnaam = opleidingsnaam,
+#   opleidingscode = opleidingscode,
 #   opleidingsvorm = opleidingsvorm,
 #   eoi = eoi,
 #   data_ev = data_ev,

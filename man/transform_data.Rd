@@ -6,7 +6,7 @@
 \usage{
 transform_data(
   metadata,
-  opleidingsnaam,
+  opleidingscode,
   opleidingsvorm,
   eoi,
   data_ev,
@@ -17,7 +17,8 @@ transform_data(
 \item{metadata}{Named list met metadatabestanden, zoals geretourneerd
 door [read_metadata()].}
 
-\item{opleidingsnaam}{Character. Naam van de opleiding.}
+\item{opleidingscode}{Numeriek of character. ISAT-opleidingscode om op te
+filteren (bijv. `60048`).}
 
 \item{opleidingsvorm}{Character. Opleidingsvorm (`"VT"`, `"DT"` of
 `"DU"`).}
@@ -25,9 +26,9 @@ door [read_metadata()].}
 \item{eoi}{Numeriek. Eerste jaar aan deze opleiding/instelling
 (minimumwaarde).}
 
-\item{data_ev}{Data frame met ruwe 1CHO-inschrijvingsgegevens (EV-bestand).}
+\item{data_ev}{Data frame met 1CHO-inschrijvingsgegevens (EV-bestand, enriched formaat).}
 
-\item{data_vakhavw}{Data frame met ruwe 1CHO-vakcijfergegevens
+\item{data_vakhavw}{Data frame met 1CHO-vakcijfergegevens
 (VAKHAVW-bestand).}
 }
 \value{

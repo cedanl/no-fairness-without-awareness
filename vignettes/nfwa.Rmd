@@ -45,14 +45,16 @@ if (!tinytex::is_tinytex()) {
 library(nfwa)
 
 # Laad je 1CHO data (CSV bestanden met puntkomma als separator)
-data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_ev <- read.csv("pad/naar/jouw_EV_enriched_bestand.csv", sep = ";")
 data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Voer complete analyse uit met één functie
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
+  opleidingscode = 60048,              # ISAT-opleidingscode (te vinden in EV-bestand)
+  opleidingscode = 60048,
+  opleidingsnaam = "Jouw Opleiding",  # Naam voor het rapport
   eoi = 2020,                          # Eerste jaar aan deze opleiding/instelling
   opleidingsvorm = "VT",               # VT (voltijd), DT (deeltijd), of DU (duaal)
   generate_pdf = TRUE,                 # Genereer PDF rapport
@@ -77,9 +79,10 @@ Deze functie voert automatisch alle stappen uit:
 
 **Parameters:**
 
-- `data_ev`: 1CHO inschrijvingsdata (EV-bestand)
+- `data_ev`: 1CHO inschrijvingsdata (EV-bestand, enriched formaat)
 - `data_vakhavw`: 1CHO vak/cijfer data (VAKHAVW-bestand)
-- `opleidingsnaam`: Naam van de opleiding (bijv. "Informatica")
+- `opleidingscode`: ISAT-opleidingscode voor filtering (bijv. `60048`)
+- `opleidingsnaam`: Naam van de opleiding voor het rapport (bijv. "Informatica")
 - `eoi`: Examenonderdeel identificatie (eerste jaar aan opleiding)
 - `opleidingsvorm`: "VT", "DT", of "DU"
 - `generate_pdf`: Genereer PDF rapport (standaard: `TRUE`)
@@ -113,8 +116,8 @@ metadata <- read_metadata()
 # - sensitive_variables: Variabelen voor fairness-checks (geslacht, vooropleiding, etc.)
 # - dfapcg: APCG-verrijkingsdata (2019)
 # - dfses: SES-verrijkingsdata (2021-2022)
-# - dec_vopl: Decodeertabel vooropleidingen
-# - dec_isat: Decodeertabel ISAT codes
+# Decodering van vooropleidingen en ISAT-codes is verplaatst naar het 1cijferho project.
+# Gebruik het enriched EV-bestand als input.
 ```
 
 **Meegeleverde bestanden:**
@@ -124,7 +127,7 @@ Het package installeert automatisch:
 - ✅ `levels.xlsx` - Labels voor categorische variabelen
 - ✅ `APCG_2019.csv` - Armoede/probleemwijken per postcode
 - ✅ `SES_PC4_2021-2022.csv` - Sociaaleconomische status per postcode
-- ✅ Decodeertabellen voor 1CHO data
+- Decodeertabellen (dec_vopl, dec_isat) zijn verwijderd - decodering hoort in het 1cijferho project
 
 Je kunt direct aan de slag zonder eigen metadata bestanden!
 
@@ -137,15 +140,15 @@ De ruwe 1CHO-data moet worden getransformeerd naar een analyse-klaar formaat.
 ```{r transform}
 # Laad je ruwe 1CHO data
 # Pas de paden aan naar waar jouw bestanden staan
-data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+data_ev <- read.csv("pad/naar/jouw_EV_enriched_bestand.csv", sep = ";")
 data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Transformeer de data
 df <- transform_data(
   metadata = metadata,
-  opleidingsnaam = "Jouw Opleiding",  # Naam van de opleiding
-  opleidingsvorm = "VT",  # VT = Voltijd, DT = Deeltijd, DU = Duaal
-  eoi = 2020,  # Eerste jaar dat studenten aan deze opleiding/instelling konden starten
+  opleidingscode = 60048,  # ISAT-opleidingscode (te vinden in de opleidingscode kolom)
+  opleidingsvorm = "VT",   # VT = Voltijd, DT = Deeltijd, DU = Duaal
+  eoi = 2020,              # Eerste jaar dat studenten aan deze opleiding/instelling konden starten
   data_ev = data_ev,
   data_vakhavw = data_vakhavw
 )
@@ -220,6 +223,7 @@ Genereer een professioneel PDF-rapport met alle resultaten:
 ```{r render_pdf}
 # Genereer PDF rapport (wordt opgeslagen in working directory)
 render_report(
+  opleidingscode = 60048,
   opleidingsnaam = "Jouw Opleiding",
   opleidingsvorm = "VT"
 )
@@ -246,6 +250,7 @@ cleanup_temp()
 
 # Of automatisch tijdens PDF generatie:
 render_report(
+  opleidingscode = 60048,
   opleidingsnaam = "Jouw Opleiding",
   opleidingsvorm = "VT",
   cleanup_temp = TRUE
@@ -317,6 +322,7 @@ run_nfwa(
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
+  opleidingscode = 60048,
   opleidingsnaam = "Jouw Opleiding",
   eoi = 2020,
   opleidingsvorm = "VT",
@@ -328,6 +334,7 @@ result <- analyze_fairness(
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
+  opleidingscode = 60048,
   opleidingsnaam = "Jouw Opleiding",
   eoi = 2020,
   opleidingsvorm = "VT",

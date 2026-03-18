@@ -18,21 +18,22 @@ Een named list met de volgende elementen:
     \item{mapping_newname}{Data frame met kolommen `Variable` en
       `Newname` voor hernoeming.}
     \item{df_levels}{Data frame met level-definities per variabele.}
-    \item{dec_vopl}{Data frame met decodering vooropleidingscodes.}
-    \item{dec_isat}{Data frame met decodering ISAT-codes.}
   }
 }
 \description{
 Leest de configuratie- en metadatabestanden die nodig zijn voor de
 NFWA-analyse. Deze bestanden worden automatisch meegeleverd met het
 package en bevatten APCG-data, SES-data, variabelendefinities,
-sensitieve variabelen, naamgeving-mapping, level-definities en
-decodeertabellen voor vooropleidingen en ISAT-codes.
+sensitieve variabelen, naamgeving-mapping en level-definities.
 }
 \details{
 De metadata wordt automatisch geinstalleerd met het package in
 `inst/metadata/`. Je hoeft geen eigen metadata-bestanden aan te
 leveren - `read_metadata()` vindt de bestanden automatisch.
+
+Decodering van vooropleidingscodes (dec_vopl) en ISAT-codes (dec_isat)
+is verwijderd uit dit package. De 1CHO-data die je aanlevert moet al
+volledig gedecodeerd zijn (gebruik het `_enriched` bestand van 1cijferho).
 
 Meegeleverde bestanden:
 \itemize{
@@ -40,7 +41,5 @@ Meegeleverde bestanden:
   \item `levels.xlsx` - Labels voor categorische variabelen
   \item `APCG_2019.csv` - Armoede/probleemwijken per postcode
   \item `SES_PC4_2021-2022.csv` - Sociaaleconomische status per postcode
-  \item `dec/Dec_vopl.csv` - Decodering vooropleidingscodes
-  \item `dec/Dec_isat.csv` - Decodering ISAT-codes
 }
 }

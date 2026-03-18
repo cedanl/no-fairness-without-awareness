@@ -46,14 +46,16 @@ Imports:
     tinytex,
     tune,
     workflows,
-    workflowsets,
     yardstick,
     quarto,
     ranger
 Suggests:
+    bslib,
     fs,
     knitr,
     rmarkdown,
+    mockery,
+    shiny,
     testthat (>= 3.0.0),
     tidymodels
 VignetteBuilder: knitr

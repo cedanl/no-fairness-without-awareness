@@ -163,7 +163,7 @@ metadata_file <- file.path(temp_path, "analysis_metadata.rds")
 if (file.exists(metadata_file)) {
   metadata <- readRDS(metadata_file)
 
-  cat("We trainen twee verschillende typen modellen. Om zeker te weten welke het meest betrouwbaar is voor uw studenten.:\n\n")
+  cat("We trainen twee verschillende typen modellen. Om zeker te weten welke het meest betrouwbaar is voor uw studenten:\n\n")
   cat("**1. Logistische Regressie (met LASSO regularisatie)**\n\n")
   cat("- Dit is een statistische methode die naar verbanden kijkt. Het zoekt uit welke factoren het meest belangrijk zijn voor studiesucces.\n")
   cat("- LASSO betekent dat het alleen de belangrijkste factoren behoudt (rest verwijdert)\n\n")
@@ -194,7 +194,7 @@ Om bias te kunnen meten, hebben we een vergelijkingspunt nodig. We kunnen niet z
 
 **Let op:** In de resultaten tabel wordt de referentiegroep weergegeven als "NTB" (Nader Te Bepalen), omdat deze groep zelf niet op bias kan worden beoordeeld. Het is immers het vergelijkingspunt zelf. Zie ook [Bijlage A: Gedetailleerde visualisaties](#bijlage-a-gedetailleerde-visualisaties) voor een visuele weergave van hoe groepen worden vergeleken met de referentiegroep.
 
-Voor elke gevoelige variabele meten we vier verschillende fairness-metrieken. Deze vier metrieken bieden verschillende perspectieven op kansengelijkheid We gebruiken meerdere metrieken omdat geen enkele metriek alles kan meten - samen geven zij een completer beeld:
+Voor elke gevoelige variabele meten we vier verschillende fairness-metrieken. Deze vier metrieken bieden verschillende perspectieven op kansengelijkheid. We gebruiken meerdere metrieken omdat geen enkele metriek alles kan meten - samen geven zij een completer beeld:
 
 -   **Equal Opportunity**:
     - Vraag: "Geeft het model even veel goede voorspellingen voor succesvolle studenten uit alle groepen?"
@@ -226,7 +226,7 @@ Voor elke kansengelijkheid-metriek berekenen we een verhouding (ratio) ten opzic
 -   Verhouding tussen 0.8 en 1.25: Acceptabel verschil, geen significant verschil gedetecteerd
 
 
-Om te bepalen of er kansongelijkheid is gebruiken we in deze analyse gebruiken een conservatieve aanpak: alleen als twee of meer van de vier kansengelijkheidsmetrieken een verhouding < 0.8 of > 1.25 hebben, bepalen we dat deze groep te maken heeft met bias ("Ja" in het resultaatoverzicht). Dit minimaliseert vals-positieve bevindingen.
+Om te bepalen of er kansongelijkheid is gebruiken we in deze analyse een conservatieve aanpak: alleen als twee of meer van de vier kansengelijkheidsmetrieken een verhouding < 0.8 of > 1.25 hebben, bepalen we dat deze groep te maken heeft met bias ("Ja" in het resultaatoverzicht). Dit minimaliseert vals-positieve bevindingen.
 
 Voor meer uitleg over deze termen, zie [Bijlage B: Glossarium](#bijlage-b-glossarium).
 

@@ -4,7 +4,14 @@
 \alias{run_nfwa}
 \title{Voer de volledige NFWA fairness-analyse uit}
 \usage{
-run_nfwa(df, df_levels, sensitive_variables, cutoff = 0.2, caption = NULL, eoi = NULL)
+run_nfwa(
+  df,
+  df_levels,
+  sensitive_variables,
+  cutoff = 0.2,
+  caption = NULL,
+  eoi = NULL
+)
 }
 \arguments{
 \item{df}{Data frame met de analyse-data. Moet de kolom `retentie`

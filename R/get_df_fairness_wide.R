@@ -60,7 +60,8 @@ get_levels <- function(df, formal = FALSE) {
 get_df_fairness_wide <- function(df_list,
                                  df_data,
                                  df_levels,
-                                 sensitive_variables) {
+                                 sensitive_variables,
+                                 min_group_size = 1) {
   levels <- get_levels(df_levels)
   ## Create a dataframe with the variables based on sensitive_variables
   df_vars <- do.call(rbind, lapply(names(levels), function(group) {
@@ -168,7 +169,7 @@ get_df_fairness_wide <- function(df_list,
     dplyr::select(Variabele, Groep, N, tidyselect::everything()) |>
     dplyr::mutate(N = tidyr::replace_na(N, 0), Perc = tidyr::replace_na(Perc, 0)) |>
     dplyr::mutate(Perc = format(Perc, decimal.mark = ",", nsmall = 1)) |>
-    dplyr::filter(N > 0) |>
+    dplyr::filter(N >= min_group_size) |>
     dplyr::select(Variabele,
            Groep,
            N,

@@ -1,5 +1,14 @@
 # nfwa 0.2.0 (Development)
 
+## Breaking Changes
+
+* **Decodering verwijderd uit package (Issue #15)** - nfwa decodeert geen vooropleidings- of ISAT-codes meer; die verantwoordelijkheid ligt nu bij het 1cijferho project.
+  * `analyze_fairness()` en `transform_data()` accepteren nu een `opleidingscode` (ISAT-code) in plaats van `opleidingsnaam` voor het filteren van data
+  * `opleidingsnaam` blijft beschikbaar als display-parameter voor het PDF rapport
+  * De EV-data moet het enriched formaat zijn (kolom `hoogste_vooropleiding_omschrijving` gevuld)
+  * `Dec_vopl.csv` en `Dec_isat.csv` zijn verwijderd uit `inst/metadata/dec/`
+  * `read_metadata()` geeft geen `dec_vopl` of `dec_isat` meer terug
+
 ## Major Improvements
 
 * **EOI Parameter** - EOI (Eerste jaar Opleiding/Instelling) nu zichtbaar in rapporten

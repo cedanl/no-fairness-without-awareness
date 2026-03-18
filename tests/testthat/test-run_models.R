@@ -1,5 +1,5 @@
-ev_path      <- testthat::test_path("../../data/input/EV299XX24_DEMO.csv")
-vakhavw_path <- testthat::test_path("../../data/input/VAKHAVW_99XX_DEMO.csv")
+ev_path      <- testthat::test_path("../../data/input/EV299XX24_DEMO_enriched.csv")
+vakhavw_path <- testthat::test_path("../../data/input/VAKHAVW_99XX_DEMO_enriched.csv")
 
 test_that("run_models retourneert list met last_fit en best_model", {
   skip_if_not(file.exists(ev_path), "Demo data niet beschikbaar")
@@ -14,7 +14,7 @@ test_that("run_models retourneert list met last_fit en best_model", {
 
   df <- transform_data(
     metadata       = metadata,
-    opleidingsnaam = "B Bedrijfskunde",
+    opleidingscode = 56560,
     opleidingsvorm = "VT",
     eoi            = 2010,
     data_ev        = data_ev,

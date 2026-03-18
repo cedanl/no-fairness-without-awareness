@@ -4,12 +4,14 @@
 #' analyse uit op 1CHO studiedata. Het combineert data transformatie,
 #' model training, fairness-analyse en optionele PDF rapportage in een functie.
 #'
-#' @param data_ev Data frame met 1CHO inschrijvingsdata (EV-bestand).
+#' @param data_ev Data frame met 1CHO inschrijvingsdata (EV-bestand, enriched formaat).
 #'   Bevat studentgegevens zoals geslacht, vooropleiding, en retentie.
 #' @param data_vakhavw Data frame met 1CHO vak/cijfer data (VAKHAVW-bestand).
 #'   Bevat behaalde cijfers per vak per student.
-#' @param opleidingsnaam Character. Naam van de opleiding
-#'   (bijv. "International Business Administration").
+#' @param opleidingscode Numeriek of character. ISAT-opleidingscode om op te
+#'   filteren (bijv. `60048`). Te vinden in de `opleidingscode` kolom van de EV-data.
+#' @param opleidingsnaam Character. Naam van de opleiding voor het rapport
+#'   (bijv. "International Business Administration"). Niet gebruikt voor filtering.
 #' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
 #' @param opleidingsvorm Character. Vorm van de opleiding: "VT" (voltijd),
 #'   "DT" (deeltijd), of "DU" (duaal).
@@ -59,14 +61,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Laad je 1CHO data (CSV bestanden met puntkomma separator)
-#' data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
+#' # Laad je 1CHO enriched data (CSV bestanden met puntkomma separator)
+#' data_ev <- read.csv("pad/naar/jouw_EV_enriched_bestand.csv", sep = ";")
 #' data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 #'
 #' # Voer complete analyse uit met PDF rapport
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
+#'   opleidingscode = 60048,
 #'   opleidingsnaam = "Jouw Opleiding",
 #'   eoi = 2020,
 #'   opleidingsvorm = "VT",
@@ -81,6 +84,7 @@
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
+#'   opleidingscode = 60048,
 #'   opleidingsnaam = "Jouw Opleiding",
 #'   eoi = 2020,
 #'   opleidingsvorm = "VT",
@@ -90,6 +94,7 @@
 #' }
 analyze_fairness <- function(data_ev,
                               data_vakhavw,
+                              opleidingscode,
                               opleidingsnaam,
                               eoi,
                               opleidingsvorm,
@@ -143,7 +148,7 @@ analyze_fairness <- function(data_ev,
   message("\nStap 2/4: Data transformeren...")
   df <- transform_data(
     metadata = metadata,
-    opleidingsnaam = opleidingsnaam,
+    opleidingscode = opleidingscode,
     opleidingsvorm = opleidingsvorm,
     eoi = eoi,
     data_ev = data_ev,

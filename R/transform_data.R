@@ -27,13 +27,14 @@
 #'
 #' @param metadata Named list met metadatabestanden, zoals geretourneerd
 #'   door [read_metadata()].
-#' @param opleidingsnaam Character. Naam van de opleiding.
+#' @param opleidingscode Numeriek of character. ISAT-opleidingscode om op te
+#'   filteren (bijv. `60048`).
 #' @param opleidingsvorm Character. Opleidingsvorm (`"VT"`, `"DT"` of
 #'   `"DU"`).
 #' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
 #'   (minimumwaarde).
-#' @param data_ev Data frame met ruwe 1CHO-inschrijvingsgegevens (EV-bestand).
-#' @param data_vakhavw Data frame met ruwe 1CHO-vakcijfergegevens
+#' @param data_ev Data frame met 1CHO-inschrijvingsgegevens (EV-bestand, enriched formaat).
+#' @param data_vakhavw Data frame met 1CHO-vakcijfergegevens
 #'   (VAKHAVW-bestand).
 #'
 #' @return Een data frame met getransformeerde en geimputeerde data,
@@ -42,17 +43,15 @@
 #' @importFrom dplyr mutate across select all_of where
 #' @export
 transform_data <- function(metadata,
-                           opleidingsnaam,
+                           opleidingscode,
                            opleidingsvorm,
                            eoi,
                            data_ev,
                            data_vakhavw) {
-  
+
   dfapcg <- metadata$dfapcg
   dfses <- metadata$dfses
   variables <- metadata$variables
-  dec_vopl <- metadata$dec_vopl
-  dec_isat <- metadata$dec_isat
 
 
   #-------------------------------------------------------------------
@@ -60,11 +59,9 @@ transform_data <- function(metadata,
   #-------------------------------------------------------------------
   data_ev <- transform_ev_data(
     data_ev,
-    naam = opleidingsnaam,
+    code = opleidingscode,
     eoi  = eoi,
-    vorm = opleidingsvorm,
-    dec_vopl = dec_vopl,
-    dec_isat = dec_isat
+    vorm = opleidingsvorm
   )
 
   data_vakhavw <- transform_vakhavw(data_vakhavw)

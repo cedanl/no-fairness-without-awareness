@@ -84,22 +84,23 @@ run_nfwa <- function(df,
   ## Create Explain LF ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  explainer <- create_explain_lf(df, last_fit, best_model)
-
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Analyses ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  df_fairness_list <- list()
-  
+  df_fairness_list  <- list()
+  omitted_groups    <- list()
+
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
 
-    # Exclude subgroups that would produce NA fairness metrics:
-    # - fewer than 10 observations, or
+    # Remove subgroups that would produce unreliable fairness metrics:
+    # - fewer than 15 observations, or
     # - no variance in retentie (all retained or all not retained)
-    # fairmodels skips NA values in the protected column automatically.
+    # Rows are filtered out entirely so they don't appear in fairness plots
+    # at all. Their original labels are preserved in the summary table, which
+    # uses the unmodified df.
     degenerate <- df |>
       dplyr::group_by(.data[[var]]) |>
       dplyr::summarise(
@@ -107,21 +108,42 @@ run_nfwa <- function(df,
         all_same = dplyr::n_distinct(retentie) == 1,
         .groups  = "drop"
       ) |>
-      dplyr::filter(n < 10 | all_same) |>
+      dplyr::filter(n < 15 | all_same) |>
       dplyr::pull(.data[[var]]) |>
       as.character()
 
     df_fair <- df
     if (length(degenerate) > 0) {
-      df_fair[[var]] <- ifelse(
-        as.character(df_fair[[var]]) %in% degenerate,
-        NA_character_,
-        as.character(df_fair[[var]])
+      df_fair <- df_fair[!as.character(df_fair[[var]]) %in% degenerate, ]
+      # Drop unused factor levels so fairmodels doesn't include empty groups
+      if (is.factor(df_fair[[var]])) {
+        df_fair[[var]] <- droplevels(df_fair[[var]])
+      }
+      omitted_groups[[var]] <- sort(degenerate)
+      message(
+        "Subgroepen van '", var, "' met minder dan 15 observaties zijn weggelaten ",
+        "uit de fairness analyse: ", paste(sort(degenerate), collapse = ", ")
       )
     }
 
-    # Privileged group = most common non-degenerate subgroup
-    privileged <- get_largest_group(df_fair[!is.na(df_fair[[var]]), ], var)
+    # After filtering, we need at least 2 groups (privileged + at least one
+    # other) to produce meaningful fairness plots. Skip if only 1 remains.
+    n_remaining <- length(unique(stats::na.omit(df_fair[[var]])))
+    if (n_remaining < 2) {
+      message(
+        "Variabele '", var, "' heeft na filtering maar ", n_remaining,
+        " groep(en) over. Fairness-analyse overgeslagen."
+      )
+      next
+    }
+
+    # Rebuild the explainer on df_fair so its length matches the protected
+    # column. Model training already happened once above; this only reruns
+    # predictions on the filtered rows, which is fast.
+    explainer <- create_explain_lf(df_fair, last_fit, best_model)
+
+    # Privileged group = most common subgroup among those retained
+    privileged <- get_largest_group(df_fair, var)
 
     # Fairness object
     fairness_object <- get_obj_fairness(
@@ -186,7 +208,8 @@ run_nfwa <- function(df,
   ## Create Flextable ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables)
+  df_fairness_wide <- get_df_fairness_wide(df_fairness_list, df, df_levels, sensitive_variables,
+                                           min_group_size = 15)
 
   # Now create a text per variable from the table
   conclusions_list <- list()
@@ -195,6 +218,7 @@ run_nfwa <- function(df,
   }
 
   saveRDS(conclusions_list, file = "temp/conclusions_list.rds")
+  saveRDS(omitted_groups,   file = "temp/omitted_groups.rds")
 
 
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>

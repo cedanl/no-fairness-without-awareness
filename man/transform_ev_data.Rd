@@ -4,24 +4,20 @@
 \alias{transform_ev_data}
 \title{Transformeer inschrijvingsgegevens (EV-data)}
 \usage{
-transform_ev_data(df, naam, eoi, vorm, dec_vopl, dec_isat)
+transform_ev_data(df, code, eoi, vorm)
 }
 \arguments{
-\item{df}{Data frame met ruwe inschrijvingsgegevens (1CHO EV-data).}
+\item{df}{Data frame met inschrijvingsgegevens (1CHO EV-data, enriched formaat).
+De kolom `hoogste_vooropleiding_omschrijving` moet al gevuld zijn met de
+gedecodeerde vooropleiding-omschrijving vanuit 1cijferho.}
 
-\item{naam}{Character. Naam van de opleiding om op te filteren.}
+\item{code}{Numeriek of character. Opleidingscode (ISAT-code) om op te filteren.}
 
 \item{eoi}{Numeriek. Eerste jaar aan deze opleiding/instelling
 (minimumwaarde voor filtering).}
 
 \item{vorm}{Character. Opleidingsvorm: `"VT"` (voltijd), `"DT"`
 (deeltijd) of `"DU"` (duaal).}
-
-\item{dec_vopl}{Data frame met decodering van vooropleidingscodes.
-Moet de kolommen `code_vooropleiding` en
-`omschrijving_vooropleiding` bevatten.}
-
-\item{dec_isat}{Data frame met decodering van ISAT-codes.}
 }
 \value{
 Een data frame met getransformeerde inschrijvingsgegevens,
@@ -31,7 +27,7 @@ Een data frame met getransformeerde inschrijvingsgegevens,
 \description{
 Hoofdtransformatiefunctie voor inschrijvingsgegevens. Filtert op
 opleiding, vorm en startjaar, bepaalt retentie, telt inschrijvingen,
-herkodeert vooropleidingen en classificeert het type aansluiting
+classificeert de vooropleiding en het type aansluiting
 (Direct, Tussenjaar, Switch, etc.).
 }
 \keyword{internal}

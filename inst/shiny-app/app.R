@@ -1,7 +1,7 @@
 library(shiny)
 library(bslib)
 
-options(shiny.maxRequestSize = 50 * 1024^2)
+options(shiny.maxRequestSize = 500 * 1024^2)
 
 strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
 
@@ -15,8 +15,9 @@ ui <- page_sidebar(
     fileInput("vakhavw", "VAKHAVW bestand (.csv)", accept = ".csv"),
     hr(),
     h6("Opleidingsgegevens", class = "text-muted fw-bold"),
-    selectInput("naam", "Opleidingsnaam",
+    selectInput("naam", "Opleidingscode",
                 choices = c("Upload eerst een EV bestand" = "")),
+    textInput("label", "Naam voor rapport (optioneel)", value = ""),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
     selectInput("eoi", "Instroomcohort (EOI)",
                 choices = c("Selecteer eerst een opleiding" = "")),
@@ -53,11 +54,10 @@ server <- function(input, output, session) {
       ev_clean(clean)
 
       opleidingen <- clean |>
-        dplyr::left_join(metadata$dec_isat, by = "opleidingscode") |>
-        dplyr::pull(naam_opleiding) |>
+        dplyr::pull(opleidingscode) |>
         unique() |>
         sort() |>
-        (\(x) x[!is.na(x)])()
+        (\(x) as.character(x[!is.na(x)]))()
 
       updateSelectInput(session, "naam", choices = opleidingen)
     }, error = function(e) {
@@ -73,12 +73,14 @@ server <- function(input, output, session) {
     req(ev_clean(), input$naam, input$vorm, nchar(input$naam) > 0)
     tryCatch({
       jaren <- ev_clean() |>
-        dplyr::left_join(metadata$dec_isat, by = "opleidingscode") |>
         dplyr::mutate(dplyr::across(opleidingsvorm, ~ dplyr::case_when(
-          . == 1 ~ "VT", . == 2 ~ "DT", . == 3 ~ "DU", TRUE ~ as.character(.)
+          . %in% c(1, "1", "voltijd") ~ "VT",
+          . %in% c(2, "2", "deeltijd") ~ "DT",
+          . %in% c(3, "3", "duaal") ~ "DU",
+          TRUE ~ as.character(.)
         ))) |>
         dplyr::filter(
-          naam_opleiding == input$naam,
+          as.character(opleidingscode) == as.character(input$naam),
           opleidingsvorm == input$vorm
         ) |>
         dplyr::pull(eerste_jaar_aan_deze_opleiding_instelling) |>
@@ -129,10 +131,17 @@ server <- function(input, output, session) {
 
             incProgress(0.10, detail = "Data transformeren...")
 
+            rapport_naam <- if (nchar(trimws(input$label)) > 0) {
+              input$label
+            } else {
+              paste0("Opleiding ", input$naam)
+            }
+
             result <- nfwa::analyze_fairness(
               data_ev        = data_ev,
               data_vakhavw   = data_vakhavw,
-              opleidingsnaam = input$naam,
+              opleidingscode = input$naam,
+              opleidingsnaam = rapport_naam,
               eoi            = as.integer(input$eoi),
               opleidingsvorm = input$vorm,
               generate_pdf   = TRUE,

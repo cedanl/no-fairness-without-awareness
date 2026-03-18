@@ -46,6 +46,8 @@ get_levels <- function(df, formal = FALSE) {
 #'   `VAR_Formal_variable` bevatten.
 #' @param sensitive_variables Character vector met namen van sensitieve
 #'   variabelen.
+#' @param min_group_size Integer. Minimale groepsgrootte om op te nemen in het
+#'   resultaat. Groepen met minder observaties worden weggelaten. Standaard `1`.
 #'
 #' @return Een data frame met kolommen: `Variabele`, `Groep`, `Groep_label`,
 #'   `N`, `Perc`, `Bias`, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`

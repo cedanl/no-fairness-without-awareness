@@ -6,6 +6,15 @@
 NULL
 
 utils::globalVariables(c(
+  # rlang / tidyeval
+  ".data",
+
+  # tune / yardstick metrics columns
+  ".estimate", ".metric",
+
+  # summarise-created columns
+  "all_same", "n",
+
   # Data frame column names
   ".pred_0", "aansluiting", "aantal_inschrijvingen", "afkorting_vak",
   "auc", "cbs_apcg_tf", "cijfer_eerste_centraal_examen",
@@ -15,7 +24,10 @@ utils::globalVariables(c(
   "eerste_jaar_in_het_hoger_onderwijs", "gemiddeld_cijfer_cijferlijst",
   "indicatie_eerstejaars_continu_type_ho_binnen_ho",
   "indicatie_eerstejaars_type", "inschrijvingsjaar", "model",
-  "hoogste_vooropleiding_omschrijving", "name", "number", "opleidingscode",
+  "geslacht",
+  "hoogste_vooropleiding_omschrijving",
+  "hoogste_vooropleiding_omschrijving_vooropleiding",
+  "name", "number", "opleidingscode",
   "opleidingsvorm",
   "persoonsgebonden_nummer", "postcodecijfers_student_op_1_oktober",
   "retentie", "score", "ses_pc4", "ses_verslagjaar",

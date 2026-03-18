@@ -84,15 +84,13 @@ run_nfwa <- function(df,
   ## Create Explain LF ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  explainer <- create_explain_lf(df, last_fit, best_model)
-
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## Analyses ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   df_fairness_list <- list()
-  
+
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
 
@@ -117,6 +115,11 @@ run_nfwa <- function(df,
     if (length(degenerate) > 0) {
       df_fair <- df_fair[!as.character(df_fair[[var]]) %in% degenerate, ]
     }
+
+    # Rebuild the explainer on df_fair so its length matches the protected
+    # column. Model training already happened once above; this only reruns
+    # predictions on the filtered rows, which is fast.
+    explainer <- create_explain_lf(df_fair, last_fit, best_model)
 
     # Privileged group = most common subgroup among those retained
     privileged <- get_largest_group(df_fair, var)

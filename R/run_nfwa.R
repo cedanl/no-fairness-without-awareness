@@ -89,7 +89,8 @@ run_nfwa <- function(df,
   ## Analyses ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  df_fairness_list <- list()
+  df_fairness_list  <- list()
+  omitted_groups    <- list()
 
   for (i in seq_along(sensitive_variables)) {
     var <- sensitive_variables[i]
@@ -118,10 +119,22 @@ run_nfwa <- function(df,
       if (is.factor(df_fair[[var]])) {
         df_fair[[var]] <- droplevels(df_fair[[var]])
       }
+      omitted_groups[[var]] <- sort(degenerate)
       message(
         "Subgroepen van '", var, "' met minder dan 15 observaties zijn weggelaten ",
         "uit de fairness analyse: ", paste(sort(degenerate), collapse = ", ")
       )
+    }
+
+    # After filtering, we need at least 2 groups (privileged + at least one
+    # other) to produce meaningful fairness plots. Skip if only 1 remains.
+    n_remaining <- length(unique(stats::na.omit(df_fair[[var]])))
+    if (n_remaining < 2) {
+      message(
+        "Variabele '", var, "' heeft na filtering maar ", n_remaining,
+        " groep(en) over. Fairness-analyse overgeslagen."
+      )
+      next
     }
 
     # Rebuild the explainer on df_fair so its length matches the protected
@@ -205,6 +218,7 @@ run_nfwa <- function(df,
   }
 
   saveRDS(conclusions_list, file = "temp/conclusions_list.rds")
+  saveRDS(omitted_groups,   file = "temp/omitted_groups.rds")
 
 
   ft_fairness <- get_ft_fairness(flextable::flextable(df_fairness_wide |>

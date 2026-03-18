@@ -122,7 +122,7 @@ transform_ev_data <- function(df, code, eoi, vorm) {
     dplyr::mutate(dubbele_studie = ifelse(aantal_inschrijvingen > 1, TRUE, FALSE)) |>
 
     ## Make postcode integer
-    dplyr::mutate(dplyr::across(postcodecijfers_student_op_1_oktober, ~ as.integer(.))) |>
+    dplyr::mutate(dplyr::across(postcodecijfers_student_op_1_oktober, ~ suppressWarnings(as.integer(.)))) |>
 
     dplyr::mutate(
       ## Classify vooropleiding from already-decoded omschrijving column
@@ -139,10 +139,10 @@ transform_ev_data <- function(df, code, eoi, vorm) {
     ) |>
     dplyr::mutate(
       # Zorg dat jaarvelden numeriek zijn
-      inschrijvingsjaar                  = as.integer(inschrijvingsjaar),
-      diplomajaar_hoogste_vooropleiding  = as.integer(diplomajaar_hoogste_vooropleiding),
-      eerste_jaar_in_het_hoger_onderwijs = as.integer(eerste_jaar_in_het_hoger_onderwijs),
-      eerste_jaar_aan_deze_instelling    = as.integer(eerste_jaar_aan_deze_instelling)
+      inschrijvingsjaar                  = suppressWarnings(as.integer(inschrijvingsjaar)),
+      diplomajaar_hoogste_vooropleiding  = suppressWarnings(as.integer(diplomajaar_hoogste_vooropleiding)),
+      eerste_jaar_in_het_hoger_onderwijs = suppressWarnings(as.integer(eerste_jaar_in_het_hoger_onderwijs)),
+      eerste_jaar_aan_deze_instelling    = suppressWarnings(as.integer(eerste_jaar_aan_deze_instelling))
 
     ) |>
     dplyr::mutate(

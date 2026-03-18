@@ -232,11 +232,25 @@ Voor meer uitleg over deze termen, zie [Bijlage B: Glossarium](#bijlage-b-glossa
 
 ### Belangrijke overwegingen: Minimale groepsgrootte
 
-We hanteren een minimum van 15 studenten per categorie om betrouwbare conclusies te kunnen trekken:
+We hanteren een minimum van 15 studenten per categorie om betrouwbare conclusies te kunnen trekken. Met minder dan 15 studenten is het statistisch onbetrouwbaar om uitspraken te doen over bias. Groepen die onder deze drempelwaarde vallen zijn volledig weggelaten uit de fairness-analyse en het resultaatoverzicht. Dit betekent niet dat er geen bias is, maar dat we het niet kunnen vaststellen vanwege te weinig data.
 
--   Met minder dan 15 studenten is het statistisch onbetrouwbaar (net zoals een enquête onder slechts 5 mensen niet representatief is)
--   Kleinere groepen worden wel in het rapport opgenomen, maar krijgen het label "Data laag".
--   Dit betekent niet dat er geen bias is, maar dat we het niet zeker kunnen zeggen vanwege te weinig data
+```{r}
+#| echo: false
+#| results: asis
+
+omitted_groups_path <- file.path(params$temp_dir, "omitted_groups.rds")
+omitted_groups <- if (file.exists(omitted_groups_path)) readRDS(omitted_groups_path) else list()
+
+if (length(omitted_groups) > 0) {
+  cat("De volgende groepen zijn weggelaten uit de analyse omdat ze minder dan 15 observaties bevatten:\n\n")
+  for (var in names(omitted_groups)) {
+    groups <- paste(omitted_groups[[var]], collapse = ", ")
+    cat(paste0("-   **", stringr::str_to_title(var), "**: ", groups, "\n"))
+  }
+} else {
+  cat("Alle groepen hadden 15 of meer observaties. Er zijn geen groepen weggelaten.\n")
+}
+```
 
 
 \newpage

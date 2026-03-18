@@ -1,7 +1,7 @@
 library(shiny)
 library(bslib)
 
-options(shiny.maxRequestSize = 50 * 1024^2)
+options(shiny.maxRequestSize = 500 * 1024^2)
 
 strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
 

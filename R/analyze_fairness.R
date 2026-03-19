@@ -170,16 +170,31 @@ analyze_fairness <- function(data_ev,
   message("  - ", nrow(df), " studenten in analyse")
   message("  - Retentie: ", retentie_pct, "%")
 
-  # Retentie moet variatie hebben, anders kan het model niet trainen
-  if (retentie_pct == 0 || retentie_pct == 100) {
+  # Retentie moet voldoende variatie hebben om te trainen.
+  # Met een 60/20/20 split en 10-fold CV heeft de kleinste klasse
+  # minimaal ~10 observaties nodig om niet leeg te zijn in een fold.
+  n_retentie   <- sum(df$retentie == 1)
+  n_uitval     <- sum(df$retentie == 0)
+  n_minderheid <- min(n_retentie, n_uitval)
+
+  if (n_minderheid == 0) {
     stop(
       "Analyse gestopt: retentie is ", retentie_pct, "% (geen variatie).\n",
       "Het model kan niet trainen als alle studenten hetzelfde resultaat hebben.\n",
-      "Oorzaak: met eoi >= ", eoi, " zijn er ", nrow(df), " studenten, ",
-      "maar geen van hen heeft een tweede inschrijvingsjaar (retentie = 0%) ",
-      "of allemaal wel (retentie = 100%).\n",
       "Oplossing: kies een eerder instroomcohort (lagere eoi) zodat er meer ",
       "jaargangen met volledige retentiedata worden meegenomen.",
+      call. = FALSE
+    )
+  }
+
+  if (n_minderheid < 10) {
+    stop(
+      "Analyse gestopt: te weinig studenten in de kleinste groep.\n",
+      "  Retentie: ", n_retentie, " studenten | Uitval: ", n_uitval, " studenten\n",
+      "De kleinste groep heeft slechts ", n_minderheid, " studenten. ",
+      "Het model heeft minimaal 10 nodig om betrouwbaar te kunnen trainen.\n",
+      "Oplossing: kies een eerder instroomcohort (lagere eoi) om meer ",
+      "studenten mee te nemen.",
       call. = FALSE
     )
   }

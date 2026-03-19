@@ -4,17 +4,19 @@
 \alias{transform_ev_data}
 \title{Transformeer inschrijvingsgegevens (EV-data)}
 \usage{
-transform_ev_data(df, code, eoi, vorm)
+transform_ev_data(df, naam, eoi, vorm)
 }
 \arguments{
 \item{df}{Data frame met inschrijvingsgegevens (1CHO EV-data, enriched formaat).
 De kolom `hoogste_vooropleiding_omschrijving` moet al gevuld zijn met de
 gedecodeerde vooropleiding-omschrijving vanuit 1cijferho.}
 
-\item{code}{Numeriek of character. Opleidingscode (ISAT-code) om op te filteren.}
+\item{naam}{Character. Naam van de opleiding zoals deze voorkomt in de
+kolom `opleidingscode_naam_opleiding` van de enriched data
+(bijv. `"B Tandheelkunde"`).}
 
-\item{eoi}{Numeriek. Eerste jaar aan deze opleiding/instelling
-(minimumwaarde voor filtering).}
+\item{eoi}{Numeriek. Minimaal instroomcohort. Alleen studenten die in dit
+jaar of later zijn gestart worden meegenomen.}
 
 \item{vorm}{Character. Opleidingsvorm: `"VT"` (voltijd), `"DT"`
 (deeltijd) of `"DU"` (duaal).}

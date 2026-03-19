@@ -4,8 +4,13 @@
 \alias{get_df_fairness_wide}
 \title{Converteer fairness-analyselijst naar een breed data frame}
 \usage{
-get_df_fairness_wide(df_list, df_data, df_levels, sensitive_variables,
-  min_group_size = 1)
+get_df_fairness_wide(
+  df_list,
+  df_data,
+  df_levels,
+  sensitive_variables,
+  min_group_size = 1
+)
 }
 \arguments{
 \item{df_list}{List van data frames met fairness-checkdata per variabele.
@@ -23,7 +28,7 @@ kolommen `VAR_Level_NL`, `VAR_Level_label_NL_description` en
 variabelen.}
 
 \item{min_group_size}{Integer. Minimale groepsgrootte om op te nemen in het
-resultaat. Groepen met minder observaties worden weggelaten. Standaard \code{1}.}
+resultaat. Groepen met minder observaties worden weggelaten. Standaard `1`.}
 }
 \value{
 Een data frame met kolommen: `Variabele`, `Groep`, `Groep_label`,

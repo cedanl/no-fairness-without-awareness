@@ -166,6 +166,24 @@ analyze_fairness <- function(data_ev,
     )
   }
 
+  retentie_pct <- round(mean(df$retentie) * 100, 1)
+  message("  - ", nrow(df), " studenten in analyse")
+  message("  - Retentie: ", retentie_pct, "%")
+
+  # Retentie moet variatie hebben, anders kan het model niet trainen
+  if (retentie_pct == 0 || retentie_pct == 100) {
+    stop(
+      "Analyse gestopt: retentie is ", retentie_pct, "% (geen variatie).\n",
+      "Het model kan niet trainen als alle studenten hetzelfde resultaat hebben.\n",
+      "Oorzaak: met eoi >= ", eoi, " zijn er ", nrow(df), " studenten, ",
+      "maar geen van hen heeft een tweede inschrijvingsjaar (retentie = 0%) ",
+      "of allemaal wel (retentie = 100%).\n",
+      "Oplossing: kies een eerder instroomcohort (lagere eoi) zodat er meer ",
+      "jaargangen met volledige retentiedata worden meegenomen.",
+      call. = FALSE
+    )
+  }
+
   # Check of er voldoende studenten zijn per sensitieve variabele.
   # De fairness analyse vereist minimaal 15 studenten per subgroep,
   # en minstens 2 subgroepen per variabele.
@@ -175,19 +193,14 @@ analyze_fairness <- function(data_ev,
     tbl <- table(df[[var]])
     bruikbaar <- sum(tbl >= min_per_subgroup)
     if (bruikbaar < 2) {
-      warning(
-        "Sensitieve variabele '", var, "' heeft minder dan 2 subgroepen met ",
-        "minimaal ", min_per_subgroup, " studenten. ",
-        "De fairness analyse voor deze variabele zal worden overgeslagen.\n",
-        "  Subgroepen: ", paste(names(tbl), " (n=", tbl, ")", sep = "", collapse = ", "),
-        "\n  Overweeg een eerder instroomcohort (lagere eoi) te kiezen.",
-        call. = FALSE
+      message(
+        "  ! Sensitieve variabele '", var, "' heeft minder dan 2 subgroepen ",
+        "met minimaal ", min_per_subgroup, " studenten.\n",
+        "    Subgroepen: ", paste(names(tbl), " (n=", tbl, ")", sep = "", collapse = ", "), "\n",
+        "    Overweeg een eerder instroomcohort (lagere eoi) te kiezen."
       )
     }
   }
-
-  message("  - ", nrow(df), " studenten in analyse")
-  message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")
 
   # Step 3: Run NFWA analysis
   message("\nStap 3/4: Fairness-analyse uitvoeren...")

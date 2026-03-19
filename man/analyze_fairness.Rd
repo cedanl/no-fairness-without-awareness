@@ -7,7 +7,6 @@
 analyze_fairness(
   data_ev,
   data_vakhavw,
-  opleidingscode,
   opleidingsnaam,
   eoi,
   opleidingsvorm,
@@ -23,13 +22,13 @@ Bevat studentgegevens zoals geslacht, vooropleiding, en retentie.}
 \item{data_vakhavw}{Data frame met 1CHO vak/cijfer data (VAKHAVW-bestand).
 Bevat behaalde cijfers per vak per student.}
 
-\item{opleidingscode}{Numeriek of character. ISAT-opleidingscode om op te
-filteren (bijv. `60048`). Te vinden in de `opleidingscode` kolom van de EV-data.}
+\item{opleidingsnaam}{Character. Naam van de opleiding zoals deze voorkomt in
+de kolom `opleidingscode_naam_opleiding` van de enriched EV-data
+(bijv. `"B Tandheelkunde"`). Wordt gebruikt voor filtering en in het rapport.}
 
-\item{opleidingsnaam}{Character. Naam van de opleiding voor het rapport
-(bijv. "International Business Administration"). Niet gebruikt voor filtering.}
-
-\item{eoi}{Numeric. Examenonderdeel identificatie nummer van de opleiding.}
+\item{eoi}{Numeric. Minimaal instroomcohort. Alleen studenten die in dit jaar
+of later zijn gestart worden meegenomen in de analyse (bijv. `2020` selecteert
+cohorten vanaf 2020).}
 
 \item{opleidingsvorm}{Character. Vorm van de opleiding: "VT" (voltijd),
 "DT" (deeltijd), of "DU" (duaal).}
@@ -88,8 +87,7 @@ data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingscode = 60048,
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   eoi = 2020,
   opleidingsvorm = "VT",
   generate_pdf = TRUE,
@@ -103,8 +101,7 @@ head(result$df)
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingscode = 60048,
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   eoi = 2020,
   opleidingsvorm = "VT",
   generate_pdf = TRUE,

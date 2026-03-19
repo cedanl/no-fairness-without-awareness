@@ -120,6 +120,9 @@ analyze_fairness <- function(data_ev,
     stop("opleidingsvorm moet 'VT', 'DT', of 'DU' zijn")
   }
 
+  # Validate data contents
+  validate_data(data_ev, data_vakhavw, opleidingsnaam, opleidingsvorm)
+
   # Start message
   message("\n========================================")
   message("NFWA Fairness-Analyse")

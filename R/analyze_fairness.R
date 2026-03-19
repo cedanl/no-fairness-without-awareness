@@ -166,13 +166,24 @@ analyze_fairness <- function(data_ev,
     )
   }
 
-  if (nrow(df) < 30) {
-    warning(
-      "Slechts ", nrow(df), " studenten gevonden na filtering. ",
-      "Met zo weinig studenten zijn de resultaten mogelijk niet betrouwbaar. ",
-      "Overweeg een eerder instroomcohort (lagere eoi) te kiezen.",
-      call. = FALSE
-    )
+  # Check of er voldoende studenten zijn per sensitieve variabele.
+  # De fairness analyse vereist minimaal 15 studenten per subgroep,
+  # en minstens 2 subgroepen per variabele.
+  min_per_subgroup <- 15
+  for (var in sensitive_variables) {
+    if (!var %in% names(df)) next
+    tbl <- table(df[[var]])
+    bruikbaar <- sum(tbl >= min_per_subgroup)
+    if (bruikbaar < 2) {
+      warning(
+        "Sensitieve variabele '", var, "' heeft minder dan 2 subgroepen met ",
+        "minimaal ", min_per_subgroup, " studenten. ",
+        "De fairness analyse voor deze variabele zal worden overgeslagen.\n",
+        "  Subgroepen: ", paste(names(tbl), " (n=", tbl, ")", sep = "", collapse = ", "),
+        "\n  Overweeg een eerder instroomcohort (lagere eoi) te kiezen.",
+        call. = FALSE
+      )
+    }
   }
 
   message("  - ", nrow(df), " studenten in analyse")

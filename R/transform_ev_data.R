@@ -28,7 +28,9 @@
 #' @param df Data frame met inschrijvingsgegevens (1CHO EV-data, enriched formaat).
 #'   De kolom `hoogste_vooropleiding_omschrijving` moet al gevuld zijn met de
 #'   gedecodeerde vooropleiding-omschrijving vanuit 1cijferho.
-#' @param code Numeriek of character. Opleidingscode (ISAT-code) om op te filteren.
+#' @param naam Character. Naam van de opleiding zoals deze voorkomt in de
+#'   kolom `opleidingscode_naam_opleiding` van de enriched data
+#'   (bijv. `"B Tandheelkunde"`).
 #' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
 #'   (minimumwaarde voor filtering).
 #' @param vorm Character. Opleidingsvorm: `"VT"` (voltijd), `"DT"`
@@ -42,7 +44,7 @@
 #' @importFrom dplyr filter group_by mutate ungroup inner_join
 #'   summarize across case_when pull
 #' @keywords internal
-transform_ev_data <- function(df, code, eoi, vorm) {
+transform_ev_data <- function(df, naam, eoi, vorm) {
   ## Determine variable aantal_inschrijvingen
   mutate_aantal_inschrijvingen <- function(df, df_full) {
     students <- unique(dplyr::pull(df, persoonsgebonden_nummer))
@@ -95,9 +97,9 @@ transform_ev_data <- function(df, code, eoi, vorm) {
       )
     )) |>
 
-    ## Filter on opleidingscode, eerste jaar and opleidingsvorm
+    ## Filter on opleidingsnaam, eerste jaar and opleidingsvorm
     dplyr::filter(
-      as.character(opleidingscode) == as.character(code),
+      opleidingscode_naam_opleiding == naam,
       eerste_jaar_aan_deze_opleiding_instelling >= eoi,
       opleidingsvorm == vorm
     )

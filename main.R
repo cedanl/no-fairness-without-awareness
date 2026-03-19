@@ -28,8 +28,7 @@ devtools::load_all()
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Opleidingsinformatie
-# Gebruik de ISAT-opleidingscode (te vinden in de opleidingscode kolom van je EV-bestand)
-opleidingscode = 56560
+# Gebruik de opleidingsnaam (te vinden in de opleidingscode_naam_opleiding kolom van je EV-bestand)
 opleidingsnaam = "B Tandheelkunde"
 eoi = 2010
 opleidingsvorm = "VT"
@@ -54,7 +53,6 @@ data_vakhavw <- read.csv(
 result <- nfwa::analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingscode = opleidingscode,
   opleidingsnaam = opleidingsnaam,
   eoi = eoi,
   opleidingsvorm = opleidingsvorm,
@@ -100,7 +98,7 @@ result <- nfwa::analyze_fairness(
 # # Transformeer 1CHO enriched data naar analyse-klaar formaat
 # df <- nfwa::transform_data(
 #   metadata = metadata,
-#   opleidingscode = opleidingscode,
+#   opleidingsnaam = opleidingsnaam,
 #   opleidingsvorm = opleidingsvorm,
 #   eoi = eoi,
 #   data_ev = data_ev,

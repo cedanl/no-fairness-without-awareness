@@ -14,7 +14,7 @@ test_that("run_models retourneert list met last_fit en best_model", {
 
   df <- transform_data(
     metadata       = metadata,
-    opleidingscode = 56560,
+    opleidingsnaam = "B Tandheelkunde",
     opleidingsvorm = "VT",
     eoi            = 2010,
     data_ev        = data_ev,

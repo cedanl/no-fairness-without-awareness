@@ -9,7 +9,7 @@ transform_result <- function() {
   suppressWarnings(
     transform_data(
       metadata       = metadata,
-      opleidingscode = 56560,
+      opleidingsnaam = "B Tandheelkunde",
       opleidingsvorm = "VT",
       eoi            = 2010,
       data_ev        = data_ev,
@@ -56,21 +56,21 @@ test_that("transform_data bevat geen ontbrekende waarden in numerieke variabelen
   expect_false(anyNA(result[, numerieke_vars]))
 })
 
-test_that("transform_data filtert correct op opleidingscode", {
+test_that("transform_data filtert correct op opleidingsnaam", {
   skip_if_not(file.exists(ev_path), "Enriched demo data niet beschikbaar")
 
   data_ev      <- read.csv(ev_path, sep = ";")
   data_vakhavw <- read.csv(vakhavw_path, sep = ";")
   metadata     <- read_metadata()
 
-  # Twee verschillende codes geven twee verschillende aantallen studenten
+  # Twee verschillende namen geven twee verschillende aantallen studenten
   result_a <- suppressWarnings(transform_data(
-    metadata = metadata, opleidingscode = 56560,
+    metadata = metadata, opleidingsnaam = "B Tandheelkunde",
     opleidingsvorm = "VT", eoi = 2010,
     data_ev = data_ev, data_vakhavw = data_vakhavw
   ))
   result_b <- suppressWarnings(transform_data(
-    metadata = metadata, opleidingscode = 60048,
+    metadata = metadata, opleidingsnaam = "B Bedrijfskunde",
     opleidingsvorm = "VT", eoi = 2010,
     data_ev = data_ev, data_vakhavw = data_vakhavw
   ))

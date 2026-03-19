@@ -27,8 +27,9 @@
 #'
 #' @param metadata Named list met metadatabestanden, zoals geretourneerd
 #'   door [read_metadata()].
-#' @param opleidingscode Numeriek of character. ISAT-opleidingscode om op te
-#'   filteren (bijv. `60048`).
+#' @param opleidingsnaam Character. Naam van de opleiding zoals deze voorkomt
+#'   in de kolom `opleidingscode_naam_opleiding` van de enriched data
+#'   (bijv. `"B Tandheelkunde"`).
 #' @param opleidingsvorm Character. Opleidingsvorm (`"VT"`, `"DT"` of
 #'   `"DU"`).
 #' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
@@ -43,7 +44,7 @@
 #' @importFrom dplyr mutate across select all_of where
 #' @export
 transform_data <- function(metadata,
-                           opleidingscode,
+                           opleidingsnaam,
                            opleidingsvorm,
                            eoi,
                            data_ev,
@@ -59,7 +60,7 @@ transform_data <- function(metadata,
   #-------------------------------------------------------------------
   data_ev <- transform_ev_data(
     data_ev,
-    code = opleidingscode,
+    naam = opleidingsnaam,
     eoi  = eoi,
     vorm = opleidingsvorm
   )

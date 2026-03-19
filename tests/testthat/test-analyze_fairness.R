@@ -42,6 +42,27 @@ test_that("analyze_fairness geeft error als data_vakhavw geen data frame is", {
   )
 })
 
+test_that("analyze_fairness geeft error bij 0 studenten na filtering", {
+  ev_path      <- testthat::test_path("../../data/input/EV299XX24_DEMO_enriched.csv")
+  vakhavw_path <- testthat::test_path("../../data/input/VAKHAVW_99XX_DEMO_enriched.csv")
+  skip_if_not(file.exists(ev_path), "Enriched demo data niet beschikbaar")
+
+  data_ev      <- read.csv(ev_path, sep = ";")
+  data_vakhavw <- read.csv(vakhavw_path, sep = ";")
+
+  expect_error(
+    analyze_fairness(
+      data_ev        = data_ev,
+      data_vakhavw   = data_vakhavw,
+      opleidingsnaam = "B Tandheelkunde",
+      eoi            = 2099,
+      opleidingsvorm = "VT",
+      generate_pdf   = FALSE
+    ),
+    "Geen studenten gevonden"
+  )
+})
+
 test_that("analyze_fairness accepteert alle geldige opleidingsvormen", {
   # Test alleen de input-validatie: "VT", "DT" en "DU" mogen niet falen op opleidingsvorm.
   # De functie zal later falen vanwege ongeldige data, maar dat is verwacht gedrag.

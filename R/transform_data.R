@@ -32,8 +32,8 @@
 #'   (bijv. `"B Tandheelkunde"`).
 #' @param opleidingsvorm Character. Opleidingsvorm (`"VT"`, `"DT"` of
 #'   `"DU"`).
-#' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
-#'   (minimumwaarde).
+#' @param eoi Numeriek. Minimaal instroomcohort. Alleen studenten die in dit
+#'   jaar of later zijn gestart worden meegenomen.
 #' @param data_ev Data frame met 1CHO-inschrijvingsgegevens (EV-bestand, enriched formaat).
 #' @param data_vakhavw Data frame met 1CHO-vakcijfergegevens
 #'   (VAKHAVW-bestand).

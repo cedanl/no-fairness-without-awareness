@@ -93,10 +93,11 @@ data_ev <- read.csv("pad/naar/jouw_EV_bestand.csv", sep = ";")
 data_vakhavw <- read.csv("pad/naar/jouw_VAKHAVW_bestand.csv", sep = ";")
 
 # Voer complete analyse uit
+# eoi = minimaal instroomcohort (studenten die in 2020 of later zijn gestart)
 result <- analyze_fairness(
   data_ev = data_ev,
   data_vakhavw = data_vakhavw,
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   eoi = 2020,
   opleidingsvorm = "VT",
   generate_pdf = TRUE
@@ -117,9 +118,9 @@ metadata <- read_metadata()
 # 2. Transformeer je data
 df <- transform_data(
   metadata = metadata,
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   opleidingsvorm = "VT",
-  eoi = 2020,
+  eoi = 2020,  # studenten vanaf cohort 2020
   data_ev = data_ev,
   data_vakhavw = data_vakhavw
 )
@@ -135,7 +136,7 @@ run_nfwa(
 
 # 4. Genereer PDF rapport
 render_report(
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   opleidingsvorm = "VT"
 )
 ```
@@ -154,7 +155,7 @@ cleanup_temp()
 
 # Of automatisch tijdens render:
 render_report(
-  opleidingsnaam = "Jouw Opleiding",
+  opleidingsnaam = "B Tandheelkunde",
   opleidingsvorm = "VT",
   cleanup_temp = TRUE
 )
@@ -162,35 +163,48 @@ render_report(
 
 ### Data Vereisten
 
-**Aanbevolen:** Gebruik het [1cijferho project](https://github.com/cedanl/1cijferho) om je data voor te bereiden. Dit project converteert 1CHO data naar het juiste formaat voor NFWA analyse.
+Dit package werkt met **enriched** 1CHO data. Dat zijn de bestanden die eindigen op `_enriched.csv`, gegenereerd door de [1CijferHO Tool](https://github.com/cedanl/1cijferho).
 
-De output van 1cijferho is direct te gebruiken als input voor NFWA. Je data moet de volgende structuur hebben:
+#### Stap 1: Data voorbereiden met 1CijferHO
+
+Gebruik de [1CijferHO Tool](https://github.com/cedanl/1cijferho) om je ruwe 1CHO bestanden om te zetten naar enriched CSV's. De tool draait de volledige pipeline voor je:
+
+```bash
+eencijferho pipeline --input data/01-input --output data/02-output
+```
+
+Dit levert onder andere op:
+- `EV*_enriched.csv` -- inschrijvingsgegevens met gedecodeerde velden
+- `VAKHAVW*_enriched.csv` -- vakcijfers
+
+De enriched bestanden bevatten leesbare namen in plaats van codes, bijvoorbeeld opleidingsnamen (`opleidingscode_naam_opleiding`) en vooropleiding-omschrijvingen. NFWA heeft deze gedecodeerde kolommen nodig om te werken.
+
+> Gebruik dus altijd de `_enriched.csv` bestanden, niet de `_decoded.csv` of de gewone `.csv` output.
+
+#### Stap 2: Data inladen in R
+
+```r
+data_ev <- read.csv("pad/naar/EV_enriched.csv", sep = ";")
+data_vakhavw <- read.csv("pad/naar/VAKHAVW_enriched.csv", sep = ";")
+```
+
+#### Verwachte bestanden
 
 **data_ev** (EV-bestand, studentniveau):
-- 1CHO inschrijvingsgegevens per student
-- Retentie-indicator
-- Persoonsgebonden nummer (student-ID)
-- Gevoelige variabelen (geslacht, vooropleiding, etc.)
+- Inschrijvingsgegevens per student
+- Gedecodeerde opleidingsnamen (`opleidingscode_naam_opleiding`)
+- Gedecodeerde vooropleiding-omschrijvingen
+- Persoonsgebonden nummer, geslacht, postcode, etc.
 
 **data_vakhavw** (VAKHAVW-bestand, vakniveau):
-- 1CHO vakcijfers per student
-- Gekoppeld aan student-ID via persoonsgebonden nummer
+- Vakcijfers per student (centraal examen, schoolexamen)
+- Gekoppeld via persoonsgebonden nummer
 
 **Data formaat:** CSV bestanden met puntkomma (`;`) als separator.
 
 ### Metadata
 
-**Het package bevat standaard metadata!** De volgende bestanden worden automatisch meegeleverd bij installatie:
-- ✅ `variabelen.xlsx` - Variabele definities
-- ✅ `levels.xlsx` - Categorie levels per variabele
-- ✅ `APCG_2019.csv` - APCG verrijkingsdata
-- ✅ `SES_PC4_2021-2022.csv` - SES verrijkingsdata
-- ✅ Decodeertabellen voor vooropleiding en ISAT codes
-
-Je hoeft **geen eigen metadata** aan te leveren - gebruik gewoon `read_metadata()` en het werkt direct!
-
-**Eigen metadata gebruiken (optioneel):**
-Als je eigen metadata wilt gebruiken, kun je de functie aanpassen of handmatig bestanden inladen. Zie `?read_metadata` voor details over de verwachte structuur.
+Het package bevat standaard metadata (variabelen, levels, APCG en SES data). Je hoeft geen eigen metadata aan te leveren -- `read_metadata()` laadt alles automatisch.
 
 ---
 

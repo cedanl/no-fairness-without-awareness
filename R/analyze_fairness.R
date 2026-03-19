@@ -11,7 +11,9 @@
 #' @param opleidingsnaam Character. Naam van de opleiding zoals deze voorkomt in
 #'   de kolom `opleidingscode_naam_opleiding` van de enriched EV-data
 #'   (bijv. `"B Tandheelkunde"`). Wordt gebruikt voor filtering en in het rapport.
-#' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
+#' @param eoi Numeric. Minimaal instroomcohort. Alleen studenten die in dit jaar
+#'   of later zijn gestart worden meegenomen in de analyse (bijv. `2020` selecteert
+#'   cohorten vanaf 2020).
 #' @param opleidingsvorm Character. Vorm van de opleiding: "VT" (voltijd),
 #'   "DT" (deeltijd), of "DU" (duaal).
 #' @param generate_pdf Logical. Als `TRUE`, wordt een PDF rapport gegenereerd.
@@ -153,6 +155,25 @@ analyze_fairness <- function(data_ev,
     data_ev = data_ev,
     data_vakhavw = data_vakhavw
   )
+
+  if (nrow(df) == 0) {
+    stop(
+      "Geen studenten gevonden na filtering.\n",
+      "Controleer of de combinatie van opleidingsnaam ('", opleidingsnaam,
+      "'), opleidingsvorm ('", opleidingsvorm,
+      "') en eoi (>= ", eoi, ") daadwerkelijk data oplevert.",
+      call. = FALSE
+    )
+  }
+
+  if (nrow(df) < 30) {
+    warning(
+      "Slechts ", nrow(df), " studenten gevonden na filtering. ",
+      "Met zo weinig studenten zijn de resultaten mogelijk niet betrouwbaar. ",
+      "Overweeg een eerder instroomcohort (lagere eoi) te kiezen.",
+      call. = FALSE
+    )
+  }
 
   message("  - ", nrow(df), " studenten in analyse")
   message("  - Retentie: ", round(mean(df$retentie) * 100, 1), "%")

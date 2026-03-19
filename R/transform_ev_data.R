@@ -31,8 +31,8 @@
 #' @param naam Character. Naam van de opleiding zoals deze voorkomt in de
 #'   kolom `opleidingscode_naam_opleiding` van de enriched data
 #'   (bijv. `"B Tandheelkunde"`).
-#' @param eoi Numeriek. Eerste jaar aan deze opleiding/instelling
-#'   (minimumwaarde voor filtering).
+#' @param eoi Numeriek. Minimaal instroomcohort. Alleen studenten die in dit
+#'   jaar of later zijn gestart worden meegenomen.
 #' @param vorm Character. Opleidingsvorm: `"VT"` (voltijd), `"DT"`
 #'   (deeltijd) of `"DU"` (duaal).
 #'

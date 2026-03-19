@@ -18,7 +18,7 @@ ui <- page_sidebar(
     selectInput("naam", "Opleidingsnaam",
                 choices = c("Upload eerst een EV bestand" = "")),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
-    selectInput("eoi", "Instroomcohort (EOI)",
+    selectInput("eoi", "Instroomcohort vanaf (EOI)",
                 choices = c("Selecteer eerst een opleiding" = "")),
     hr(),
     actionButton("run", "Analyseer", class = "btn-primary w-100",

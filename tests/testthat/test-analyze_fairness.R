@@ -5,7 +5,6 @@ test_that("analyze_fairness geeft error bij ongeldige opleidingsvorm", {
     analyze_fairness(
       data_ev        = df,
       data_vakhavw   = df,
-      opleidingscode = 60048,
       opleidingsnaam = "Test",
       eoi            = 2020,
       opleidingsvorm = "XX",
@@ -20,7 +19,6 @@ test_that("analyze_fairness geeft error als data_ev geen data frame is", {
     analyze_fairness(
       data_ev        = "geen dataframe",
       data_vakhavw   = data.frame(x = 1),
-      opleidingscode = 60048,
       opleidingsnaam = "Test",
       eoi            = 2020,
       opleidingsvorm = "VT",
@@ -35,7 +33,6 @@ test_that("analyze_fairness geeft error als data_vakhavw geen data frame is", {
     analyze_fairness(
       data_ev        = data.frame(x = 1),
       data_vakhavw   = list(x = 1),
-      opleidingscode = 60048,
       opleidingsnaam = "Test",
       eoi            = 2020,
       opleidingsvorm = "VT",
@@ -53,7 +50,6 @@ test_that("analyze_fairness accepteert alle geldige opleidingsvormen", {
       analyze_fairness(
         data_ev        = data.frame(x = 1),
         data_vakhavw   = data.frame(x = 1),
-        opleidingscode = 60048,
         opleidingsnaam = "Test",
         eoi            = 2020,
         opleidingsvorm = vorm,

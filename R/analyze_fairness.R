@@ -8,10 +8,9 @@
 #'   Bevat studentgegevens zoals geslacht, vooropleiding, en retentie.
 #' @param data_vakhavw Data frame met 1CHO vak/cijfer data (VAKHAVW-bestand).
 #'   Bevat behaalde cijfers per vak per student.
-#' @param opleidingscode Numeriek of character. ISAT-opleidingscode om op te
-#'   filteren (bijv. `60048`). Te vinden in de `opleidingscode` kolom van de EV-data.
-#' @param opleidingsnaam Character. Naam van de opleiding voor het rapport
-#'   (bijv. "International Business Administration"). Niet gebruikt voor filtering.
+#' @param opleidingsnaam Character. Naam van de opleiding zoals deze voorkomt in
+#'   de kolom `opleidingscode_naam_opleiding` van de enriched EV-data
+#'   (bijv. `"B Tandheelkunde"`). Wordt gebruikt voor filtering en in het rapport.
 #' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
 #' @param opleidingsvorm Character. Vorm van de opleiding: "VT" (voltijd),
 #'   "DT" (deeltijd), of "DU" (duaal).
@@ -69,8 +68,7 @@
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
-#'   opleidingscode = 60048,
-#'   opleidingsnaam = "Jouw Opleiding",
+#'   opleidingsnaam = "B Tandheelkunde",
 #'   eoi = 2020,
 #'   opleidingsvorm = "VT",
 #'   generate_pdf = TRUE,
@@ -84,8 +82,7 @@
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
-#'   opleidingscode = 60048,
-#'   opleidingsnaam = "Jouw Opleiding",
+#'   opleidingsnaam = "B Tandheelkunde",
 #'   eoi = 2020,
 #'   opleidingsvorm = "VT",
 #'   generate_pdf = TRUE,
@@ -94,7 +91,6 @@
 #' }
 analyze_fairness <- function(data_ev,
                               data_vakhavw,
-                              opleidingscode,
                               opleidingsnaam,
                               eoi,
                               opleidingsvorm,
@@ -148,7 +144,7 @@ analyze_fairness <- function(data_ev,
   message("\nStap 2/4: Data transformeren...")
   df <- transform_data(
     metadata = metadata,
-    opleidingscode = opleidingscode,
+    opleidingsnaam = opleidingsnaam,
     opleidingsvorm = opleidingsvorm,
     eoi = eoi,
     data_ev = data_ev,

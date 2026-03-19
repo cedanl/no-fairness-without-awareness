@@ -15,9 +15,8 @@ ui <- page_sidebar(
     fileInput("vakhavw", "VAKHAVW bestand (.csv)", accept = ".csv"),
     hr(),
     h6("Opleidingsgegevens", class = "text-muted fw-bold"),
-    selectInput("naam", "Opleidingscode",
+    selectInput("naam", "Opleidingsnaam",
                 choices = c("Upload eerst een EV bestand" = "")),
-    textInput("label", "Naam voor rapport (optioneel)", value = ""),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
     selectInput("eoi", "Instroomcohort (EOI)",
                 choices = c("Selecteer eerst een opleiding" = "")),
@@ -54,10 +53,10 @@ server <- function(input, output, session) {
       ev_clean(clean)
 
       opleidingen <- clean |>
-        dplyr::pull(opleidingscode) |>
+        dplyr::pull(opleidingscode_naam_opleiding) |>
         unique() |>
         sort() |>
-        (\(x) as.character(x[!is.na(x)]))()
+        (\(x) x[!is.na(x) & nchar(x) > 0])()
 
       updateSelectInput(session, "naam", choices = opleidingen)
     }, error = function(e) {
@@ -80,7 +79,7 @@ server <- function(input, output, session) {
           TRUE ~ as.character(.)
         ))) |>
         dplyr::filter(
-          as.character(opleidingscode) == as.character(input$naam),
+          opleidingscode_naam_opleiding == input$naam,
           opleidingsvorm == input$vorm
         ) |>
         dplyr::pull(eerste_jaar_aan_deze_opleiding_instelling) |>
@@ -131,17 +130,10 @@ server <- function(input, output, session) {
 
             incProgress(0.10, detail = "Data transformeren...")
 
-            rapport_naam <- if (nchar(trimws(input$label)) > 0) {
-              input$label
-            } else {
-              paste0("Opleiding ", input$naam)
-            }
-
             result <- nfwa::analyze_fairness(
               data_ev        = data_ev,
               data_vakhavw   = data_vakhavw,
-              opleidingscode = input$naam,
-              opleidingsnaam = rapport_naam,
+              opleidingsnaam = input$naam,
               eoi            = as.integer(input$eoi),
               opleidingsvorm = input$vorm,
               generate_pdf   = TRUE,

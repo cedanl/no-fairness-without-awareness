@@ -32,7 +32,7 @@ NULL
 #' result <- analyze_fairness(
 #'   data_ev = data_ev,
 #'   data_vakhavw = data_vakhavw,
-#'   opleidingsnaam = "Jouw Opleiding",
+#'   opleidingsnaam = "B Tandheelkunde",
 #'   eoi = 2020,
 #'   opleidingsvorm = "VT",
 #'   generate_pdf = TRUE

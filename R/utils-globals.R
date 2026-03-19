@@ -27,7 +27,7 @@ utils::globalVariables(c(
   "geslacht",
   "hoogste_vooropleiding_omschrijving",
   "hoogste_vooropleiding_omschrijving_vooropleiding",
-  "name", "number", "opleidingscode",
+  "name", "number", "opleidingscode_naam_opleiding",
   "opleidingsvorm",
   "persoonsgebonden_nummer", "postcodecijfers_student_op_1_oktober",
   "retentie", "score", "ses_pc4", "ses_verslagjaar",

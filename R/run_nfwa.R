@@ -78,9 +78,11 @@ run_nfwa <- function(df,
   ## Model Trainen ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  # Make retentie numeric / binary as character
-  df <- df |>
-    dplyr::mutate(dplyr::across(retentie, ~ dplyr::if_else(. == 0, "0", "1")))
+  # Ensure retentie is a factor for classification models
+  df$retentie <- factor(
+    dplyr::if_else(df$retentie == 0, "0", "1"),
+    levels = c("0", "1")
+  )
 
   output     <- run_models(df)
   last_fit   <- output$last_fit

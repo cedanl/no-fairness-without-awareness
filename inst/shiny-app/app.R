@@ -26,6 +26,7 @@ ui <- page_sidebar(
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
     selectInput("eoi", "Instroomcohort vanaf (EOI)",
                 choices = c("Selecteer eerst een opleiding" = "")),
+    helpText("Kies een vroeg instroomcohort voor meer studenten en betrouwbaardere resultaten."),
     hr(),
     actionButton("run", "Analyseer", class = "btn-primary w-100",
                  icon = icon("play")),

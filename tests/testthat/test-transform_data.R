@@ -70,7 +70,7 @@ test_that("transform_data filtert correct op opleidingsnaam", {
     data_ev = data_ev, data_vakhavw = data_vakhavw
   ))
   result_b <- suppressWarnings(transform_data(
-    metadata = metadata, opleidingsnaam = "B Bedrijfskunde",
+    metadata = metadata, opleidingsnaam = "M Tandheelkunde",
     opleidingsvorm = "VT", eoi = 2010,
     data_ev = data_ev, data_vakhavw = data_vakhavw
   ))

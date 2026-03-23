@@ -267,6 +267,8 @@ if (length(omitted_groups) > 0) {
 summary_fairness_path <- file.path(params$temp_dir, "summary_table_fairness.png")
 if (file.exists(summary_fairness_path)) {
   knitr::include_graphics(summary_fairness_path)
+} else {
+  cat("De samenvattingstabel kon niet worden weergegeven.")
 }
 ```
 

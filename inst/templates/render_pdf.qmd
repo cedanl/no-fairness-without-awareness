@@ -153,6 +153,17 @@ if (file.exists(metadata_file)) {
 }
 ```
 
+```{r}
+#| echo: false
+#| fig-align: center
+#| out.width: "95%"
+
+summary_path <- file.path(params$temp_dir, "summary_table.png")
+if (file.exists(summary_path)) {
+  knitr::include_graphics(summary_path)
+}
+```
+
 ### Stap 2: Model training (het leren van patronen)
 
 ```{r}
@@ -256,6 +267,21 @@ if (length(omitted_groups) > 0) {
 \newpage
 
 # Resultaten
+
+## Samenvattingstabel sensitieve variabelen
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| out.width: "90%"
+
+summary_fairness_path <- file.path(params$temp_dir, "summary_table_fairness.png")
+if (file.exists(summary_fairness_path)) {
+  knitr::include_graphics(summary_fairness_path)
+}
+```
+
+## Resultaatoverzicht fairness-analyse
 
 ```{r}
 #| echo: false

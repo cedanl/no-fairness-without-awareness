@@ -30,6 +30,8 @@ De `temp/` map bevat:
   \item Fairness-check plots (`fairness_plot_*.png`)
   \item Conclusies lijst (`conclusions_list.rds`)
   \item Resultatentabel (`result_table.png`)
+  \item Samenvattingstabel (`summary_table.png`)
+  \item Samenvattingstabel sensitieve variabelen (`summary_table_fairness.png`)
 }
 
 **Let op:** Zorg ervoor dat je [render_report()] hebt uitgevoerd voordat

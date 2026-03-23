@@ -10,7 +10,8 @@ run_nfwa(
   sensitive_variables,
   cutoff = 0.2,
   caption = NULL,
-  eoi = NULL
+  eoi = NULL,
+  mapping_newname = NULL
 )
 }
 \arguments{
@@ -29,8 +30,11 @@ Standaard `0.2`.}
 \item{caption}{Character of `NULL`. Optioneel onderschrift voor
 plots.}
 
-\item{eoi}{Numeric. Examenonderdeel identificatie nummer van de opleiding.
-Optioneel.}
+\item{eoi}{Numeric. Minimaal instroomcohort. Optioneel.}
+
+\item{mapping_newname}{Data frame met kolommen `Variable` en `Newname`
+voor het hernoemen van variabelen in de samenvattingstabel. Als `NULL`
+wordt geen samenvattingstabel gegenereerd.}
 }
 \value{
 Onzichtbaar. Slaat de volgende bestanden op:
@@ -43,6 +47,10 @@ Onzichtbaar. Slaat de volgende bestanden op:
       conclusies per variabele.}
     \item{temp/result_table.png}{Afbeelding van de
       fairness-resultatentabel.}
+    \item{temp/summary_table.png}{Samenvattingstabel van
+      studentkenmerken versus retentie (indien mapping_newname opgegeven).}
+    \item{temp/summary_table_fairness.png}{Samenvattingstabel van
+      sensitieve variabelen versus retentie (indien mapping_newname opgegeven).}
   }
 }
 \description{

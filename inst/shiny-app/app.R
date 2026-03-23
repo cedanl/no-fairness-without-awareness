@@ -3,7 +3,13 @@ library(bslib)
 
 options(shiny.maxRequestSize = 500 * 1024^2)
 
-strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
+strip_ansi <- function(x) {
+  # Remove OSC hyperlink sequences: \033]8;;...\033\\ or \033]8;;\a
+  x <- gsub("\033\\]8;;[^\033\a]*(\033\\\\|\a)", "", x)
+  # Remove SGR color/style sequences: \033[...m
+  x <- gsub("\033\\[[0-9;]*m", "", x)
+  x
+}
 
 ui <- page_sidebar(
   title = "NFWA - Kansengelijkheidsanalyse",
@@ -153,7 +159,7 @@ server <- function(input, output, session) {
             )
           }),
           message = function(m) {
-            log_text(paste0(log_text(), conditionMessage(m)))
+            log_text(paste0(log_text(), strip_ansi(conditionMessage(m))))
             invokeRestart("muffleMessage")
           }
         )

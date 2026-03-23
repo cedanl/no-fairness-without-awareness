@@ -40,8 +40,10 @@
 #'   Standaard `0.2`.
 #' @param caption Character of `NULL`. Optioneel onderschrift voor
 #'   plots.
-#' @param eoi Numeric. Examenonderdeel identificatie nummer van de opleiding.
-#'   Optioneel.
+#' @param eoi Numeric. Minimaal instroomcohort. Optioneel.
+#' @param mapping_newname Data frame met kolommen `Variable` en `Newname`
+#'   voor het hernoemen van variabelen in de samenvattingstabel. Als `NULL`
+#'   wordt geen samenvattingstabel gegenereerd.
 #'
 #' @return Onzichtbaar. Slaat de volgende bestanden op:
 #'   \describe{
@@ -53,6 +55,10 @@
 #'       conclusies per variabele.}
 #'     \item{temp/result_table.png}{Afbeelding van de
 #'       fairness-resultatentabel.}
+#'     \item{temp/summary_table.png}{Samenvattingstabel van
+#'       studentkenmerken versus retentie (indien mapping_newname opgegeven).}
+#'     \item{temp/summary_table_fairness.png}{Samenvattingstabel van
+#'       sensitieve variabelen versus retentie (indien mapping_newname opgegeven).}
 #'   }
 #'
 #' @importFrom dplyr mutate across if_else case_when select
@@ -63,7 +69,8 @@ run_nfwa <- function(df,
                      sensitive_variables,
                      cutoff = 0.2,
                      caption = NULL,
-                     eoi = NULL) {
+                     eoi = NULL,
+                     mapping_newname = NULL) {
 
 
   ## . ####
@@ -226,6 +233,15 @@ run_nfwa <- function(df,
                                  colors_default = colors_default)
 
   flextable::save_as_image(x= ft_fairness, path = "temp/result_table.png")
+
+  # Generate summary table of student characteristics vs retentie
+  if (!is.null(mapping_newname)) {
+    ft_summary <- get_table_summary(df, mapping_newname)
+    flextable::save_as_image(x = ft_summary, path = "temp/summary_table.png")
+
+    ft_summary_fairness <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
+    flextable::save_as_image(x = ft_summary_fairness, path = "temp/summary_table_fairness.png")
+  }
 
   # Save analysis metadata for enhanced PDF reporting
   analysis_metadata <- list(

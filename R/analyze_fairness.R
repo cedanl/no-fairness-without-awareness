@@ -243,7 +243,8 @@ analyze_fairness <- function(data_ev,
     sensitive_variables = sensitive_variables,
     cutoff = cutoff,
     caption = caption,
-    eoi = eoi
+    eoi = eoi,
+    mapping_newname = mapping_newname
   )
 
   message("  - Plots opgeslagen in temp/")

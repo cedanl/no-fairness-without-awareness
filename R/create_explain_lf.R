@@ -54,7 +54,7 @@ create_explain_lf <- function(df, last_fit, best_model) {
   DALEXtra::explain_tidymodels(
     workflow,
     data = df |> dplyr::select(-retentie),
-    y = as.numeric(df$retentie),
+    y = as.numeric(as.character(df$retentie)),
     colorize = FALSE,
     verbose = FALSE,
     label = best_model

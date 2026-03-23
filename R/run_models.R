@@ -39,6 +39,13 @@
 #' @importFrom glmnet glmnet
 #' @keywords internal
 run_models <- function(df) {
+  # retentie must be a factor for tidymodels classification (glmnet fails on integer/character)
+  # Normalize to character "0"/"1" first to handle logical/integer/character input
+  df$retentie <- factor(
+    dplyr::if_else(as.numeric(df$retentie) == 0, "0", "1"),
+    levels = c("0", "1")
+  )
+
   df_model_results <- data.frame(model = character(), auc = numeric())
 
   # Split the data into 3 parts: 60%, 20% and 20%

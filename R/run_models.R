@@ -40,7 +40,11 @@
 #' @keywords internal
 run_models <- function(df) {
   # retentie must be a factor for tidymodels classification (glmnet fails on integer/character)
-  df$retentie <- factor(df$retentie, levels = c("0", "1"))
+  # Normalize to character "0"/"1" first to handle logical/integer/character input
+  df$retentie <- factor(
+    dplyr::if_else(as.numeric(df$retentie) == 0, "0", "1"),
+    levels = c("0", "1")
+  )
 
   df_model_results <- data.frame(model = character(), auc = numeric())
 

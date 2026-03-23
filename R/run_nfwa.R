@@ -80,7 +80,7 @@ run_nfwa <- function(df,
 
   # Ensure retentie is a factor for classification models
   df$retentie <- factor(
-    dplyr::if_else(df$retentie == 0, "0", "1"),
+    dplyr::if_else(as.numeric(df$retentie) == 0, "0", "1"),
     levels = c("0", "1")
   )
 

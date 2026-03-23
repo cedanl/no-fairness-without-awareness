@@ -78,11 +78,23 @@ run_nfwa <- function(df,
   ## Model Trainen ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  # Ensure retentie is a factor for classification models
-  df$retentie <- factor(
-    dplyr::if_else(df$retentie == 0, "0", "1"),
-    levels = c("0", "1")
+  # Ensure retentie is a factor for classification models and the explainer.
+  # Use case_when with as.character() so logical (FALSE/TRUE), numeric (0/1),
+  # character ("0"/"1") and factor inputs all map correctly to "0"/"1".
+  retentie_char <- dplyr::case_when(
+    as.character(df$retentie) %in% c("0", "FALSE") ~ "0",
+    as.character(df$retentie) %in% c("1", "TRUE")  ~ "1",
+    TRUE ~ NA_character_
   )
+  unexpected <- !is.na(df$retentie) & is.na(retentie_char)
+  if (any(unexpected)) {
+    bad_vals <- unique(as.character(df$retentie[unexpected]))
+    stop(
+      "run_nfwa(): 'retentie' contains unexpected values that cannot be mapped to \"0\"/\"1\": ",
+      paste(bad_vals, collapse = ", ")
+    )
+  }
+  df$retentie <- factor(retentie_char, levels = c("0", "1"))
 
   output     <- run_models(df)
   last_fit   <- output$last_fit

@@ -40,6 +40,24 @@
 #' @keywords internal
 run_models <- function(df) {
   # retentie must be a factor for tidymodels classification (glmnet fails on integer/character)
+  # Normalize retentie to "0"/"1" before converting to factor, and fail fast on unexpected values
+  if (is.logical(df$retentie)) {
+    df$retentie <- ifelse(df$retentie, "1", "0")
+  } else if (is.numeric(df$retentie)) {
+    non_na_vals <- df$retentie[!is.na(df$retentie)]
+    if (!all(non_na_vals %in% c(0, 1))) {
+      stop("run_models(): numeric 'retentie' must contain only 0/1 (or NA).")
+    }
+    df$retentie <- ifelse(is.na(df$retentie), NA_character_, ifelse(df$retentie == 1, "1", "0"))
+  } else if (is.factor(df$retentie) || is.character(df$retentie)) {
+    df$retentie <- as.character(df$retentie)
+    non_na_vals <- df$retentie[!is.na(df$retentie)]
+    if (!all(non_na_vals %in% c("0", "1"))) {
+      stop("run_models(): character/factor 'retentie' must contain only \"0\"/\"1\" (or NA).")
+    }
+  } else {
+    stop("run_models(): 'retentie' must be logical, numeric, character, or factor.")
+  }
   df$retentie <- factor(df$retentie, levels = c("0", "1"))
 
   df_model_results <- data.frame(model = character(), auc = numeric())

@@ -157,13 +157,14 @@ analyze_fairness <- function(data_ev,
   )
 
   if (nrow(df) == 0) {
-    stop(
-      "Geen studenten gevonden na filtering.\n",
-      "Controleer of de combinatie van opleidingsnaam ('", opleidingsnaam,
+    message("\n\033[31m",
+      "  FOUT: Geen studenten gevonden na filtering.\n",
+      "  Controleer of de combinatie van opleidingsnaam ('", opleidingsnaam,
       "'), opleidingsvorm ('", opleidingsvorm,
       "') en eoi (>= ", eoi, ") daadwerkelijk data oplevert.",
-      call. = FALSE
+      "\033[39m"
     )
+    stop("Analyse gestopt: geen studenten gevonden na filtering.", call. = FALSE)
   }
 
   retentie_pct <- round(mean(df$retentie) * 100, 1)
@@ -178,25 +179,27 @@ analyze_fairness <- function(data_ev,
   n_minderheid <- min(n_retentie, n_uitval)
 
   if (n_minderheid == 0) {
-    stop(
-      "Analyse gestopt: retentie is ", retentie_pct, "% (geen variatie).\n",
-      "Het model kan niet trainen als alle studenten hetzelfde resultaat hebben.\n",
-      "Oplossing: kies een eerder instroomcohort (lagere eoi) zodat er meer ",
-      "jaargangen met volledige retentiedata worden meegenomen.",
-      call. = FALSE
+    message("\n\033[31m",
+      "  FOUT: Retentie is ", retentie_pct, "% - geen variatie.\n",
+      "  Het model kan niet trainen als alle studenten hetzelfde resultaat hebben.\n",
+      "  Oplossing: kies een eerder instroomcohort (lagere eoi) zodat er meer\n",
+      "  jaargangen met volledige retentiedata worden meegenomen.",
+      "\033[39m"
     )
+    stop("Analyse gestopt: geen variatie in retentie.", call. = FALSE)
   }
 
   if (n_minderheid < 10) {
-    stop(
-      "Analyse gestopt: te weinig studenten in de kleinste groep.\n",
+    message("\n\033[31m",
+      "  FOUT: Te weinig studenten in de kleinste groep.\n",
       "  Retentie: ", n_retentie, " studenten | Uitval: ", n_uitval, " studenten\n",
-      "De kleinste groep heeft slechts ", n_minderheid, " studenten. ",
-      "Het model heeft minimaal 10 nodig om betrouwbaar te kunnen trainen.\n",
-      "Oplossing: kies een eerder instroomcohort (lagere eoi) om meer ",
-      "studenten mee te nemen.",
-      call. = FALSE
+      "  De kleinste groep heeft slechts ", n_minderheid, " studenten.\n",
+      "  Het model heeft minimaal 10 nodig om betrouwbaar te kunnen trainen.\n",
+      "  Oplossing: kies een eerder instroomcohort (lagere eoi) om meer\n",
+      "  studenten mee te nemen.",
+      "\033[39m"
     )
+    stop("Analyse gestopt: te weinig studenten voor betrouwbare analyse.", call. = FALSE)
   }
 
   # Check of er voldoende studenten zijn per sensitieve variabele.

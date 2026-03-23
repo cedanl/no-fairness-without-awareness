@@ -59,7 +59,7 @@ test_that("analyze_fairness geeft error bij 0 studenten na filtering", {
       opleidingsvorm = "VT",
       generate_pdf   = FALSE
     ),
-    "Geen studenten gevonden"
+    "Analyse gestopt: geen studenten gevonden na filtering."
   )
 })
 

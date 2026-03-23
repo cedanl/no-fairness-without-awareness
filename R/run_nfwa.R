@@ -236,16 +236,10 @@ run_nfwa <- function(df,
 
   # Generate summary table of student characteristics vs retentie
   if (!is.null(mapping_newname)) {
-    # Filter mapping to columns present in df with non-empty Newname
-    mapping_filtered <- mapping_newname[
-      mapping_newname$Variable %in% names(df) &
-      nchar(trimws(mapping_newname$Newname)) > 0,
-    ]
-
-    ft_summary <- get_table_summary(df, mapping_filtered)
+    ft_summary <- get_table_summary(df, mapping_newname)
     flextable::save_as_image(x = ft_summary, path = "temp/summary_table.png")
 
-    ft_summary_fairness <- get_table_summary_fairness(df, mapping_filtered, sensitive_variables)
+    ft_summary_fairness <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
     flextable::save_as_image(x = ft_summary_fairness, path = "temp/summary_table_fairness.png")
   }
 

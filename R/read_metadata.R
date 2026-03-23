@@ -91,7 +91,7 @@ read_metadata <- function() {
   
   mapping_newname <- df_variables |>
     dplyr::select(Variable, Newname) |>
-    tidyr::drop_na()
+    dplyr::filter(!is.na(Newname) & nchar(trimws(Newname)) > 0)
   
   df_levels <- read.table(
     system.file("metadata", "levels.csv", package = "nfwa"),

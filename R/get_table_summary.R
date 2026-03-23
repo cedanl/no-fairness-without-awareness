@@ -23,7 +23,7 @@ get_table_summary <- function(df, mapping) {
   df2 <- df |>
 
     # Remove columns not relevant to the analysis
-    dplyr::select(-c(persoonsgebonden_nummer, inschrijvingsjaar)) |>
+    dplyr::select(-dplyr::any_of(c("persoonsgebonden_nummer", "inschrijvingsjaar"))) |>
     
     # Adjust the labels of Retention from True to Ja, and from False to Nee
     dplyr::mutate(retentie = forcats::fct_recode(factor(retentie), "Nee" = "0", "Ja" = "1")) |>
@@ -34,7 +34,8 @@ get_table_summary <- function(df, mapping) {
     # Factor all character variables
     dplyr::mutate(dplyr::across(dplyr::where(is.character), as.factor)) |>
     
-    dplyr::rename(!!!setNames(mapping$Variable, mapping$Newname)) |>
+    # Only rename columns that exist in the data
+    dplyr::rename(dplyr::any_of(setNames(mapping$Variable, mapping$Newname))) |>
 
     dplyr::rename_with( ~ .x |>
                    stringr::str_replace_all("_", " ") |>
@@ -99,7 +100,7 @@ get_table_summary <- function(df, mapping) {
 #' @keywords internal
 get_table_summary_fairness <- function(df, mapping, sensitive_variables) {
   df |>
-    dplyr::rename(!!!setNames(mapping$Variable, mapping$Newname)) |>
+    dplyr::rename(dplyr::any_of(setNames(mapping$Variable, mapping$Newname))) |>
     dplyr::select(retentie, dplyr::all_of(sensitive_variables)) |>
     dplyr::rename_with( ~ .x |>
                    stringr::str_replace_all("_", " ") |>

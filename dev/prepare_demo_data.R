@@ -3,12 +3,12 @@
 # Dev script to prepare demo data from raw 1CHO enriched exports.
 # Run this when the underlying enriched data is updated.
 #
-# Creates demo data where retentie depends on student features (grades,
-# vooropleiding, gender, age) so the ML model finds real signal and
-# produces a meaningful AUC for fairness analysis.
+# Creates demo data where retentie depends on student features so the
+# ML model produces a meaningful AUC (~0.7+) and the fairness analysis
+# detects bias on the sensitive variables (geslacht, vooropleiding, aansluiting).
 #
 # Input:  Full enriched EV and VAKHAVW CSV files (place in data/input/)
-# Output: Trimmed demo files with realistic retentie (~50%) and feature-based signal
+# Output: Trimmed demo files with ~50% retentie and strong feature signal
 #
 # Usage:
 #   source("dev/prepare_demo_data.R")
@@ -43,22 +43,9 @@ eerste_jaars <- ev_sub |>
     opleidingsvorm == "voltijd"
   )
 
-# Students who already have a year+1 enrollment
-has_year2_ids <- ev_sub |>
-  semi_join(
-    eerste_jaars |>
-      mutate(target_year = eerste_jaar_aan_deze_opleiding_instelling + 1L) |>
-      select(persoonsgebonden_nummer, target_year),
-    by = c("persoonsgebonden_nummer", "inschrijvingsjaar" = "target_year")
-  ) |>
-  distinct(persoonsgebonden_nummer) |>
-  pull()
-
 cat("\nFirst-year VT students:", nrow(eerste_jaars), "\n")
-cat("Already have retentie:", length(has_year2_ids), "\n")
 
-# --- Step 4: Remove ALL existing year+1 rows so we control retentie fully ---
-# This gives us a clean slate: no student has retentie yet.
+# --- Step 4: Remove ALL existing year+1 rows for a clean slate ---
 year2_rows <- ev_sub |>
   semi_join(
     eerste_jaars |>
@@ -71,7 +58,8 @@ ev_clean <- anti_join(ev_sub, year2_rows)
 cat("Removed", nrow(year2_rows), "existing year+1 rows\n")
 
 # --- Step 5: Compute retentie probability based on features ---
-# Join grade data to first-year students
+
+# Join grade data
 vak_avg <- vak |>
   group_by(persoonsgebonden_nummer) |>
   summarise(
@@ -87,7 +75,7 @@ vak_avg <- vak |>
 eerste_scored <- eerste_jaars |>
   left_join(vak_avg, by = "persoonsgebonden_nummer") |>
   mutate(
-    # Classify vooropleiding
+    # --- Vooropleiding (sensitive variable, strong signal) ---
     vooropl_cat = case_when(
       grepl("^vwo", hoogste_vooropleiding_omschrijving_vooropleiding, ignore.case = TRUE) ~ "VWO",
       grepl("^havo", hoogste_vooropleiding_omschrijving_vooropleiding, ignore.case = TRUE) ~ "HAVO",
@@ -95,65 +83,105 @@ eerste_scored <- eerste_jaars |>
       grepl("^wo|^hbo", hoogste_vooropleiding_omschrijving_vooropleiding, ignore.case = TRUE) ~ "HO",
       TRUE ~ "Overig"
     ),
+    vooropl_logit = case_when(
+      vooropl_cat == "VWO"   ~  0.8,
+      vooropl_cat == "HO"    ~  0.3,
+      vooropl_cat == "HAVO"  ~  0.0,
+      vooropl_cat == "MBO"   ~ -0.6,
+      TRUE                   ~ -0.4
+    ),
 
-    # Normalize features to 0-1 range for probability calculation
-    # Grades: higher = more likely to stay (strong signal)
-    grade_score = ifelse(
+    # --- Aansluiting (sensitive variable, strong signal) ---
+    # Simplified version of the aansluiting logic from transform_ev_data.R
+    inschrijvingsjaar_int = suppressWarnings(as.integer(inschrijvingsjaar)),
+    diplomajaar_int = suppressWarnings(as.integer(diplomajaar_hoogste_vooropleiding)),
+    eerste_inst_int = suppressWarnings(as.integer(eerste_jaar_aan_deze_instelling)),
+    is_eerstejaars = grepl("eerstejaars", indicatie_eerstejaars_continu_type_ho_binnen_ho, ignore.case = TRUE),
+    is_2e_studie = grepl("echte neveninschrijving", soort_inschrijving_continu_hoger_onderwijs, ignore.case = TRUE),
+
+    aansluiting_cat = case_when(
+      is_2e_studie ~ "2e Studie",
+      !is.na(diplomajaar_int) & is_eerstejaars &
+        diplomajaar_int == (inschrijvingsjaar_int - 1L) ~ "Direct",
+      !is.na(diplomajaar_int) & is_eerstejaars &
+        diplomajaar_int < (inschrijvingsjaar_int - 1L) ~ "Tussenjaar",
+      !is_eerstejaars & !is.na(eerste_inst_int) &
+        eerste_inst_int == inschrijvingsjaar_int ~ "Switch extern",
+      !is_eerstejaars & !is.na(eerste_inst_int) &
+        eerste_inst_int < inschrijvingsjaar_int ~ "Switch intern",
+      TRUE ~ "Overig"
+    ),
+    aansluiting_logit = case_when(
+      aansluiting_cat == "Direct"        ~  0.6,
+      aansluiting_cat == "2e Studie"     ~  0.3,
+      aansluiting_cat == "Tussenjaar"    ~ -0.3,
+      aansluiting_cat == "Switch intern" ~ -0.5,
+      aansluiting_cat == "Switch extern" ~ -0.7,
+      TRUE                               ~ -0.2
+    ),
+
+    # --- Geslacht (sensitive variable, moderate signal) ---
+    gender_logit = ifelse(geslacht == "vrouw", 0.4, -0.4),
+
+    # --- Grades (non-sensitive, adds realism) ---
+    grade_z = ifelse(
       !is.na(gem_cijfer),
-      (gem_cijfer - 55) / (85 - 55),  # range roughly 55-85
-      0.5  # neutral for missing
+      (gem_cijfer - mean(gem_cijfer, na.rm = TRUE)) / sd(gem_cijfer, na.rm = TRUE),
+      0
     ),
-    grade_score = pmin(pmax(grade_score, 0), 1),
+    grade_logit = grade_z * 0.5,
 
-    # Vooropleiding effect: VWO > HAVO > HO > MBO > Overig
-    vooropl_score = case_when(
-      vooropl_cat == "VWO"   ~ 0.65,
-      vooropl_cat == "HO"    ~ 0.55,
-      vooropl_cat == "HAVO"  ~ 0.50,
-      vooropl_cat == "MBO"   ~ 0.35,
-      TRUE                   ~ 0.40
-    ),
-
-    # Age effect: younger slightly more likely to stay
+    # --- Age (non-sensitive, small effect) ---
     age = suppressWarnings(as.numeric(leeftijd_per_peildatum_1_oktober)),
-    age_score = ifelse(!is.na(age), pmax(0.3, 1 - (age - 17) * 0.04), 0.5),
+    age_logit = ifelse(!is.na(age), -(age - 19) * 0.08, 0),
 
-    # Gender: slight difference (adds signal for fairness analysis to detect)
-    gender_score = ifelse(geslacht == "vrouw", 0.55, 0.45),
-
-    # Combine into retentie probability
-    # Grades are the strongest predictor (~40%), then vooropleiding (~25%),
-    # gender (~20%), age (~15%)
-    prob_retentie = 0.40 * grade_score +
-                    0.25 * vooropl_score +
-                    0.20 * gender_score +
-                    0.15 * age_score
+    # --- Combined logit ---
+    # Sensitive variables carry most of the weight
+    raw_logit = vooropl_logit + aansluiting_logit + gender_logit +
+                grade_logit + age_logit
   )
 
-# Scale probabilities to hit target retentie rate
-# Use a logit transform, shift intercept, then back to probability
+# Scale to hit target retentie
 logit <- function(p) log(p / (1 - p))
 inv_logit <- function(x) 1 / (1 + exp(-x))
 
-raw_logits <- logit(pmin(pmax(eerste_scored$prob_retentie, 0.01), 0.99))
-# Find intercept shift that produces target_retentie on average
 shift <- optimise(
-  function(s) (mean(inv_logit(raw_logits + s)) - target_retentie)^2,
+  function(s) (mean(inv_logit(eerste_scored$raw_logit + s)) - target_retentie)^2,
   interval = c(-5, 5)
 )$minimum
 
-eerste_scored$prob_final <- inv_logit(raw_logits + shift)
+eerste_scored$prob_final <- inv_logit(eerste_scored$raw_logit + shift)
 
 cat("\nRetentie probability distribution:\n")
 print(summary(eerste_scored$prob_final))
 cat("Expected retentie:", round(mean(eerste_scored$prob_final) * 100, 1), "%\n")
 
+# Show signal per sensitive variable
+cat("\nSignal per sensitive variable:\n")
+cat("  Geslacht:\n")
+for (g in unique(eerste_scored$geslacht)) {
+  sub <- eerste_scored |> filter(geslacht == g)
+  cat(sprintf("    %-10s mean_prob=%.2f  n=%d\n", g, mean(sub$prob_final), nrow(sub)))
+}
+cat("  Vooropleiding:\n")
+for (v in c("VWO", "HAVO", "HO", "MBO", "Overig")) {
+  sub <- eerste_scored |> filter(vooropl_cat == v)
+  if (nrow(sub) == 0) next
+  cat(sprintf("    %-10s mean_prob=%.2f  n=%d\n", v, mean(sub$prob_final), nrow(sub)))
+}
+cat("  Aansluiting:\n")
+for (a in c("Direct", "Tussenjaar", "Switch intern", "Switch extern", "2e Studie", "Overig")) {
+  sub <- eerste_scored |> filter(aansluiting_cat == a)
+  if (nrow(sub) == 0) next
+  cat(sprintf("    %-15s mean_prob=%.2f  n=%d\n", a, mean(sub$prob_final), nrow(sub)))
+}
+
 # --- Step 6: Sample retentie based on probability ---
 eerste_scored$gets_retentie <- runif(nrow(eerste_scored)) < eerste_scored$prob_final
 
-cat("Actual retentie:", round(mean(eerste_scored$gets_retentie) * 100, 1), "%\n")
+cat("\nActual retentie:", round(mean(eerste_scored$gets_retentie) * 100, 1), "%\n")
 
-# Create year+1 rows for students who get retentie
+# Create year+1 rows
 to_add <- eerste_scored |>
   filter(gets_retentie) |>
   select(all_of(names(eerste_jaars)))

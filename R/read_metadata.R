@@ -56,7 +56,6 @@
 #'   }
 #'
 #' @importFrom dplyr filter pull select group_by arrange ungroup
-#' @importFrom tidyr drop_na
 #' @export
 read_metadata <- function() {
   # Use system.file() to find package-installed metadata files

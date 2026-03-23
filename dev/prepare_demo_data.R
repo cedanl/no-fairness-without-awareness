@@ -204,15 +204,18 @@ orig_vak_headers <- names(read.csv(input_vakhavw, sep = ";", nrows = 1))
 names(ev_final)  <- orig_ev_headers
 names(vak_final) <- orig_vak_headers
 
-write.csv2(ev_final, input_ev, row.names = FALSE)
-write.csv2(vak_final, input_vakhavw, row.names = FALSE)
+output_ev      <- paste0(tools::file_path_sans_ext(input_ev), "_prepared.", tools::file_ext(input_ev))
+output_vakhavw <- paste0(tools::file_path_sans_ext(input_vakhavw), "_prepared.", tools::file_ext(input_vakhavw))
+
+write.csv2(ev_final,  output_ev,      row.names = FALSE)
+write.csv2(vak_final, output_vakhavw, row.names = FALSE)
 
 # --- Step 9: Verify ---
 cat("\n--- Verification ---\n")
 cat("Final EV rows:", nrow(ev_final), "\n")
 cat("Final VAKHAVW rows:", nrow(vak_final), "\n")
-cat("File sizes: EV =", round(file.size(input_ev) / 1024^2, 1), "MB,",
-    "VAKHAVW =", round(file.size(input_vakhavw) / 1024^2, 1), "MB\n\n")
+cat("File sizes: EV =", round(file.size(output_ev) / 1024^2, 1), "MB,",
+    "VAKHAVW =", round(file.size(output_vakhavw) / 1024^2, 1), "MB\n\n")
 
 ev_check <- ev_final |> setNames(janitor::make_clean_names(names(ev_final)))
 for (naam in keep_programs) {

@@ -234,10 +234,13 @@ run_nfwa <- function(df,
 
   flextable::save_as_image(x= ft_fairness, path = "temp/result_table.png")
 
-  # Generate summary table of sensitive variables vs retentie
+  # Generate summary tables (sensitive variables and all student characteristics)
   if (!is.null(mapping_newname)) {
     ft_summary_fairness <- get_table_summary_fairness(df, mapping_newname, sensitive_variables)
     flextable::save_as_image(x = ft_summary_fairness, path = "temp/summary_table_fairness.png")
+
+    ft_summary <- get_table_summary(df, mapping_newname)
+    flextable::save_as_image(x = ft_summary, path = "temp/summary_table.png")
   }
 
   # Save analysis metadata for enhanced PDF reporting

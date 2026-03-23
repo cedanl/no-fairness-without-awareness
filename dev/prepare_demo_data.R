@@ -84,11 +84,11 @@ eerste_scored <- eerste_jaars |>
       TRUE ~ "Overig"
     ),
     vooropl_logit = case_when(
-      vooropl_cat == "VWO"   ~  0.8,
-      vooropl_cat == "HO"    ~  0.3,
+      vooropl_cat == "VWO"   ~  1.5,
+      vooropl_cat == "HO"    ~  0.4,
       vooropl_cat == "HAVO"  ~  0.0,
-      vooropl_cat == "MBO"   ~ -0.6,
-      TRUE                   ~ -0.4
+      vooropl_cat == "MBO"   ~ -1.2,
+      TRUE                   ~ -0.8
     ),
 
     # --- Aansluiting (sensitive variable, strong signal) ---
@@ -112,16 +112,16 @@ eerste_scored <- eerste_jaars |>
       TRUE ~ "Overig"
     ),
     aansluiting_logit = case_when(
-      aansluiting_cat == "Direct"        ~  0.6,
-      aansluiting_cat == "2e Studie"     ~  0.3,
-      aansluiting_cat == "Tussenjaar"    ~ -0.3,
-      aansluiting_cat == "Switch intern" ~ -0.5,
-      aansluiting_cat == "Switch extern" ~ -0.7,
+      aansluiting_cat == "Direct"        ~  1.2,
+      aansluiting_cat == "2e Studie"     ~  0.5,
+      aansluiting_cat == "Tussenjaar"    ~ -0.5,
+      aansluiting_cat == "Switch intern" ~ -1.0,
+      aansluiting_cat == "Switch extern" ~ -1.4,
       TRUE                               ~ -0.2
     ),
 
     # --- Geslacht (sensitive variable, moderate signal) ---
-    gender_logit = ifelse(geslacht == "vrouw", 0.4, -0.4),
+    gender_logit = ifelse(geslacht == "vrouw", 0.8, -0.8),
 
     # --- Grades (non-sensitive, adds realism) ---
     grade_z = ifelse(
@@ -129,11 +129,11 @@ eerste_scored <- eerste_jaars |>
       (gem_cijfer - mean(gem_cijfer, na.rm = TRUE)) / sd(gem_cijfer, na.rm = TRUE),
       0
     ),
-    grade_logit = grade_z * 0.5,
+    grade_logit = grade_z * 0.8,
 
     # --- Age (non-sensitive, small effect) ---
     age = suppressWarnings(as.numeric(leeftijd_per_peildatum_1_oktober)),
-    age_logit = ifelse(!is.na(age), -(age - 19) * 0.08, 0),
+    age_logit = ifelse(!is.na(age), -(age - 19) * 0.15, 0),
 
     # --- Combined logit ---
     # Sensitive variables carry most of the weight

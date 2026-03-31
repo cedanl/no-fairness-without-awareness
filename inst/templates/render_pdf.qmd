@@ -426,7 +426,8 @@ if (file.exists(metadata_file)) {
   cat("- Model AUC:", round(metadata$model_auc, 4), "\n")
   cat("- Bias detectie-bereik: ratio < 0.8 of > 1.25\n")
   cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
-  cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
+  nfwa_version <- tryCatch(as.character(packageVersion("nfwa")), error = function(e) "dev")
+  cat("- R package versie: nfwa", nfwa_version, "\n")
 
   # Display EOI if available from metadata
   if (!is.null(metadata$eoi)) {
@@ -436,6 +437,7 @@ if (file.exists(metadata_file)) {
   cat("**Analyse-parameters:**\n\n")
   cat("- Datum analyse:", format(Sys.Date(), "%d-%m-%Y"), "\n")
   cat("- Onderzochte variabelen:", paste(names(conclusions_list), collapse = ", "), "\n")
-  cat("- R package versie: nfwa", as.character(packageVersion("nfwa")), "\n")
+  nfwa_version <- tryCatch(as.character(packageVersion("nfwa")), error = function(e) "dev")
+  cat("- R package versie: nfwa", nfwa_version, "\n")
 }
 ```

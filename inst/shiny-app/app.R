@@ -1,6 +1,8 @@
 library(shiny)
 library(bslib)
 
+source("npuls-theme.R")
+
 options(shiny.maxRequestSize = 500 * 1024^2)
 
 strip_ansi <- function(x) {
@@ -12,15 +14,15 @@ strip_ansi <- function(x) {
 }
 
 ui <- page_sidebar(
-  title = "NFWA - Kansengelijkheidsanalyse",
-  theme = bs_theme(version = 5, bootswatch = "flatly"),
+  title = npuls_logo("NFWA", "Kansengelijkheidsanalyse"),
+  theme = npuls_theme(),
   sidebar = sidebar(
     width = 320,
-    h6("Bestanden uploaden", class = "text-muted fw-bold"),
+    tags$div(class = "npuls-section-label", "Bestanden uploaden"),
     fileInput("ev", "EV bestand (.csv)", accept = ".csv"),
     fileInput("vakhavw", "VAKHAVW bestand (.csv)", accept = ".csv"),
     hr(),
-    h6("Opleidingsgegevens", class = "text-muted fw-bold"),
+    tags$div(class = "npuls-section-label", "Opleidingsgegevens"),
     selectInput("naam", "Opleidingsnaam",
                 choices = c("Upload eerst een EV bestand" = "")),
     selectInput("vorm", "Opleidingsvorm", choices = c("VT", "DT", "DU")),
@@ -31,10 +33,13 @@ ui <- page_sidebar(
     actionButton("run", "Analyseer", class = "btn-primary w-100",
                  icon = icon("play")),
     br(), br(),
-    uiOutput("download_ui")
+    uiOutput("download_ui"),
+    npuls_rings_decoration()
   ),
   card(
-    card_header("Status"),
+    card_header(
+      tags$span(icon("chart-bar", style = "margin-right:6px; color:#3D68EC;"), "Status")
+    ),
     verbatimTextOutput("log")
   )
 )

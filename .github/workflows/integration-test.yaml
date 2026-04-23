@@ -68,6 +68,9 @@ jobs:
           extra-packages: any::aws.s3, any::DBI, any::RPostgres
           needs: check
 
+      - name: Install nfwa package
+        run: R CMD INSTALL .
+
       - name: Create MinIO bucket
         run: |
           curl -sSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc

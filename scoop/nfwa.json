@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "description": "No Fairness Without Awareness - Kansengelijkheidsanalyse voor hoger onderwijs",
+  "homepage": "https://github.com/cedanl/no-fairness-without-awareness",
+  "license": "MIT",
+  "depends": "r",
+  "url": "https://github.com/cedanl/no-fairness-without-awareness/archive/refs/tags/v0.2.0.zip",
+  "hash": "",
+  "extract_dir": "no-fairness-without-awareness-0.2.0",
+  "installer": {
+    "script": [
+      "Rscript -e \"if (!requireNamespace('remotes', quietly=TRUE)) install.packages('remotes', repos='https://cloud.r-project.org')\"",
+      "Rscript -e \"remotes::install_local('$dir', dependencies=TRUE, upgrade='never')\""
+    ]
+  },
+  "uninstaller": {
+    "script": [
+      "Rscript -e \"remove.packages('nfwa')\""
+    ]
+  },
+  "checkver": {
+    "github": "https://github.com/cedanl/no-fairness-without-awareness"
+  },
+  "autoupdate": {
+    "url": "https://github.com/cedanl/no-fairness-without-awareness/archive/refs/tags/v$version.zip",
+    "extract_dir": "no-fairness-without-awareness-$version"
+  }
+}

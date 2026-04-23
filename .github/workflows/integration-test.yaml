@@ -1,0 +1,147 @@
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: integration-test
+
+permissions: read-all
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: nfwa
+          POSTGRES_USER: nfwa
+          POSTGRES_PASSWORD: nfwa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nfwa"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      minio:
+        image: minio/minio:latest
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd "mc ready local || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      NFWA_STORAGE_BACKEND: s3pg
+      NFWA_S3_ENDPOINT: http://localhost:9000
+      NFWA_S3_BUCKET: nfwa
+      NFWA_S3_REGION: us-east-1
+      NFWA_S3_ACCESS_KEY: minioadmin
+      NFWA_S3_SECRET_KEY: minioadmin
+      NFWA_PG_HOST: localhost
+      NFWA_PG_PORT: "5432"
+      NFWA_PG_DBNAME: nfwa
+      NFWA_PG_USER: nfwa
+      NFWA_PG_PASSWORD: nfwa
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::aws.s3, any::DBI, any::RPostgres
+          needs: check
+
+      - name: Create MinIO bucket
+        run: |
+          curl -sSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+          chmod +x /usr/local/bin/mc
+          mc alias set myminio http://localhost:9000 minioadmin minioadmin
+          mc mb --ignore-existing myminio/nfwa
+
+      - name: Run unit tests
+        run: |
+          testthat::test_local(filter = "storage", stop_on_failure = TRUE)
+        shell: Rscript {0}
+
+      - name: Run full pipeline test (file backend)
+        run: |
+          Sys.setenv(NFWA_STORAGE_BACKEND = "file")
+          data_ev <- read.csv("data/input/EV299XX24_DEMO_enriched.csv", sep = ";")
+          data_vakhavw <- read.csv("data/input/VAKHAVW_99XX_DEMO_enriched.csv", sep = ";")
+
+          result <- nfwa::analyze_fairness(
+            data_ev        = data_ev,
+            data_vakhavw   = data_vakhavw,
+            opleidingsnaam = "B Tandheelkunde",
+            eoi            = 2010,
+            opleidingsvorm = "VT",
+            generate_pdf   = TRUE,
+            cleanup_temp   = FALSE
+          )
+
+          stopifnot("PDF niet gegenereerd" = file.exists(result$pdf_path))
+          stopifnot("Temp bestanden ontbreken" = dir.exists("temp"))
+          message("File backend pipeline: OK")
+        shell: Rscript {0}
+
+      - name: Run full pipeline test (s3pg backend)
+        run: |
+          Sys.setenv(NFWA_STORAGE_BACKEND = "s3pg")
+          storage <- nfwa::nfwa_storage()
+
+          data_ev <- read.csv("data/input/EV299XX24_DEMO_enriched.csv", sep = ";")
+          data_vakhavw <- read.csv("data/input/VAKHAVW_99XX_DEMO_enriched.csv", sep = ";")
+
+          storage$write_table(data_ev, "ev_data", overwrite = TRUE)
+          storage$write_table(data_vakhavw, "vakhavw_data", overwrite = TRUE)
+
+          ev_from_pg <- storage$read_table("ev_data")
+          vakhavw_from_pg <- storage$read_table("vakhavw_data")
+
+          stopifnot("PG data mismatch" = nrow(ev_from_pg) == nrow(data_ev))
+
+          result <- nfwa::analyze_fairness(
+            data_ev        = ev_from_pg,
+            data_vakhavw   = vakhavw_from_pg,
+            opleidingsnaam = "B Tandheelkunde",
+            eoi            = 2010,
+            opleidingsvorm = "VT",
+            generate_pdf   = TRUE,
+            cleanup_temp   = FALSE,
+            storage        = storage
+          )
+
+          stopifnot("PDF niet gegenereerd" = file.exists(result$pdf_path))
+          message("S3+PG backend pipeline: OK")
+
+          storage$disconnect()
+        shell: Rscript {0}
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-artifacts
+          path: |
+            temp/
+            *.pdf

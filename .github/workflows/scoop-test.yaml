@@ -38,7 +38,7 @@ jobs:
                    "transform_data", "render_report", "read_metadata",
                    "cleanup_temp", "run_app")
           for (fn in fns) {
-            stopifnot(paste(fn, "not exported") = exists(fn, envir = asNamespace("nfwa")))
+            if (!exists(fn, envir = asNamespace("nfwa"))) stop(fn, " not exported")
           }
           message("All exported functions verified")
 

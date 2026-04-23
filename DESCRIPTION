@@ -60,5 +60,6 @@ Suggests:
     RPostgres,
     shiny,
     testthat (>= 3.0.0),
-    tidymodels
+    tidymodels,
+    withr
 VignetteBuilder: knitr

@@ -76,6 +76,8 @@ jobs:
           mc mb --ignore-existing myminio/nfwa
 
       - name: Run unit tests
+        env:
+          NFWA_STORAGE_BACKEND: ""
         run: |
           testthat::test_local(filter = "storage", stop_on_failure = TRUE)
         shell: Rscript {0}

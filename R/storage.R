@@ -56,6 +56,7 @@
 #' data_ev <- storage$read_csv("pg://ev_data")
 #' }
 nfwa_storage <- function(backend = Sys.getenv("NFWA_STORAGE_BACKEND", "file")) {
+  if (!nzchar(backend)) backend <- "file"
   switch(backend,
     "file" = storage_file(),
     "s3pg" = storage_s3pg(),

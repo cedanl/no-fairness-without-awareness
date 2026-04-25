@@ -1,7 +1,8 @@
-FROM rocker/shiny:4.4.1
+FROM --platform=linux/amd64 rocker/shiny:4.4.1
 
 # System dependencies for R packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
@@ -13,15 +14,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtiff-dev \
     libpq-dev \
     pandoc \
+    texlive-latex-base \
+    texlive-latex-recommended \
+    texlive-latex-extra \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-xetex \
+    lmodern \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Quarto
 RUN curl -LO https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.42/quarto-1.6.42-linux-amd64.deb \
     && dpkg -i quarto-1.6.42-linux-amd64.deb \
     && rm quarto-1.6.42-linux-amd64.deb
-
-# Install TinyTeX for PDF rendering
-RUN Rscript -e 'install.packages("tinytex"); tinytex::install_tinytex()'
 
 WORKDIR /app
 

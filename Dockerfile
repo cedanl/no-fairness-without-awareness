@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfribidi-dev \
     libtiff-dev \
     libpq-dev \
+    libcairo2-dev \
+    libxt-dev \
     pandoc \
     texlive-latex-base \
     texlive-latex-recommended \
@@ -23,23 +25,44 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lmodern \
     && rm -rf /var/lib/apt/lists/*
 
+# Trust corporate SSL proxy (e.g. Zscaler) by disabling strict cert checks
+# ~/.curlrc covers the curl binary; Rprofile.site covers R's install.packages (via wget)
+RUN echo "insecure" >> /root/.curlrc && \
+    mkdir -p /etc/R && \
+    echo 'options(download.file.method = "wget", download.file.extra = "--no-check-certificate")' \
+      >> /etc/R/Rprofile.site
+
 # Install Quarto
-RUN curl -LO https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.42/quarto-1.6.42-linux-amd64.deb \
+RUN curl -k -LO https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.42/quarto-1.6.42-linux-amd64.deb \
     && dpkg -i quarto-1.6.42-linux-amd64.deb \
     && rm quarto-1.6.42-linux-amd64.deb
 
 WORKDIR /app
 
 # Install R package dependencies first (for Docker layer caching)
+# Use the image's default PPM binary repo (pre-compiled Ubuntu binaries) - much faster
+# than cloud.r-project.org which serves source packages on Linux.
 COPY DESCRIPTION .
 RUN Rscript -e ' \
+  options( \
+    download.file.method = "wget", \
+    download.file.extra = "--no-check-certificate", \
+    repos = c(CRAN = "https://p3m.dev/cran/__linux__/jammy/latest") \
+  ); \
   install.packages("remotes"); \
   remotes::install_deps(".", dependencies = TRUE) \
 '
 
 # Copy the full package and install it
 COPY . .
-RUN Rscript -e 'remotes::install_local(".", dependencies = FALSE)'
+RUN Rscript -e ' \
+  options( \
+    download.file.method = "wget", \
+    download.file.extra = "--no-check-certificate", \
+    repos = c(CRAN = "https://p3m.dev/cran/__linux__/jammy/latest") \
+  ); \
+  remotes::install_local(".", dependencies = FALSE) \
+'
 
 EXPOSE 3838
 

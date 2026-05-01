@@ -1,0 +1,86 @@
+#' Maak een storage backend aan
+#'
+#' Creëert een storage-object op basis van de gekozen backend. Het object
+#' biedt methoden om input-data te lezen en analyse-uitvoer te persisteren.
+#' Lokale R-gebruikers hoeven geen storage aan te maken — de standaard
+#' file-backend werkt zonder extra configuratie.
+#'
+#' @param backend Character. Backend type: \code{"file"} (standaard) of
+#'   \code{"s3pg"} (MinIO + PostgreSQL). Indien niet opgegeven, wordt de
+#'   waarde van de omgevingsvariabele \code{NFWA_STORAGE_BACKEND} gebruikt,
+#'   met \code{"file"} als fallback.
+#'
+#' @return Een named list met functies:
+#'   \describe{
+#'     \item{\code{read_csv(path, ...)}}{Leest een CSV-bestand (puntkomma-
+#'       gescheiden) en retourneert een data frame.}
+#'     \item{\code{persist_outputs(temp_dir, pdf_path, prefix)}}{Persisteert
+#'       analyse-resultaten (temp-bestanden en PDF) naar de backend.}
+#'     \item{\code{type}}{Character met het backend-type.}
+#'   }
+#'
+#' @details
+#' \strong{File backend} (standaard):
+#' Leest en schrijft naar het lokale bestandssysteem. Geen extra packages
+#' vereist. Dit is het gedrag van eerdere versies van het package.
+#'
+#' \strong{S3+PG backend} (\code{"s3pg"}):
+#' Leest tabulaire data uit PostgreSQL en bestanden uit S3-compatibele
+#' opslag (bijv. MinIO). Vereist de packages \code{aws.s3}, \code{DBI}
+#' en \code{RPostgres} (in Suggests). Configuratie via omgevingsvariabelen:
+#'
+#' \tabular{ll}{
+#'   \code{NFWA_S3_ENDPOINT} \tab S3/MinIO endpoint (standaard: \code{http://localhost:9000}) \cr
+#'   \code{NFWA_S3_BUCKET}   \tab Bucketnaam (standaard: \code{nfwa}) \cr
+#'   \code{NFWA_S3_REGION}   \tab Regio (standaard: leeg voor MinIO, stel in voor AWS S3) \cr
+#'   \code{NFWA_S3_ACCESS_KEY} \tab Access key \cr
+#'   \code{NFWA_S3_SECRET_KEY} \tab Secret key \cr
+#'   \code{NFWA_PG_HOST}     \tab PostgreSQL host (standaard: \code{localhost}) \cr
+#'   \code{NFWA_PG_PORT}     \tab PostgreSQL poort (standaard: \code{5432}) \cr
+#'   \code{NFWA_PG_DBNAME}   \tab Database naam (standaard: \code{nfwa}) \cr
+#'   \code{NFWA_PG_USER}     \tab Database gebruiker (standaard: \code{nfwa}) \cr
+#'   \code{NFWA_PG_PASSWORD} \tab Database wachtwoord \cr
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Standaard file backend
+#' storage <- nfwa_storage()
+#' data_ev <- storage$read_csv("data/input/EV_enriched.csv")
+#'
+#' # S3 + PostgreSQL backend (configureer via omgevingsvariabelen)
+#' Sys.setenv(NFWA_STORAGE_BACKEND = "s3pg")
+#' storage <- nfwa_storage()
+#' data_ev <- storage$read_csv("pg://ev_data")
+#' }
+nfwa_storage <- function(backend = Sys.getenv("NFWA_STORAGE_BACKEND", "file")) {
+  if (!nzchar(backend)) backend <- "file"
+  switch(backend,
+    "file" = storage_file(),
+    "s3pg" = storage_s3pg(),
+    stop("Onbekende storage backend: ", backend,
+         ". Gebruik 'file' of 's3pg'.")
+  )
+}
+
+
+# --- File backend -----------------------------------------------------------
+
+storage_file <- function() {
+  list(
+    read_csv = function(path, ...) {
+      if (!file.exists(path)) {
+        stop("Bestand niet gevonden: ", path)
+      }
+      read.csv(path, sep = ";", stringsAsFactors = FALSE, ...)
+    },
+
+    persist_outputs = function(temp_dir = "temp", pdf_path = NULL, prefix = "") {
+      invisible(list(temp_dir = temp_dir, pdf_path = pdf_path))
+    },
+
+    type = "file"
+  )
+}

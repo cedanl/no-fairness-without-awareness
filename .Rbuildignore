@@ -18,3 +18,7 @@
 ^Development\.md$
 ^check.*\.txt$
 ^.*\.log$
+^Dockerfile$
+^docker-compose\.yml$
+^\.dockerignore$
+^scoop$

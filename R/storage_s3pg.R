@@ -9,7 +9,7 @@ storage_s3pg <- function() {
 
   s3_endpoint  <- Sys.getenv("NFWA_S3_ENDPOINT", "http://localhost:9000")
   s3_bucket    <- Sys.getenv("NFWA_S3_BUCKET", "nfwa")
-  s3_region    <- Sys.getenv("NFWA_S3_REGION", "us-east-1")
+  s3_region    <- Sys.getenv("NFWA_S3_REGION", "")
   s3_access    <- Sys.getenv("NFWA_S3_ACCESS_KEY", "")
   s3_secret    <- Sys.getenv("NFWA_S3_SECRET_KEY", "")
 

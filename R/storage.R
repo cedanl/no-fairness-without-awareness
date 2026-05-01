@@ -32,7 +32,7 @@
 #' \tabular{ll}{
 #'   \code{NFWA_S3_ENDPOINT} \tab S3/MinIO endpoint (standaard: \code{http://localhost:9000}) \cr
 #'   \code{NFWA_S3_BUCKET}   \tab Bucketnaam (standaard: \code{nfwa}) \cr
-#'   \code{NFWA_S3_REGION}   \tab Regio (standaard: \code{us-east-1}) \cr
+#'   \code{NFWA_S3_REGION}   \tab Regio (standaard: leeg voor MinIO, stel in voor AWS S3) \cr
 #'   \code{NFWA_S3_ACCESS_KEY} \tab Access key \cr
 #'   \code{NFWA_S3_SECRET_KEY} \tab Secret key \cr
 #'   \code{NFWA_PG_HOST}     \tab PostgreSQL host (standaard: \code{localhost}) \cr

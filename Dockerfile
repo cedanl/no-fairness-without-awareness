@@ -26,10 +26,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Trust corporate SSL proxy (e.g. Zscaler) by disabling strict cert checks
-# ~/.curlrc covers the curl binary; Rprofile.site covers R's install.packages (via wget)
+# ~/.curlrc covers the curl binary; Rprofile.site covers R's download.file
 RUN echo "insecure" >> /root/.curlrc && \
     mkdir -p /etc/R && \
-    echo 'options(download.file.method = "wget", download.file.extra = "--no-check-certificate")' \
+    echo 'options(download.file.method = "libcurl", download.file.extra = "-k")' \
       >> /etc/R/Rprofile.site
 
 # Install Quarto
@@ -40,29 +40,23 @@ RUN curl -k -LO https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.
 WORKDIR /app
 
 # Install R package dependencies first (for Docker layer caching)
-# Use the image's default PPM binary repo (pre-compiled Ubuntu binaries) - much faster
-# than cloud.r-project.org which serves source packages on Linux.
 COPY DESCRIPTION .
 RUN Rscript -e ' \
-  options( \
-    download.file.method = "wget", \
-    download.file.extra = "--no-check-certificate", \
-    repos = c(CRAN = "https://p3m.dev/cran/__linux__/jammy/latest") \
-  ); \
   install.packages("remotes"); \
   remotes::install_deps(".", dependencies = TRUE) \
 '
 
+# Verify all Imports are installed (fail fast if install_deps silently skipped any)
+RUN Rscript -e ' \
+  deps <- remotes::local_package_deps(".", dependencies = "Imports"); \
+  missing <- deps[!vapply(deps, requireNamespace, logical(1), quietly = TRUE)]; \
+  if (length(missing) > 0) stop("Missing packages: ", paste(missing, collapse = ", ")) \
+'
+
 # Copy the full package and install it
 COPY . .
-RUN Rscript -e ' \
-  options( \
-    download.file.method = "wget", \
-    download.file.extra = "--no-check-certificate", \
-    repos = c(CRAN = "https://p3m.dev/cran/__linux__/jammy/latest") \
-  ); \
-  remotes::install_local(".", dependencies = FALSE) \
-'
+RUN R CMD INSTALL --no-multiarch --no-test-load . \
+    && Rscript -e 'library(nfwa); cat("nfwa", as.character(packageVersion("nfwa")), "OK\n")'
 
 EXPOSE 3838
 

@@ -23,6 +23,9 @@ Over deze methode heeft lector, Dr. Theo Bakker, zijn intreerede uitgesproken op
 - **PDF rapportage** - Professionele rapporten met Quarto
 - **Metadata inbegrepen** - Standaard metadata voor directe gebruik
 - **Cross-platform** - Werkt op Windows, macOS en Linux
+- **Docker-ready** - Eén commando om de Shiny app met MinIO en PostgreSQL te draaien
+- **Pluggable storage** - Transparant schakelen tussen lokale bestanden en cloud opslag (S3/MinIO + PostgreSQL)
+- **CI/CD** - Geautomatiseerde tests: R-CMD-check, integratietests, test-coverage, Scoop installer
 
 ---
 
@@ -208,6 +211,111 @@ Het package bevat standaard metadata (variabelen, levels, APCG en SES data). Je 
 
 ---
 
+## Docker
+
+De Shiny app kan met Docker Compose gedraaid worden, inclusief MinIO (S3-compatibele objectopslag) en PostgreSQL:
+
+```bash
+docker compose up -d
+```
+
+Dit start drie services:
+
+| Service | Poort | Beschrijving |
+|---------|-------|--------------|
+| **shiny** | [localhost:3838](http://localhost:3838) | NFWA Shiny webinterface |
+| **minio** | [localhost:9001](http://localhost:9001) | MinIO console (user: `minioadmin`) |
+| **postgres** | 5432 | PostgreSQL database |
+
+Stoppen en opruimen:
+
+```bash
+docker compose down           # stop containers, behoud data
+docker compose down -v        # stop containers en verwijder volumes
+```
+
+### Image opnieuw bouwen
+
+Na code-wijzigingen:
+
+```bash
+docker compose build shiny    # rebuild alleen de Shiny app
+docker compose up -d          # herstart met nieuw image
+```
+
+---
+
+## Storage backends
+
+Het package ondersteunt twee storage backends, gecontroleerd via de omgevingsvariabele `NFWA_STORAGE_BACKEND`:
+
+### File backend (standaard)
+
+Leest en schrijft naar het lokale bestandssysteem. Geen extra configuratie nodig — dit is het standaardgedrag voor R-gebruikers die lokaal werken.
+
+```r
+storage <- nfwa_storage()                     # of expliciet:
+storage <- nfwa_storage(backend = "file")
+```
+
+### S3 + PostgreSQL backend
+
+Voor Docker- en Kubernetes-deployments. Tabulaire data wordt opgeslagen in PostgreSQL, bestanden (PDF, plots) in S3-compatibele opslag (MinIO of AWS S3).
+
+```r
+Sys.setenv(NFWA_STORAGE_BACKEND = "s3pg")
+storage <- nfwa_storage()
+```
+
+Configuratie via omgevingsvariabelen:
+
+| Variabele | Standaard | Beschrijving |
+|-----------|-----------|--------------|
+| `NFWA_S3_ENDPOINT` | `http://localhost:9000` | S3/MinIO endpoint |
+| `NFWA_S3_BUCKET` | `nfwa` | Bucketnaam |
+| `NFWA_S3_REGION` | _(leeg)_ | Regio (leeg voor MinIO, stel in voor AWS S3) |
+| `NFWA_S3_ACCESS_KEY` | | Access key |
+| `NFWA_S3_SECRET_KEY` | | Secret key |
+| `NFWA_PG_HOST` | `localhost` | PostgreSQL host |
+| `NFWA_PG_PORT` | `5432` | PostgreSQL poort |
+| `NFWA_PG_DBNAME` | `nfwa` | Database naam |
+| `NFWA_PG_USER` | `nfwa` | Database gebruiker |
+| `NFWA_PG_PASSWORD` | | Database wachtwoord |
+
+De S3+PG backend vereist de packages `aws.s3`, `DBI` en `RPostgres` (staan in Suggests, niet nodig voor lokaal gebruik).
+
+---
+
+## Testen
+
+### Lokaal
+
+```bash
+Rscript -e 'testthat::test_local()'                       # alle tests
+Rscript -e 'testthat::test_local(filter = "storage")'     # alleen storage tests
+```
+
+Of vanuit R/RStudio:
+
+```r
+devtools::test()
+```
+
+### CI/CD (GitHub Actions)
+
+De repository bevat vier geautomatiseerde workflows:
+
+| Workflow | Beschrijving |
+|----------|--------------|
+| **R-CMD-check** | Standaard R package check op meerdere platforms |
+| **integration-test** | Volledige pipeline met MinIO + PostgreSQL service containers |
+| **test-coverage** | Code coverage rapportage |
+| **scoop-installer-test** | Windows Scoop manifest validatie |
+
+De integratietest draait de complete analyse-pipeline op twee backends (file en s3pg) en verifieert PDF-generatie.
+
+---
+
 ## Documentatie en hulp
 
 ### Package documentatie
@@ -247,6 +355,7 @@ browseVignettes("nfwa")
 | `run_nfwa()` | Voer fairness-analyse uit |
 | `render_report()` | Genereer PDF rapport |
 | `cleanup_temp()` | Ruim tijdelijke bestanden op |
+| `nfwa_storage()` | Maak een storage backend aan (file of s3pg) |
 
 ### Ondersteunende projecten
 

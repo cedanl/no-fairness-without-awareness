@@ -68,6 +68,11 @@ jobs:
           extra-packages: any::aws.s3, any::DBI, any::RPostgres
           needs: check
 
+      - name: Install TinyTeX
+        run: |
+          tinytex::install_tinytex()
+        shell: Rscript {0}
+
       - name: Install nfwa package
         run: R CMD INSTALL .
 

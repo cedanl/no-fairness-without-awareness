@@ -225,7 +225,7 @@ Dit start drie services:
 |---------|-------|--------------|
 | **shiny** | [localhost:3838](http://localhost:3838) | NFWA Shiny webinterface |
 | **minio** | [localhost:9001](http://localhost:9001) | MinIO console (user: `minioadmin`, ww: `minioadmin`) |
-| **postgres** | 5432 | PostgreSQL database |
+| **postgres** | [localhost:5432](http://localhost:5432) | PostgreSQL database |
 
 ### Developer GUI tools (optioneel)
 

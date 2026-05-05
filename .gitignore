@@ -10,6 +10,9 @@ cache/
 
 ## Claude files
 .claude/
+
+## Local developer overrides (not committed)
+docker-compose.override.yml
 /doc/
 /Meta/
 

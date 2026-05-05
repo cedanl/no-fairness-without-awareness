@@ -65,6 +65,22 @@ services:
         echo 'Bucket nfwa created'
       "
 
+  # Developer GUI tools (not used by the shiny app)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    profiles: [dev]
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nfwa.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+
 volumes:
   pgdata:
   miniodata:
+  pgadmindata:

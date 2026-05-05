@@ -224,8 +224,39 @@ Dit start drie services:
 | Service | Poort | Beschrijving |
 |---------|-------|--------------|
 | **shiny** | [localhost:3838](http://localhost:3838) | NFWA Shiny webinterface |
-| **minio** | [localhost:9001](http://localhost:9001) | MinIO console (user: `minioadmin`) |
+| **minio** | [localhost:9001](http://localhost:9001) | MinIO console (user: `minioadmin`, ww: `minioadmin`) |
 | **postgres** | 5432 | PostgreSQL database |
+
+### Developer GUI tools (optioneel)
+
+pgAdmin (PostgreSQL GUI) is beschikbaar via het `dev` profiel:
+
+```bash
+docker compose --profile dev up -d
+```
+
+| Service | Poort | Beschrijving |
+|---------|-------|--------------|
+| **pgadmin** | [localhost:5050](http://localhost:5050) | pgAdmin (email: `admin@nfwa.local`, ww: `admin`) |
+
+Verbind in pgAdmin met host `postgres`, poort `5432`, gebruiker/wachtwoord `nfwa`.
+
+### Lokale poortconflicten
+
+Als poort 9000 op jouw machine bezet is (bijv. door een VPN-client), maak dan een lokaal bestand `docker-compose.override.yml` aan (staat in `.gitignore`):
+
+```yaml
+services:
+  minio:
+    ports:
+      - "9002:9000"
+      - "9003:9001"
+  shiny:
+    environment:
+      NFWA_S3_ENDPOINT: http://minio:9000
+```
+
+MinIO is dan bereikbaar op poort 9002 (API) en 9003 (console).
 
 Stoppen en opruimen:
 

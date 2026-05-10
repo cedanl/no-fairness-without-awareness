@@ -18,3 +18,8 @@
 ^Development\.md$
 ^check.*\.txt$
 ^.*\.log$
+^Dockerfile$
+^docker-compose\.yml$
+^\.dockerignore$
+^scoop$
+^pgadmin-servers\.json$

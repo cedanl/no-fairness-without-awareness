@@ -5,6 +5,8 @@ source("npuls-theme.R")
 
 options(shiny.maxRequestSize = 500 * 1024^2)
 
+storage <- nfwa::nfwa_storage()
+
 strip_ansi <- function(x) {
   # Remove OSC hyperlink sequences: \033]8;;...\033\\ or \033]8;;\a
   x <- gsub("\033\\]8;;[^\033\a]*(\033\\\\|\a)", "", x)
@@ -149,7 +151,8 @@ server <- function(input, output, session) {
               eoi            = as.integer(input$eoi),
               opleidingsvorm = input$vorm,
               generate_pdf   = TRUE,
-              cleanup_temp   = FALSE
+              cleanup_temp   = FALSE,
+              storage        = storage
             )
 
             incProgress(0.85, detail = "Klaar!")

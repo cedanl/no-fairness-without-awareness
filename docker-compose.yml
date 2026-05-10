@@ -1,0 +1,96 @@
+services:
+  shiny:
+    build: .
+    ports:
+      - "3838:3838"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      NFWA_STORAGE_BACKEND: s3pg
+      NFWA_S3_ENDPOINT: http://minio:9000
+      NFWA_S3_BUCKET: nfwa
+      NFWA_S3_REGION: ""
+      NFWA_S3_ACCESS_KEY: minioadmin
+      NFWA_S3_SECRET_KEY: minioadmin
+      NFWA_PG_HOST: postgres
+      NFWA_PG_PORT: "5432"
+      NFWA_PG_DBNAME: nfwa
+      NFWA_PG_USER: nfwa
+      NFWA_PG_PASSWORD: nfwa
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: nfwa
+      POSTGRES_USER: nfwa
+      POSTGRES_PASSWORD: nfwa
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nfwa"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set myminio http://minio:9000 minioadmin minioadmin &&
+        mc mb --ignore-existing myminio/nfwa &&
+        mc anonymous set download myminio/nfwa &&
+        echo 'Bucket nfwa created'
+      "
+
+  # Developer GUI tools (not used by the shiny app)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    profiles: [dev]
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nfwa.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json:ro
+    entrypoint: >
+      /bin/sh -c "
+        echo 'postgres:5432:nfwa:nfwa:nfwa' > /tmp/pgpass &&
+        chmod 600 /tmp/pgpass &&
+        /entrypoint.sh
+      "
+
+volumes:
+  pgdata:
+  miniodata:
+  pgadmindata:

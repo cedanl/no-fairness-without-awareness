@@ -22,6 +22,11 @@
 #'   automatisch verwijderd na PDF generatie. Standaard: `FALSE`.
 #' @param caption Character. Optionele caption voor visualisaties.
 #'   Standaard: automatisch gegenereerd met bron en datum.
+#' @param storage Een storage-object aangemaakt met \code{\link{nfwa_storage}},
+#'   of \code{NULL} (standaard). Indien opgegeven, worden analyse-resultaten
+#'   (temp-bestanden en PDF) automatisch gepersisteerd naar de geconfigureerde
+#'   backend (bijv. MinIO). Zonder storage worden bestanden alleen lokaal
+#'   opgeslagen (standaardgedrag).
 #'
 #' @return Een invisible list met:
 #'   \item{df}{Het getransformeerde dataframe gebruikt voor analyse}
@@ -98,7 +103,8 @@ analyze_fairness <- function(data_ev,
                               opleidingsvorm,
                               generate_pdf = TRUE,
                               cleanup_temp = TRUE,
-                              caption = NULL) {
+                              caption = NULL,
+                              storage = NULL) {
 
   # Controleer Quarto installatie (vereist voor PDF generatie)
   if (generate_pdf && !check_quarto_installed()) {
@@ -266,6 +272,12 @@ analyze_fairness <- function(data_ev,
     if (!cleanup_temp) {
       message("\nTip: Gebruik cleanup_temp() om tijdelijke bestanden te verwijderen.")
     }
+  }
+
+  # Persist outputs to storage backend (if configured)
+  if (!is.null(storage)) {
+    prefix <- paste0(gsub(" ", "_", tolower(opleidingsnaam)), "_", opleidingsvorm)
+    storage$persist_outputs(temp_dir = "temp", pdf_path = pdf_path, prefix = prefix)
   }
 
   # Completion message

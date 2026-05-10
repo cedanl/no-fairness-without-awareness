@@ -32,6 +32,7 @@ Imports:
     ggtext,
     glmnet,
     glue,
+    cardx,
     gtsummary,
     janitor,
     officer,

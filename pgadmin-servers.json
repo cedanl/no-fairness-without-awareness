@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "NFWA PostgreSQL",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "nfwa",
+      "Username": "nfwa",
+      "SSLMode": "prefer",
+      "PassFile": "/tmp/pgpass"
+    }
+  }
+}

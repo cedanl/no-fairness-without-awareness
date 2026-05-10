@@ -237,7 +237,7 @@ docker compose --profile dev up -d
 
 | Service | Poort | Beschrijving |
 |---------|-------|--------------|
-| **pgadmin** | [localhost:5050](http://localhost:5050) | pgAdmin (email: `admin@nfwa.local`, ww: `admin`) |
+| **pgadmin** | [localhost:5050](http://localhost:5050) | pgAdmin (email: `admin@nfwa.dev`, ww: `admin`) |
 
 Verbind in pgAdmin met host `postgres`, poort `5432`, gebruiker/wachtwoord `nfwa`.
 

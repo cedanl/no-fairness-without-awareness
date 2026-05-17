@@ -51,8 +51,11 @@ jobs:
             -e MINIO_ROOT_USER=minioadmin \
             -e MINIO_ROOT_PASSWORD=minioadmin \
             -p 9000:9000 \
-            minio/minio:latest server /data
-          until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
+            minio/minio:RELEASE.2025-04-22T22-12-26Z server /data
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:9000/minio/health/live && break
+            sleep 1
+          done || (echo "MinIO failed to start within 30s" && exit 1)
 
       - uses: r-lib/actions/setup-r@v2
         with:

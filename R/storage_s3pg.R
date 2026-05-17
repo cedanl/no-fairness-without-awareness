@@ -76,17 +76,25 @@ storage_s3pg <- function() {
 
     persist_outputs = function(temp_dir = "temp", pdf_path = NULL, prefix = "") {
       uploaded <- character(0)
+      failed   <- character(0)
 
       if (dir.exists(temp_dir)) {
-        files <- list.files(temp_dir, full.names = TRUE)
+        files <- list.files(temp_dir, full.names = TRUE, recursive = TRUE)
+        files <- files[!file.info(files)$isdir]
         for (f in files) {
           key <- if (nchar(prefix) > 0) {
             paste(prefix, "temp", basename(f), sep = "/")
           } else {
             paste("temp", basename(f), sep = "/")
           }
-          s3_put(f, key)
-          uploaded <- c(uploaded, key)
+          tryCatch({
+            s3_put(f, key)
+            uploaded <- c(uploaded, key)
+          }, error = function(e) {
+            warning("S3 upload mislukt voor ", basename(f), ": ",
+                    conditionMessage(e))
+            failed <<- c(failed, key)
+          })
         }
       }
 
@@ -96,13 +104,21 @@ storage_s3pg <- function() {
         } else {
           basename(pdf_path)
         }
-        s3_put(pdf_path, key)
-        uploaded <- c(uploaded, key)
+        tryCatch({
+          s3_put(pdf_path, key)
+          uploaded <- c(uploaded, key)
+        }, error = function(e) {
+          warning("S3 upload mislukt voor PDF: ", conditionMessage(e))
+          failed <<- c(failed, key)
+        })
       }
 
       message("Ge\u00fcpload naar S3: ", length(uploaded), " bestanden")
+      if (length(failed) > 0) {
+        warning("S3 upload mislukt voor ", length(failed), " bestand(en)")
+      }
       invisible(list(temp_dir = temp_dir, pdf_path = pdf_path,
-                     uploaded = uploaded))
+                     uploaded = uploaded, failed = failed))
     },
 
     write_table = function(df, table_name, overwrite = FALSE) {

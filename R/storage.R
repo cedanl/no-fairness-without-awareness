@@ -78,8 +78,21 @@ storage_file <- function() {
     },
 
     persist_outputs = function(temp_dir = "temp", pdf_path = NULL, prefix = "") {
-      invisible(list(temp_dir = temp_dir, pdf_path = pdf_path))
+      invisible(list(temp_dir = temp_dir, pdf_path = pdf_path,
+                     uploaded = character(0)))
     },
+
+    write_table = function(df, table_name, overwrite = FALSE) {
+      stop("write_table is niet beschikbaar voor de file backend. ",
+           "Gebruik de s3pg backend voor database-opslag.")
+    },
+
+    read_table = function(table_name) {
+      stop("read_table is niet beschikbaar voor de file backend. ",
+           "Gebruik de s3pg backend voor database-opslag.")
+    },
+
+    disconnect = function() invisible(NULL),
 
     type = "file"
   )

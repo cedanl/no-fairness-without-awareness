@@ -6,6 +6,7 @@ source("npuls-theme.R")
 options(shiny.maxRequestSize = 500 * 1024^2)
 
 storage <- nfwa::nfwa_storage()
+shiny::onStop(function() storage$disconnect())
 
 strip_ansi <- function(x) {
   # Remove OSC hyperlink sequences: \033]8;;...\033\\ or \033]8;;\a

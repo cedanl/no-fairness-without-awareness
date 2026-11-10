@@ -1,6 +1,6 @@
 # Windows Dev Environment Setup — Planning
 
-Branch: `windows-dev-env-setup`
+Branch: `6-quickstart-installer`
 
 Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
 
@@ -67,8 +67,8 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
 
 ## 2. Open beslissingen
 
-- [ ] **Naamgevingsconventie bestanden**: PascalCase voor alle `.ps1`/`.bat`
-      (voorstel, nog niet bevestigd) vs. kebab-case (bv. `quick-start.bat`).
+- [x] **Naamgevingsconventie bestanden** — de facto besloten: alle 6 bestaande
+      `.ps1`-bestanden zijn consistent PascalCase, geen kebab-case gebruikt.
 - [ ] **UX-flow bevestigen**: klopt de ASCII-flow (zie hieronder) met
       install-progress per stap en uninstall-bevestiging, of moet er een
       stap/scherm bij of af?
@@ -93,6 +93,11 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
       dedupe in `.Renviron`/`.vscode/settings.json`).
 
 ## 3. UX-flow (concept, zie open vraag hierboven)
+
+**Let op**: onderstaande `[n/7]`-voortgangsteller is nog aspirational — de
+huidige `Invoke-InstallFlow` print alleen de losse `Write-Host`-regels per
+helper-functie, geen genummerde stappenteller. Of die teller er nog bij komt
+hangt af van de open "UX-flow bevestigen"-vraag.
 
 ```
 === EERSTE RUN (geen manifest) ===
@@ -168,9 +173,12 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 
 ### QuickStart/Uninstall.ps1
 - [ ] Nog niet gestart. Alleen apps/buckets uit manifest verwijderen
-- [ ] PATH-entry verwijderen via `PathUtils.ps1`
+- [ ] Rtools-regel verwijderen uit project-`.Renviron` (nieuwe functie in
+      `PathUtils.ps1`, niet de globale PATH — dat bestaat niet meer)
+- [ ] `positron.r.customBinaries`-key verwijderen uit `.vscode/settings.json`
+      (nieuwe functie in `PositronSettings.ps1`) — ontbrak nog in deze lijst
 - [ ] Scoop zelf verwijderen? (afhankelijk van open vraag §2)
-- [ ] Manifest opruimen na succesvolle uninstall
+- [ ] Manifest (`state.json`) opruimen na succesvolle uninstall
 
 ### QuickStart/Main.ps1
 - [x] Routering: manifest bestaat → `Show-SetupMenu`; anders → J/N-bevestiging

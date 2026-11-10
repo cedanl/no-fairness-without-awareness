@@ -64,6 +64,10 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
       teamlid breken. Zelfde aanpak als Rtools' project-`.Renviron`.
 - [x] **Na installatie**: automatisch Positron openen met dit project.
       Menu-optie "Open project" doet dit ook bij latere runs.
+- [x] **Scoop's eigen output bij Herinstalleer**: bewust ongewijzigd gelaten.
+      Scoop's eigen `WARN '<app>' is already installed`-regels blijven
+      zichtbaar bij "Herinstalleer/repareer" — geen eigen onderdrukking
+      of samenvatting daarvan gebouwd.
 
 ## 2. Open beslissingen
 
@@ -181,6 +185,10 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 
 ### QuickStart/Menu.ps1
 - [x] `Read-YesNo`: J/N-prompt met validatie (gebruikt voor install-bevestiging)
+- [x] `Show-QuickStartBanner`: titel + CEDA-branding (letter-spaced, geen
+      blokletters — risico op uitlijnproblemen in smalle terminal). Draait
+      bij opstarten (`Main.ps1`) én opnieuw bij "Herinstalleer" vanuit het
+      menu, zodat 'ie niet in oude scroll-geschiedenis wegraakt.
 - [x] `Show-SetupMenu`: Open project (werkend) / Herinstalleer (werkend,
       roept `Invoke-InstallFlow` opnieuw aan) / Uninstall (werkend,
       roept `Invoke-UninstallFlow` aan) / Afsluiten

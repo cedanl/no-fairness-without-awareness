@@ -52,8 +52,8 @@ function Invoke-InstallFlow {
     }
 
     Write-Host ""
-    Write-Host "Let op: rtools, positron, quarto en deze R-versie komen uit Scoop's" -ForegroundColor DarkYellow
-    Write-Host "community-buckets ('extras'), niet uit Scoop's officiele 'main'-bucket." -ForegroundColor DarkYellow
+    Write-Host "Let op: positron en quarto komen uit Scoop's community-bucket" -ForegroundColor DarkYellow
+    Write-Host "('extras'), niet uit Scoop's officiele 'main'-bucket." -ForegroundColor DarkYellow
     Write-Host ""
 
     Add-ScoopBucket "extras"
@@ -66,6 +66,11 @@ function Invoke-InstallFlow {
     $quartoVersion = "1.11.9"
     $positronVersion = "2026.11.1-4"
 
+    # Let op bij het aanpassen van $rtoolsVersion: main/rtools heeft maar 1
+    # pinbare versie. Oudere major-versies (43/42/40/35) zijn een apart
+    # manifest in de 'versions' bucket (bv. 'versions/rtools43'), niet
+    # 'main/rtools@<oude versie>' - dat bestaat niet en faalt. R zelf heeft
+    # dit probleem niet: main/r is wel per-versie pinbaar.
     Install-PinnedScoopApp "main/r@$rVersion"
     Install-PinnedScoopApp "main/rtools@$rtoolsVersion"
     Install-PinnedScoopApp "extras/quarto@$quartoVersion"

@@ -91,11 +91,17 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
 - [x] **Versiepinning-strategie** — besloten: `r@4.6.2`, `rtools@4.5.6768.6492`,
       `quarto@1.11.9`, `positron@2026.11.1-4` worden gepind (exacte versie via
       `scoop install bucket/app@versie`), 7zip/git/aria2 niet.
-- [x] **Bucket-vertrouwen**: rtools/positron/quarto/specifieke R-versies staan
-      niet in Scoop's officiële `main`-bucket maar in community-buckets
-      (`extras`/`versions`). Besloten: akkoord, mét een eenmalige disclaimer
-      tijdens install (geen extra bevestigingsstap, gewoon een duidelijke
-      regel dat dit community-buckets zijn).
+- [x] **Bucket-vertrouwen** — gecorrigeerd (eerdere aanname klopte niet):
+      alleen positron/quarto staan in de community-bucket `extras`. R en
+      rtools staan gewoon in Scoop's officiële `main`-bucket (bevestigd via
+      `scoop search rtools`). Besloten: akkoord, mét een eenmalige disclaimer
+      tijdens install die alleen positron/quarto noemt.
+- [x] **Rtools-versie wijzigen** — oudere Rtools-major-versies (43/42/40/35)
+      zijn een los manifest in de `versions`-bucket (`versions/rtools43` etc.),
+      niet `main/rtools@<oude versie>` — dat bestaat niet. R heeft dit
+      probleem niet (`main/r` is wel per-versie pinbaar). Besloten: alleen
+      documenteren (comment in `Install.ps1`), geen bucket-fallback-logica
+      bouwen — niet nodig voor de huidige gepinde versies.
 - [x] **Elevatie/rechten harde eis**: bevestigd — nooit een UAC-prompt. Geen
       bouwtaak: Scoop's model is by design user-scope, dus dit geldt al voor
       alles wat we doen (bootstrap, buckets, installs, `.Renviron`,

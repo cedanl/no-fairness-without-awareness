@@ -126,8 +126,10 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [ ] Per stap: resultaat wegschrijven naar manifest
 
 ### QuickStart/PathUtils.ps1
-- [x] `Test-UserPathContains` / `Add-UserPathEntry` (exact string-match, user-scope)
-- [ ] Verwijderfunctie voor uninstall (verwijdert alleen de eigen entry)
+- [x] `Add-ProjectRtoolsPath` (schrijft Rtools-bin naar project-`.Renviron`
+      i.p.v. de globale user PATH — Rtools is het enige dat niet via Scoop's
+      eigen shim-PATH gevonden wordt; R en Quarto hebben dit niet nodig)
+- [ ] Verwijderfunctie voor uninstall (verwijdert alleen de eigen `.Renviron`-regel)
 
 ### QuickStart/PositronSettings.ps1
 - [ ] Positron openen met dit project als workspace

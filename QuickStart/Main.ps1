@@ -47,7 +47,8 @@ Install-PinnedScoopApp "extras/positron@2026.11.1-4"
 
 Write-Host ""
 $rtoolsBinPath = "$env:USERPROFILE\scoop\apps\rtools\$rtoolsVersion\x86_64-w64-mingw32.static.posix\bin"
-Add-UserPathEntry $rtoolsBinPath
+$projectRoot = Split-Path $PSScriptRoot -Parent
+Add-ProjectRtoolsPath -ProjectRoot $projectRoot -RtoolsBinPath $rtoolsBinPath
 
 Write-Host ""
 Write-Host "Klaar met deze stap." -ForegroundColor Cyan

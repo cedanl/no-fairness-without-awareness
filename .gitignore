@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.Renviron
 .DS_Store
 
 ## Ignore temporary analysis files
@@ -14,3 +15,6 @@ cache/
 /Meta/
 
 *.pdf
+
+/.quarto/
+**/*.quarto_ipynb

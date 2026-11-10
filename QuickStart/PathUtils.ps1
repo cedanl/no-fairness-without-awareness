@@ -1,21 +1,20 @@
-function Test-UserPathContains {
-    param([string]$Value)
+function Add-ProjectRtoolsPath {
+    param([string]$ProjectRoot, [string]$RtoolsBinPath)
 
-    $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-    $entries = $currentPath -split ';'
-    return $entries -contains $Value
-}
+    $renvironPath = Join-Path $ProjectRoot ".Renviron"
+    $marker = "# Rtools (added by QuickStart)"
+    $line = "PATH=$RtoolsBinPath;" + '${PATH}'
 
-function Add-UserPathEntry {
-    param([string]$Value)
+    $lines = if (Test-Path $renvironPath) { @(Get-Content $renvironPath) } else { @() }
 
-    if (Test-UserPathContains $Value) {
-        Write-Host "PATH bevat deze map al: $Value" -ForegroundColor Green
+    if ($lines -contains $line) {
+        Write-Host ".Renviron bevat deze Rtools PATH-regel al." -ForegroundColor Green
         return
     }
 
-    Write-Host "PATH-entry toevoegen: $Value" -ForegroundColor Cyan
-    $currentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-    $newPath = "$currentPath;$Value"
-    [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+    # vorige Rtools-regel verwijderen, voor het geval de versie is gewijzigd
+    $lines = $lines | Where-Object { $_ -ne $marker -and $_ -notmatch '^PATH=.*rtools' }
+
+    Write-Host "Rtools PATH toevoegen aan project .Renviron: $RtoolsBinPath" -ForegroundColor Cyan
+    Set-Content -Path $renvironPath -Value ($lines + $marker, $line)
 }

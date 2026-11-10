@@ -46,13 +46,17 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
       gevonden worden) accepteren we voorlopig dat risico — **"probleem voor
       later"**: kan later ook via een exact pad aangeroepen worden i.p.v.
       op `current`/hold te vertrouwen.
-- [x] **Positron R-detectie** (via Context7-onderzoek): geen workspace
-      settings.json-sleutel voor R-path (bestaat niet zoals bij Python's
-      `python.interpreters.include`). Positron auto-discovert interpreters via
-      PATH-scan, en Scoop plaatst shims al in de user PATH — R zou dus
-      automatisch gevonden moeten worden. Vangnet: instructie tonen
-      ("als R niet verschijnt: Command Palette > Discover All Interpreters").
-      Géén aparte settings.json-schrijfstap meer nodig.
+- [x] **Positron R-detectie** (herzien, eerdere aanname was onjuist): Positron
+      heeft wél settings voor non-standaard R-locaties —
+      `positron.r.customBinaries` (exact pad naar `R.exe`) en
+      `positron.r.customRootFolders` (map met versie-submappen), zie
+      https://positron.posit.co/r-installations. Scoop's shim-PATH maakt R
+      meestal al vindbaar, maar om dat niet van toeval te laten afhangen
+      schrijft `PositronSettings.ps1` het exacte, geresolvede pad naar
+      `main/r@<versie>` naar `.vscode/settings.json` (`positron.r.customBinaries`).
+      Dat bestand is **gitignored**: het pad bevat de Windows-gebruikersnaam
+      (`%USERPROFILE%\scoop\...`), dus committen zou het voor ieder ander
+      teamlid breken. Zelfde aanpak als Rtools' project-`.Renviron`.
 - [x] **Na installatie**: automatisch Positron openen met dit project.
       Menu-optie "Open project" doet dit ook bij latere runs.
 
@@ -132,8 +136,11 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [ ] Verwijderfunctie voor uninstall (verwijdert alleen de eigen `.Renviron`-regel)
 
 ### QuickStart/PositronSettings.ps1
+- [x] `Set-ProjectPositronRBinary` (schrijft `positron.r.customBinaries` naar
+      project-`.vscode/settings.json`, merget i.p.v. overschrijft, gitignored)
 - [ ] Positron openen met dit project als workspace
-- [ ] Fallback-instructie tonen (Discover All Interpreters)
+- [ ] Fallback-instructie tonen (Discover All Interpreters) voor als
+      detectie toch faalt (bv. Positron-versie zonder deze settings)
 
 ### QuickStart/Menu.ps1
 - [x] `Read-YesNo`: J/N-prompt met validatie (gebruikt voor install-bevestiging)
@@ -148,7 +155,7 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 
 ### QuickStart/Main.ps1
 - [x] Splash → pre-flight check → J/N-bevestiging → Scoop/bucket/apps →
-      gepinde apps → Rtools PATH-entry
+      gepinde apps → Rtools `.Renviron`-entry → Positron `.vscode/settings.json`
 - [ ] Routering naar menu bij bestaande installatie (nu altijd install-flow)
 - [ ] Centrale foutafhandeling/logging
 
@@ -157,7 +164,8 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [ ] Tweede run toont menu correct
 - [ ] Uninstall verwijdert exact de juiste apps + PATH-entry, laat overige
       gebruikersinstellingen ongemoeid
-- [ ] Positron opent project en vindt R automatisch via PATH
+- [ ] Positron opent project en vindt R: via `.vscode/settings.json`
+      (`positron.r.customBinaries`) én, los daarvan, via Scoop's shim-PATH
 
 ## 6. Documentatie
 - [ ] `QuickStart/README.md`: wat doet dit, hoe gebruik je het, hoe uninstall je

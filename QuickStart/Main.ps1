@@ -11,12 +11,15 @@ Write-Host ""
 . "$PSScriptRoot\PositronSettings.ps1"
 . "$PSScriptRoot\Menu.ps1"
 
+$projectRoot = Split-Path $PSScriptRoot -Parent
+
 if (Test-PreviousSetup) {
     Write-Host "Eerdere installatie gevonden." -ForegroundColor Green
-} else {
-    Write-Host "Geen eerdere installatie gevonden, dit is de eerste keer." -ForegroundColor Yellow
+    Show-SetupMenu -ProjectRoot $projectRoot
+    return
 }
 
+Write-Host "Geen eerdere installatie gevonden, dit is de eerste keer." -ForegroundColor Yellow
 Write-Host ""
 $doorgaan = Read-YesNo "Wil je de ontwikkelomgeving nu installeren?"
 
@@ -27,43 +30,5 @@ if (-not $doorgaan) {
 }
 
 Write-Host ""
-
-if (Test-ScoopInstalled) {
-    Write-Host "Scoop staat al geinstalleerd." -ForegroundColor Green
-} else {
-    Install-Scoop
-}
-
-Add-ScoopBucket "extras"
-Install-ScoopApp "7zip"
-Install-ScoopApp "git"
-Install-ScoopApp "aria2"
-
-$rVersion = "4.6.2"
-$rtoolsVersion = "4.5.6768.6492"
-$quartoVersion = "1.11.9"
-$positronVersion = "2026.11.1-4"
-
-Install-PinnedScoopApp "main/r@$rVersion"
-Install-PinnedScoopApp "main/rtools@$rtoolsVersion"
-Install-PinnedScoopApp "extras/quarto@$quartoVersion"
-Install-PinnedScoopApp "extras/positron@$positronVersion"
-
-Write-Host ""
-$projectRoot = Split-Path $PSScriptRoot -Parent
-
-$rtoolsBinPath = "$env:USERPROFILE\scoop\apps\rtools\$rtoolsVersion\x86_64-w64-mingw32.static.posix\bin"
-Add-ProjectRtoolsPath -ProjectRoot $projectRoot -RtoolsBinPath $rtoolsBinPath
-
-$rBinaryPath = "$env:USERPROFILE\scoop\apps\r\$rVersion\bin\x64\R.exe"
-Set-ProjectPositronRBinary -ProjectRoot $projectRoot -RBinaryPath $rBinaryPath
-
-Save-SetupManifest `
-    -ScoopBuckets @("extras") `
-    -ScoopApps @("7zip", "git", "aria2") `
-    -PinnedApps @{ r = $rVersion; rtools = $rtoolsVersion; quarto = $quartoVersion; positron = $positronVersion } `
-    -RtoolsRenvironPath $rtoolsBinPath `
-    -PositronRBinaryPath $rBinaryPath
-
-Write-Host ""
-Write-Host "Klaar met deze stap." -ForegroundColor Cyan
+Invoke-InstallFlow -ProjectRoot $projectRoot
+Open-ProjectInPositron -ProjectRoot $projectRoot

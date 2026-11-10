@@ -32,3 +32,10 @@ function Set-ProjectPositronRBinary {
 
     $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath
 }
+
+function Open-ProjectInPositron {
+    param([string]$ProjectRoot)
+
+    Write-Host "Positron openen met dit project..." -ForegroundColor Cyan
+    positron $ProjectRoot
+}

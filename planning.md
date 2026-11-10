@@ -135,6 +135,10 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [x] Apps installeren: 7zip, git, aria2 (`Install-ScoopApp`)
 - [x] Gepinde installs: r, rtools, quarto, positron (`Install-PinnedScoopApp`,
       zonder `hold` — zie beslissing hierboven)
+- [x] `Invoke-InstallFlow`: de hele install-sequentie (Scoop → buckets → apps →
+      gepinde apps → `.Renviron` → `.vscode/settings.json` → manifest) als
+      één herbruikbare functie, aangeroepen bij eerste install én vanuit het
+      menu's "Herinstalleer/repareer"
 - [x] Idempotent getest: Scoop's eigen "already installed"-gedrag gebruikt
       i.p.v. eigen (onbetrouwbare) detectie
 - [x] ~~Per stap wegschrijven naar manifest~~ — vervangen door één atomische
@@ -149,14 +153,18 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 ### QuickStart/PositronSettings.ps1
 - [x] `Set-ProjectPositronRBinary` (schrijft `positron.r.customBinaries` naar
       project-`.vscode/settings.json`, merget i.p.v. overschrijft, gitignored)
-- [ ] Positron openen met dit project als workspace
+- [x] `Open-ProjectInPositron` (roept de `positron`-shim aan met het
+      projectpad; wordt automatisch aangeroepen na eerste install en vanuit
+      het menu's "Open project")
 - [ ] Fallback-instructie tonen (Discover All Interpreters) voor als
       detectie toch faalt (bv. Positron-versie zonder deze settings)
 
 ### QuickStart/Menu.ps1
 - [x] `Read-YesNo`: J/N-prompt met validatie (gebruikt voor install-bevestiging)
-- [ ] Menu-opties voor latere runs: Open project / Herinstalleer / Uninstall / Afsluiten
-- [ ] Bevestigingsstap vóór uninstall
+- [x] `Show-SetupMenu`: Open project (werkend) / Herinstalleer (werkend,
+      roept `Invoke-InstallFlow` opnieuw aan) / Uninstall (placeholder-melding,
+      wacht op `Uninstall.ps1`) / Afsluiten
+- [ ] Bevestigingsstap vóór uninstall (pas relevant zodra uninstall echt iets doet)
 
 ### QuickStart/Uninstall.ps1
 - [ ] Nog niet gestart. Alleen apps/buckets uit manifest verwijderen
@@ -165,10 +173,8 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [ ] Manifest opruimen na succesvolle uninstall
 
 ### QuickStart/Main.ps1
-- [x] Splash → pre-flight check → J/N-bevestiging → Scoop/bucket/apps →
-      gepinde apps → Rtools `.Renviron`-entry → Positron `.vscode/settings.json`
-      → `Save-SetupManifest`
-- [ ] Routering naar menu bij bestaande installatie (nu altijd install-flow)
+- [x] Routering: manifest bestaat → `Show-SetupMenu`; anders → J/N-bevestiging
+      → `Invoke-InstallFlow` → automatisch Positron openen
 - [ ] Centrale foutafhandeling/logging
 
 ## 5. Testen

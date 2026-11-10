@@ -227,4 +227,5 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 ## 6. Documentatie
 - [x] `QuickStart/README.md`: kort, met bestandsboom (bewust minimaal gehouden,
       verwijst naar dit plan voor de rest)
-- [ ] Verwijzing vanuit hoofd-`README.md` naar `QuickStart.bat`
+- [x] Verwijzing vanuit hoofd-`README.md` naar `QuickStart.bat` — korte
+      callout bij de Vereisten-tabel

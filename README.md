@@ -50,6 +50,8 @@ remotes::install_github("cedanl/no-fairness-without-awareness")
 | **Quarto** | Vereist voor PDF rapportage | [Download Quarto](https://quarto.org/docs/get-started/) |
 | **TinyTeX** | LaTeX distributie voor PDF compilatie | Automatisch via `tinytex::install_tinytex()` |
 
+> 🪟 **Windows**: `QuickStart.bat` in de repo-root installeert R, Rtools, Quarto en Positron automatisch. Zie [`QuickStart/README.md`](QuickStart/README.md).
+
 #### ⚠️ Quarto Installatie
 
 Als je **PDF rapporten** wilt genereren, moet je Quarto installeren:

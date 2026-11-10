@@ -69,21 +69,30 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
 
 - [x] **Naamgevingsconventie bestanden** — de facto besloten: alle 6 bestaande
       `.ps1`-bestanden zijn consistent PascalCase, geen kebab-case gebruikt.
-- [ ] **UX-flow bevestigen**: klopt de ASCII-flow (zie hieronder) met
-      install-progress per stap en uninstall-bevestiging, of moet er een
-      stap/scherm bij of af?
-- [ ] **Scoop zelf wel/niet verwijderen bij uninstall** — raakt direct de
-      "alleen weghalen wat wij installeerden"-eis. Risico als we het wél
-      verwijderen: als gebruiker na onze install zelf nog andere apps via
-      Scoop heeft toegevoegd, raken die dan ook hun package manager kwijt.
+- [ ] **UX-flow bevestigen**: voorstel is om de `[n/7]`-voortgangsteller uit
+      de ASCII-flow hieronder NIET te bouwen — elke helper-functie print al
+      een eigen statusregel, een teller erbovenop is bijhoud-overhead voor
+      weinig winst. Nog niet definitief bevestigd.
+- [x] **Scoop zelf wel/niet verwijderen bij uninstall** — besloten: hangt af
+      van of Scoop al aanwezig was vóór onze install. Dat wordt vastgelegd in
+      `state.json` (`scoopPreExisting`, gezet in `Invoke-InstallFlow` vóórdat
+      `Install-Scoop` draait). Bij uninstall: als wij Scoop zelf installeerden
+      → één keer vragen. Als Scoop al bestond → twee keer vragen (dubbele
+      bevestiging), omdat de gebruiker dan mogelijk eigen andere apps via
+      Scoop beheert die anders ook hun package manager kwijtraken.
 - [x] **Versiepinning-strategie** — besloten: `r@4.6.2`, `rtools@4.5.6768.6492`,
       `quarto@1.11.9`, `positron@2026.11.1-4` worden gepind (exacte versie via
       `scoop install bucket/app@versie`), 7zip/git/aria2 niet.
-- [ ] **Bucket-vertrouwen**: rtools/positron/quarto/specifieke R-versies staan
+- [x] **Bucket-vertrouwen**: rtools/positron/quarto/specifieke R-versies staan
       niet in Scoop's officiële `main`-bucket maar in community-buckets
-      (`extras`/`versions`). Akkoord om die te vertrouwen voor een org-tool?
-- [ ] **Elevatie/rechten harde eis**: bevestigen dat niets ooit een
-      UAC-prompt mag tonen (alles user-scope, zoals Scoop by design doet).
+      (`extras`/`versions`). Besloten: akkoord, mét een eenmalige disclaimer
+      tijdens install (geen extra bevestigingsstap, gewoon een duidelijke
+      regel dat dit community-buckets zijn).
+- [x] **Elevatie/rechten harde eis**: bevestigd — nooit een UAC-prompt. Geen
+      bouwtaak: Scoop's model is by design user-scope, dus dit geldt al voor
+      alles wat we doen (bootstrap, buckets, installs, `.Renviron`,
+      `.vscode/settings.json`, `state.json` staan allemaal in
+      user-schrijfbare locaties).
 - [x] **Foutafhandeling bij gedeeltelijke install** — besloten: geen
       resume-logica. `state.json` wordt alleen aan het eind van een volledig
       succesvolle run geschreven, dus een mislukte run (bv. stap 4/7 zonder
@@ -130,9 +139,13 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 
 ### QuickStart/Manifest.ps1
 - [x] `Test-PreviousSetup`: check of manifest-bestand bestaat (pre-flight)
-- [x] `Save-SetupManifest`: schrijft buckets, apps, gepinde versies,
-      `.Renviron`-pad en Positron R-binary-pad naar `state.json` —
-      atomisch aan het eind van een succesvolle run (zie §2)
+- [x] `Save-SetupManifest`: schrijft `scoopPreExisting`, buckets, apps,
+      gepinde versies, `.Renviron`-pad en Positron R-binary-pad naar
+      `state.json` — atomisch aan het eind van een succesvolle run (zie §2)
+- [x] `Get-SetupManifest` / `Remove-SetupManifest`: lezen/opruimen voor
+      `Uninstall.ps1`
+- [x] `Write-SetupError`: logt naar `%USERPROFILE%\.cedanl-devsetup\error.log`,
+      gebruikt door de try/catch in `Main.ps1` en `Menu.ps1`
 
 ### QuickStart/Install.ps1
 - [x] Scoop bootstrap (`Test-ScoopInstalled` + `Install-Scoop`)
@@ -153,37 +166,40 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [x] `Add-ProjectRtoolsPath` (schrijft Rtools-bin naar project-`.Renviron`
       i.p.v. de globale user PATH — Rtools is het enige dat niet via Scoop's
       eigen shim-PATH gevonden wordt; R en Quarto hebben dit niet nodig)
-- [ ] Verwijderfunctie voor uninstall (verwijdert alleen de eigen `.Renviron`-regel)
+- [x] `Remove-ProjectRtoolsPath` (verwijdert alleen de eigen `.Renviron`-regel)
 
 ### QuickStart/PositronSettings.ps1
 - [x] `Set-ProjectPositronRBinary` (schrijft `positron.r.customBinaries` naar
       project-`.vscode/settings.json`, merget i.p.v. overschrijft, gitignored)
+- [x] `Remove-ProjectPositronRBinary` (verwijdert alleen de eigen key)
 - [x] `Open-ProjectInPositron` (roept de `positron`-shim aan met het
       projectpad; wordt automatisch aangeroepen na eerste install en vanuit
       het menu's "Open project")
-- [ ] Fallback-instructie tonen (Discover All Interpreters) voor als
-      detectie toch faalt (bv. Positron-versie zonder deze settings)
+- [x] Fallback-instructie tonen (Discover All Interpreters) — vaste melding
+      na het openen van Positron; kan niet echt detecteren of het nodig is
+      (geen manier om Positron's interpreter-lijst vanuit PowerShell te lezen)
 
 ### QuickStart/Menu.ps1
 - [x] `Read-YesNo`: J/N-prompt met validatie (gebruikt voor install-bevestiging)
 - [x] `Show-SetupMenu`: Open project (werkend) / Herinstalleer (werkend,
-      roept `Invoke-InstallFlow` opnieuw aan) / Uninstall (placeholder-melding,
-      wacht op `Uninstall.ps1`) / Afsluiten
-- [ ] Bevestigingsstap vóór uninstall (pas relevant zodra uninstall echt iets doet)
+      roept `Invoke-InstallFlow` opnieuw aan) / Uninstall (werkend,
+      roept `Invoke-UninstallFlow` aan) / Afsluiten
+- [x] Bevestigingsstap vóór uninstall (J/N via `Read-YesNo`)
 
 ### QuickStart/Uninstall.ps1
-- [ ] Nog niet gestart. Alleen apps/buckets uit manifest verwijderen
-- [ ] Rtools-regel verwijderen uit project-`.Renviron` (nieuwe functie in
-      `PathUtils.ps1`, niet de globale PATH — dat bestaat niet meer)
-- [ ] `positron.r.customBinaries`-key verwijderen uit `.vscode/settings.json`
-      (nieuwe functie in `PositronSettings.ps1`) — ontbrak nog in deze lijst
-- [ ] Scoop zelf verwijderen? (afhankelijk van open vraag §2)
-- [ ] Manifest (`state.json`) opruimen na succesvolle uninstall
+- [x] `Invoke-UninstallFlow`: verwijdert scoop-apps/buckets uit manifest,
+      de `.Renviron`-regel, de `.vscode/settings.json`-key, en ruimt
+      `state.json` op
+- [x] Scoop zelf verwijderen — enkel vragen als wij 'm installeerden
+      (`scoopPreExisting: false`), dubbel bevestigen als hij al bestond
+      (zie §2-beslissing)
 
 ### QuickStart/Main.ps1
 - [x] Routering: manifest bestaat → `Show-SetupMenu`; anders → J/N-bevestiging
       → `Invoke-InstallFlow` → automatisch Positron openen
-- [ ] Centrale foutafhandeling/logging
+- [x] Centrale foutafhandeling/logging: try/catch rond `Invoke-InstallFlow`/
+      `Invoke-UninstallFlow` (in `Main.ps1` én `Menu.ps1`), logt naar
+      `Write-SetupError` i.p.v. een losse PowerShell-stacktrace te tonen
 
 ## 5. Testen
 - [ ] Schone Windows-omgeving: volledige eerste install

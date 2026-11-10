@@ -33,9 +33,33 @@ function Set-ProjectPositronRBinary {
     $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath
 }
 
+function Remove-ProjectPositronRBinary {
+    param([string]$ProjectRoot)
+
+    $settingsPath = Join-Path $ProjectRoot ".vscode\settings.json"
+    $key = "positron.r.customBinaries"
+
+    if (-not (Test-Path $settingsPath)) {
+        return
+    }
+
+    $settings = Get-Content $settingsPath -Raw | ConvertFrom-Json
+    if ($settings.PSObject.Properties.Name -notcontains $key) {
+        return
+    }
+
+    Write-Host "$key verwijderen uit .vscode/settings.json." -ForegroundColor Cyan
+    $settings.PSObject.Properties.Remove($key)
+    $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath
+}
+
 function Open-ProjectInPositron {
     param([string]$ProjectRoot)
 
     Write-Host "Positron openen met dit project..." -ForegroundColor Cyan
     positron $ProjectRoot
+
+    Write-Host ""
+    Write-Host "Zie je R niet in de interpreter-lijst? Command Palette (Ctrl+Shift+P)" -ForegroundColor DarkYellow
+    Write-Host "> 'Discover All Interpreters'." -ForegroundColor DarkYellow
 }

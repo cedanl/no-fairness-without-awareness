@@ -18,3 +18,19 @@ function Add-ProjectRtoolsPath {
     Write-Host "Rtools PATH toevoegen aan project .Renviron: $RtoolsBinPath" -ForegroundColor Cyan
     Set-Content -Path $renvironPath -Value ($lines + $marker, $line)
 }
+
+function Remove-ProjectRtoolsPath {
+    param([string]$ProjectRoot)
+
+    $renvironPath = Join-Path $ProjectRoot ".Renviron"
+    $marker = "# Rtools (added by QuickStart)"
+
+    if (-not (Test-Path $renvironPath)) {
+        return
+    }
+
+    $lines = @(Get-Content $renvironPath) | Where-Object { $_ -ne $marker -and $_ -notmatch '^PATH=.*rtools' }
+
+    Write-Host "Rtools-regel verwijderen uit project .Renviron." -ForegroundColor Cyan
+    Set-Content -Path $renvironPath -Value $lines
+}

@@ -35,12 +35,30 @@ function Show-SetupMenu {
                 return
             }
             "2" {
-                Invoke-InstallFlow -ProjectRoot $ProjectRoot
+                try {
+                    Invoke-InstallFlow -ProjectRoot $ProjectRoot
+                } catch {
+                    Write-SetupError -Message $_.Exception.Message
+                    Write-Host ""
+                    Write-Host "Er ging iets mis. Details staan in $Script:ErrorLogPath" -ForegroundColor Red
+                }
                 return
             }
             "3" {
                 Write-Host ""
-                Write-Host "Uninstall is nog niet geimplementeerd." -ForegroundColor Yellow
+                $bevestig = Read-YesNo "Weet je zeker dat je alles wilt verwijderen?"
+                if ($bevestig) {
+                    try {
+                        Invoke-UninstallFlow -ProjectRoot $ProjectRoot
+                    } catch {
+                        Write-SetupError -Message $_.Exception.Message
+                        Write-Host ""
+                        Write-Host "Er ging iets mis. Details staan in $Script:ErrorLogPath" -ForegroundColor Red
+                    }
+                } else {
+                    Write-Host "Uninstall geannuleerd." -ForegroundColor Green
+                }
+                return
             }
             "4" {
                 return

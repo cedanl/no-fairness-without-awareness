@@ -37,11 +37,17 @@ function Install-PinnedScoopApp {
 function Invoke-InstallFlow {
     param([string]$ProjectRoot)
 
-    if (Test-ScoopInstalled) {
+    $scoopPreExisting = Test-ScoopInstalled
+    if ($scoopPreExisting) {
         Write-Host "Scoop staat al geinstalleerd." -ForegroundColor Green
     } else {
         Install-Scoop
     }
+
+    Write-Host ""
+    Write-Host "Let op: rtools, positron, quarto en deze R-versie komen uit Scoop's" -ForegroundColor DarkYellow
+    Write-Host "community-buckets ('extras'), niet uit Scoop's officiele 'main'-bucket." -ForegroundColor DarkYellow
+    Write-Host ""
 
     Add-ScoopBucket "extras"
     Install-ScoopApp "7zip"
@@ -66,6 +72,7 @@ function Invoke-InstallFlow {
     Set-ProjectPositronRBinary -ProjectRoot $ProjectRoot -RBinaryPath $rBinaryPath
 
     Save-SetupManifest `
+        -ScoopPreExisting $scoopPreExisting `
         -ScoopBuckets @("extras") `
         -ScoopApps @("7zip", "git", "aria2") `
         -PinnedApps @{ r = $rVersion; rtools = $rtoolsVersion; quarto = $quartoVersion; positron = $positronVersion } `

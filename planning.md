@@ -26,16 +26,21 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
         Manifest.ps1
         PositronSettings.ps1
       ```
-- [x] **State-manifest**: JSON-bestand (bv. `%USERPROFILE%\.cedanl-devsetup\state.json`)
-      met daarin: geïnstalleerde scoop-apps, toegevoegde buckets, de exacte
-      PATH-waarde die is toegevoegd, R-versie, timestamp. Bepaalt of `Main.ps1`
-      de install-flow of het menu toont, en is de basis voor precieze uninstall.
-- [x] **PATH-afhandeling Rtools**: PATH-entry wijst naar de **exacte gepinde
-      versie-map** (`%USERPROFILE%\scoop\apps\rtools\4.5.6768.6492\x86_64-w64-mingw32.static.posix\bin`),
+- [x] **State-manifest**: JSON-bestand (`%USERPROFILE%\.cedanl-devsetup\state.json`)
+      met daarin: toegevoegde buckets, geïnstalleerde scoop-apps, gepinde
+      app-versies (r/rtools/quarto/positron), het Rtools-pad in `.Renviron`,
+      het Positron R-binary-pad in `.vscode/settings.json`, timestamp.
+      Bepaalt of `Main.ps1` de install-flow of het menu toont, en is de basis
+      voor precieze uninstall. **Wordt pas geschreven na een volledig
+      succesvolle run** (zie beslissing hieronder over foutafhandeling).
+- [x] **PATH-afhandeling Rtools**: project-`.Renviron`-entry wijst naar de
+      **exacte gepinde versie-map**
+      (`%USERPROFILE%\scoop\apps\rtools\4.5.6768.6492\x86_64-w64-mingw32.static.posix\bin`),
       niet naar `current` — Scoop bewaart oudere versies op schijf, dus dit
       blijft werken ook als `current` ooit verschuift door iets anders.
-      Alleen toevoegen indien afwezig (exacte string-match); later ook
-      opslaan in manifest zodat uninstall precies déze entry weer verwijdert.
+      Alleen toevoegen/vervangen indien nodig (dedupe op exacte regel, oude
+      Rtools-regel wordt vervangen bij versiewissel); staat ook in het
+      manifest zodat uninstall weet welke regel te verwijderen.
 - [x] **Geen `scoop hold`**: bewust weggelaten voor r/rtools/quarto/positron.
       Reden: het conflict-risico (een ander project op dezelfde machine met
       een eigen gepinde versie) wordt er niet door opgelost — dat is een
@@ -79,9 +84,13 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
       (`extras`/`versions`). Akkoord om die te vertrouwen voor een org-tool?
 - [ ] **Elevatie/rechten harde eis**: bevestigen dat niets ooit een
       UAC-prompt mag tonen (alles user-scope, zoals Scoop by design doet).
-- [ ] **Foutafhandeling bij gedeeltelijke install**: wat gebeurt er als
-      stap 4/7 faalt (bv. geen internet)? Moet het script kunnen hervatten,
-      of altijd vanaf nul opnieuw beginnen?
+- [x] **Foutafhandeling bij gedeeltelijke install** — besloten: geen
+      resume-logica. `state.json` wordt alleen aan het eind van een volledig
+      succesvolle run geschreven, dus een mislukte run (bv. stap 4/7 zonder
+      internet) laat geen manifest achter en de volgende keer wordt gewoon
+      de hele install-flow opnieuw doorlopen. Dat is veilig omdat elke stap
+      al idempotent is (Scoop's eigen "already installed"-check,
+      dedupe in `.Renviron`/`.vscode/settings.json`).
 
 ## 3. UX-flow (concept, zie open vraag hierboven)
 
@@ -116,8 +125,9 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 
 ### QuickStart/Manifest.ps1
 - [x] `Test-PreviousSetup`: check of manifest-bestand bestaat (pre-flight)
-- [ ] Functies om `state.json` daadwerkelijk te schrijven/updaten (welke apps,
-      buckets, PATH-entry zijn toegevoegd)
+- [x] `Save-SetupManifest`: schrijft buckets, apps, gepinde versies,
+      `.Renviron`-pad en Positron R-binary-pad naar `state.json` —
+      atomisch aan het eind van een succesvolle run (zie §2)
 
 ### QuickStart/Install.ps1
 - [x] Scoop bootstrap (`Test-ScoopInstalled` + `Install-Scoop`)
@@ -127,7 +137,8 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
       zonder `hold` — zie beslissing hierboven)
 - [x] Idempotent getest: Scoop's eigen "already installed"-gedrag gebruikt
       i.p.v. eigen (onbetrouwbare) detectie
-- [ ] Per stap: resultaat wegschrijven naar manifest
+- [x] ~~Per stap wegschrijven naar manifest~~ — vervangen door één atomische
+      `Save-SetupManifest`-call aan het eind, zie `Manifest.ps1` en §2
 
 ### QuickStart/PathUtils.ps1
 - [x] `Add-ProjectRtoolsPath` (schrijft Rtools-bin naar project-`.Renviron`
@@ -156,6 +167,7 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 ### QuickStart/Main.ps1
 - [x] Splash → pre-flight check → J/N-bevestiging → Scoop/bucket/apps →
       gepinde apps → Rtools `.Renviron`-entry → Positron `.vscode/settings.json`
+      → `Save-SetupManifest`
 - [ ] Routering naar menu bij bestaande installatie (nu altijd install-flow)
 - [ ] Centrale foutafhandeling/logging
 

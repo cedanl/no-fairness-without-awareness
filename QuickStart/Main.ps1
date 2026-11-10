@@ -41,11 +41,13 @@ Install-ScoopApp "aria2"
 
 $rVersion = "4.6.2"
 $rtoolsVersion = "4.5.6768.6492"
+$quartoVersion = "1.11.9"
+$positronVersion = "2026.11.1-4"
 
 Install-PinnedScoopApp "main/r@$rVersion"
 Install-PinnedScoopApp "main/rtools@$rtoolsVersion"
-Install-PinnedScoopApp "extras/quarto@1.11.9"
-Install-PinnedScoopApp "extras/positron@2026.11.1-4"
+Install-PinnedScoopApp "extras/quarto@$quartoVersion"
+Install-PinnedScoopApp "extras/positron@$positronVersion"
 
 Write-Host ""
 $projectRoot = Split-Path $PSScriptRoot -Parent
@@ -55,6 +57,13 @@ Add-ProjectRtoolsPath -ProjectRoot $projectRoot -RtoolsBinPath $rtoolsBinPath
 
 $rBinaryPath = "$env:USERPROFILE\scoop\apps\r\$rVersion\bin\x64\R.exe"
 Set-ProjectPositronRBinary -ProjectRoot $projectRoot -RBinaryPath $rBinaryPath
+
+Save-SetupManifest `
+    -ScoopBuckets @("extras") `
+    -ScoopApps @("7zip", "git", "aria2") `
+    -PinnedApps @{ r = $rVersion; rtools = $rtoolsVersion; quarto = $quartoVersion; positron = $positronVersion } `
+    -RtoolsRenvironPath $rtoolsBinPath `
+    -PositronRBinaryPath $rBinaryPath
 
 Write-Host ""
 Write-Host "Klaar met deze stap." -ForegroundColor Cyan

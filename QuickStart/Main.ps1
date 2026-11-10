@@ -1,16 +1,11 @@
-Clear-Host
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  No Fairness Without Awareness QuickStart" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-
 . "$PSScriptRoot\Manifest.ps1"
 . "$PSScriptRoot\Install.ps1"
 . "$PSScriptRoot\Uninstall.ps1"
 . "$PSScriptRoot\PathUtils.ps1"
 . "$PSScriptRoot\PositronSettings.ps1"
 . "$PSScriptRoot\Menu.ps1"
+
+Show-QuickStartBanner
 
 $projectRoot = Split-Path $PSScriptRoot -Parent
 

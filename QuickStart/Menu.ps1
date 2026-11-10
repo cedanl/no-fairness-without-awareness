@@ -17,6 +17,18 @@ function Read-YesNo {
     }
 }
 
+function Show-QuickStartBanner {
+    Clear-Host
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host "     No Fairness Without Awareness" -ForegroundColor Cyan
+    Write-Host "              QuickStart" -ForegroundColor Cyan
+    Write-Host "----------------------------------------" -ForegroundColor Cyan
+    Write-Host "               C E D A" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Host ""
+}
+
 function Show-SetupMenu {
     param([string]$ProjectRoot)
 
@@ -35,6 +47,7 @@ function Show-SetupMenu {
                 return
             }
             "2" {
+                Show-QuickStartBanner
                 try {
                     Invoke-InstallFlow -ProjectRoot $ProjectRoot
                 } catch {

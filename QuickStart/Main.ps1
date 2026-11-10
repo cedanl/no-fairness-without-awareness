@@ -1,7 +1,7 @@
 . "$PSScriptRoot\Manifest.ps1"
 . "$PSScriptRoot\Install.ps1"
 . "$PSScriptRoot\Uninstall.ps1"
-. "$PSScriptRoot\PathUtils.ps1"
+. "$PSScriptRoot\RtoolsRenviron.ps1"
 . "$PSScriptRoot\PositronSettings.ps1"
 . "$PSScriptRoot\Menu.ps1"
 
@@ -26,13 +26,7 @@ if (-not $doorgaan) {
 }
 
 Write-Host ""
-try {
+Invoke-WithErrorLogging {
     Invoke-InstallFlow -ProjectRoot $projectRoot
     Open-ProjectInPositron -ProjectRoot $projectRoot
-} catch {
-    Write-SetupError -Message $_.Exception.Message
-    Write-Host ""
-    Write-Host "Er ging iets mis tijdens de installatie." -ForegroundColor Red
-    Write-Host "Details staan in $Script:ErrorLogPath" -ForegroundColor Red
-    Write-Host "Probeer QuickStart opnieuw te draaien." -ForegroundColor Yellow
 }

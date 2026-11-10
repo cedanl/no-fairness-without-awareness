@@ -48,26 +48,14 @@ function Show-SetupMenu {
             }
             "2" {
                 Show-QuickStartBanner
-                try {
-                    Invoke-InstallFlow -ProjectRoot $ProjectRoot
-                } catch {
-                    Write-SetupError -Message $_.Exception.Message
-                    Write-Host ""
-                    Write-Host "Er ging iets mis. Details staan in $Script:ErrorLogPath" -ForegroundColor Red
-                }
+                Invoke-WithErrorLogging { Invoke-InstallFlow -ProjectRoot $ProjectRoot }
                 return
             }
             "3" {
                 Write-Host ""
                 $bevestig = Read-YesNo "Weet je zeker dat je alles wilt verwijderen?"
                 if ($bevestig) {
-                    try {
-                        Invoke-UninstallFlow -ProjectRoot $ProjectRoot
-                    } catch {
-                        Write-SetupError -Message $_.Exception.Message
-                        Write-Host ""
-                        Write-Host "Er ging iets mis. Details staan in $Script:ErrorLogPath" -ForegroundColor Red
-                    }
+                    Invoke-WithErrorLogging { Invoke-UninstallFlow -ProjectRoot $ProjectRoot }
                 } else {
                     Write-Host "Uninstall geannuleerd." -ForegroundColor Green
                 }

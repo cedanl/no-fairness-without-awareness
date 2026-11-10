@@ -12,6 +12,19 @@ function Write-SetupError {
     Add-Content -Path $Script:ErrorLogPath -Value "[$(Get-Date -Format 'o')] $Message"
 }
 
+function Invoke-WithErrorLogging {
+    param([scriptblock]$Action)
+
+    try {
+        & $Action
+    } catch {
+        Write-SetupError -Message $_.Exception.Message
+        Write-Host ""
+        Write-Host "Er ging iets mis. Details staan in $Script:ErrorLogPath" -ForegroundColor Red
+        Write-Host "Probeer het opnieuw via QuickStart.bat." -ForegroundColor Yellow
+    }
+}
+
 function Test-PreviousSetup {
     return Test-Path $Script:ManifestPath
 }

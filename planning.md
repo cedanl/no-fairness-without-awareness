@@ -22,7 +22,7 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
         Install.ps1
         Uninstall.ps1
         Menu.ps1
-        PathUtils.ps1
+        RtoolsRenviron.ps1
         Manifest.ps1
         PositronSettings.ps1
       ```
@@ -170,7 +170,9 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 - [x] ~~Per stap wegschrijven naar manifest~~ — vervangen door één atomische
       `Save-SetupManifest`-call aan het eind, zie `Manifest.ps1` en §2
 
-### QuickStart/PathUtils.ps1
+### QuickStart/RtoolsRenviron.ps1
+- [x] Hernoemd van `PathUtils.ps1` — die naam klopte niet meer zodra de
+      globale user-PATH-functies vervangen waren door deze `.Renviron`-aanpak
 - [x] `Add-ProjectRtoolsPath` (schrijft Rtools-bin naar project-`.Renviron`
       i.p.v. de globale user PATH — Rtools is het enige dat niet via Scoop's
       eigen shim-PATH gevonden wordt; R en Quarto hebben dit niet nodig)
@@ -209,9 +211,10 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
 ### QuickStart/Main.ps1
 - [x] Routering: manifest bestaat → `Show-SetupMenu`; anders → J/N-bevestiging
       → `Invoke-InstallFlow` → automatisch Positron openen
-- [x] Centrale foutafhandeling/logging: try/catch rond `Invoke-InstallFlow`/
-      `Invoke-UninstallFlow` (in `Main.ps1` én `Menu.ps1`), logt naar
-      `Write-SetupError` i.p.v. een losse PowerShell-stacktrace te tonen
+- [x] Centrale foutafhandeling/logging: `Invoke-WithErrorLogging` (Manifest.ps1)
+      wrapt `Invoke-InstallFlow`/`Invoke-UninstallFlow` op alle 3 aanroep-
+      plekken (`Main.ps1`, `Menu.ps1` x2) — één gedeelde try/catch i.p.v.
+      drie keer dezelfde code, logt naar `Write-SetupError`
 
 ## 5. Testen
 - [ ] Schone Windows-omgeving: volledige eerste install
@@ -222,5 +225,6 @@ Omgeving al geinstalleerd (sinds 2026-11-10)
       (`positron.r.customBinaries`) én, los daarvan, via Scoop's shim-PATH
 
 ## 6. Documentatie
-- [ ] `QuickStart/README.md`: wat doet dit, hoe gebruik je het, hoe uninstall je
+- [x] `QuickStart/README.md`: kort, met bestandsboom (bewust minimaal gehouden,
+      verwijst naar dit plan voor de rest)
 - [ ] Verwijzing vanuit hoofd-`README.md` naar `QuickStart.bat`

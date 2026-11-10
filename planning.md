@@ -48,9 +48,13 @@ Legenda: `[x]` = besloten/vastgelegd, `[ ]` = nog open (keuze of bouwtaak).
       Hold beschermde alleen tegen toekomstige drift via een losse
       `scoop update *`. Voor Rtools is dat al opgelost via de versie-vaste
       PATH hierboven. Voor R/Quarto/Positron (die nog via `current`/shims
-      gevonden worden) accepteren we voorlopig dat risico — **"probleem voor
-      later"**: kan later ook via een exact pad aangeroepen worden i.p.v.
-      op `current`/hold te vertrouwen.
+      gevonden worden) loste "Herinstalleer/repareer" dit eerst niet echt op
+      — `scoop install app@versie` is een no-op als die versie al op schijf
+      staat, ook als `current` inmiddels naar een andere versie wijst.
+      **Opgelost**: `Install-PinnedScoopApp` roept na de install ook
+      `scoop reset app@versie` aan, wat `current` terugzet naar onze
+      gepinde versie. Repareert drift i.p.v. 'm te voorkomen, dus nog steeds
+      geen `hold` nodig.
 - [x] **Positron R-detectie** (herzien, eerdere aanname was onjuist): Positron
       heeft wél settings voor non-standaard R-locaties —
       `positron.r.customBinaries` (exact pad naar `R.exe`) en

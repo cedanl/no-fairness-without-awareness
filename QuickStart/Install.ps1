@@ -28,10 +28,17 @@ function Install-ScoopApp {
 function Install-PinnedScoopApp {
     param([string]$VersionedName) # bv. "main/r@4.6.2"
 
-    $bareName = ($VersionedName -split '/')[-1] -split '@' | Select-Object -First 1
+    $appAtVersion = ($VersionedName -split '/')[-1] # bv. "r@4.6.2"
+    $bareName = $appAtVersion -split '@' | Select-Object -First 1
 
     Write-Host "$bareName installeren (gepind op versie, of controleren)..." -ForegroundColor Cyan
     scoop install $VersionedName
+
+    # zet 'current' terug naar onze gepinde versie, voor het geval een ander
+    # project op deze machine (of een losse 'scoop update *') 'current' naar
+    # een andere versie heeft verschoven. Geen 'scoop hold' nodig - dit
+    # repareert drift i.p.v. te voorkomen dat 'ie optreedt.
+    scoop reset $appAtVersion
 }
 
 function Invoke-InstallFlow {

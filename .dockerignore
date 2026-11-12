@@ -1,0 +1,13 @@
+.git
+.github
+.Rproj.user
+.RData
+.Rhistory
+.claude
+data/input
+temp
+cache
+output
+*.pdf
+kansengelijkheid
+pgadmin-servers.json

@@ -53,8 +53,9 @@
 #' }
 render_report <- function(opleidingsnaam, opleidingsvorm, cleanup_temp = FALSE) {
 
-  # Installeer benodigde dependencies (alleen eerste keer)
-  if (!tinytex::is_tinytex()) {
+  # Installeer TinyTeX alleen als er geen LaTeX op het systeem staat
+  has_latex <- nzchar(Sys.which("pdflatex")) || nzchar(Sys.which("xelatex"))
+  if (!has_latex && !tinytex::is_tinytex()) {
     message("TinyTeX niet gevonden - installeren... Dit gebeurt eenmalig")
     tinytex::install_tinytex()
   }

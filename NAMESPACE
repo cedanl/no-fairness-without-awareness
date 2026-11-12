@@ -3,6 +3,7 @@
 export(analyze_fairness)
 export(check_quarto_installed)
 export(cleanup_temp)
+export(nfwa_storage)
 export(install_quarto)
 export(read_metadata)
 export(render_report)

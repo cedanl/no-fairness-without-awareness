@@ -32,6 +32,7 @@ Imports:
     ggtext,
     glmnet,
     glue,
+    cardx,
     gtsummary,
     janitor,
     officer,
@@ -50,12 +51,16 @@ Imports:
     quarto,
     ranger
 Suggests:
+    aws.s3,
     bslib,
+    DBI,
     fs,
     knitr,
     rmarkdown,
     mockery,
+    RPostgres,
     shiny,
     testthat (>= 3.0.0),
-    tidymodels
+    tidymodels,
+    withr
 VignetteBuilder: knitr

@@ -12,7 +12,8 @@ analyze_fairness(
   opleidingsvorm,
   generate_pdf = TRUE,
   cleanup_temp = TRUE,
-  caption = NULL
+  caption = NULL,
+  storage = NULL
 )
 }
 \arguments{
@@ -41,6 +42,12 @@ automatisch verwijderd na PDF generatie. Standaard: `FALSE`.}
 
 \item{caption}{Character. Optionele caption voor visualisaties.
 Standaard: automatisch gegenereerd met bron en datum.}
+
+\item{storage}{Een storage-object aangemaakt met \code{\link{nfwa_storage}},
+of \code{NULL} (standaard). Indien opgegeven, worden analyse-resultaten
+(temp-bestanden en PDF) automatisch gepersisteerd naar de geconfigureerde
+backend (bijv. MinIO). Zonder storage worden bestanden alleen lokaal
+opgeslagen (standaardgedrag).}
 }
 \value{
 Een invisible list met:
